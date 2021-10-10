@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CoviMap</string>
+    <string name="map_api_key">AIzaSyDE1hSjk381yOSSqnR9khTVsNdg9A83tYE</string>
+</resources>
