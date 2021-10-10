@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_new_record"
+        android:title="New Record"
+        android:icon="@drawable/item_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_history_record"
+        android:title="History Record"
+        android:icon="@drawable/item_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_more_option"
+        android:title="More"
+        android:icon="@drawable/item_icon"
+        app:showAsAction="ifRoom"/>
+</menu>
