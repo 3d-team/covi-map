@@ -24,7 +24,7 @@ public class LocationService extends Service {
         locationRequest = LocationRequest.create()
                 .setInterval(10000)
                 .setFastestInterval(5000)
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
@@ -55,8 +55,10 @@ public class LocationService extends Service {
     }
 
     private void writeLog(LocationResult locationResult) {
-        Log.d("covi-map", "Lat is: " + locationResult.getLastLocation().getLatitude() + ", "
-                + "Lng is: " + locationResult.getLastLocation().getLongitude());
+        Log.d("covi-map",
+                locationResult.getLastLocation().getLatitude()
+                    + ", " +
+                    locationResult.getLastLocation().getLongitude());
     }
 
     @Override
