@@ -10,5 +10,7 @@
     <color name="bottom_menu">#F1E7E3</color>
     <color name="bottom_sheet">#80F6E6E2</color>
     <color name="main_theme_color">#19BC20</color>
-<!--    <color name="menu_bar_color">#FFEB3B</color>-->
+    <color name="colorPrimary">#607d8b</color>
+    <color name="colorPrimaryDark">#455a64</color>
+    <color name="colorAccent">#0c0099</color>
 </resources>

@@ -1,40 +1,35 @@
 package com.example.covimap;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
+import com.example.covimap.manager.MapManager;
+import com.example.covimap.model.CLocation;
+import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private BottomNavigationView bottomNavigationView;
+public class MainActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton;
-    private GoogleMap map;
-    private boolean isShow = true;
-
-//    private static final String TAG = MainActivity.class.getSimpleName();
-
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomSheetLayout;
-
     BottomSheetBehavior bottomSheetBehavior;
+
+    private MapManager mapManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,77 +37,67 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         mappingWidget();
+        requestCurrentLocation();
+
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.ggmap_api);
-        mapFragment.getMapAsync(this);
+        mapManager = new MapManager();
+        mapFragment.getMapAsync(mapManager);
     }
 
     private void mappingWidget(){
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_view);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setBackground(null);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.start_record_btn);
         bottomSheetLayout = (LinearLayout) findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-
         bottomSheetBehavior.setPeekHeight(175, true);
-//        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                switch (newState){
-//                    case BottomSheetBehavior.STATE_HIDDEN:
-//                        break;
-//                    case BottomSheetBehavior.STATE_EXPANDED:
-//                        break;
-//                    case BottomSheetBehavior.STATE_COLLAPSED:
-//                        break;
-//                    case BottomSheetBehavior.STATE_DRAGGING:
-//                        break;
-//                    case BottomSheetBehavior.STATE_SETTLING:
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
-//        bottomSheetLayout.
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
+    private void requestCurrentLocation() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            registerLocationReceiver();
+            startLocationService();
+        }
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(10.762622, 106.660172);
-        map.addMarker(new MarkerOptions().position(sydney).title("Marker in Viet Nam"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+    private void registerLocationReceiver() {
+        BroadcastReceiver locationReceiver = new BroadcastReceiver() {
             @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                if(isShow){
-                    bottomNavigationView.setVisibility(View.GONE);
-//                    floatingActionButton.setVisibility(View.GONE);
-//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    bottomSheetLayout.setVisibility(View.GONE);
-                    isShow = false;
-                }
-                else {
-                    bottomNavigationView.setVisibility(View.VISIBLE);
-//                    floatingActionButton.setVisibility(View.VISIBLE);
-//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    bottomSheetLayout.setVisibility(View.VISIBLE);
-                    isShow = true;
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("CURRENT_LOCATION")) {
+                    CLocation currentLocation = new CLocation(
+                            intent.getDoubleExtra("latitude", 0f),
+                            intent.getDoubleExtra("longitude", 0f));
+
+                    mapManager.reset();
+                    mapManager.addMarker(currentLocation, "Here");
+                    mapManager.animateCamera(currentLocation);
+
+                    Toast.makeText(MainActivity.this, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        };
+
+        registerReceiver(locationReceiver, new IntentFilter("CURRENT_LOCATION"));
+    }
+
+    private void startLocationService() {
+        Intent intent = new Intent(MainActivity.this, LocationService.class);
+        startService(intent);
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationService();
+            } else {
+                Toast.makeText(this, "Required GPS", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
-
-//    @OnClick(R.id.b)
 }
