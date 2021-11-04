@@ -89,27 +89,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public boolean validate() {
-        boolean valid = false;
-
         String email = editTextEmail.getText().toString();
         String password = editTextPassword.getText().toString();
 
         if (!Validator.isEmail(email)) {
-            valid = false;
             textInputLayoutEmail.setError("Please enter valid email!");
-        } else {
-            valid = true;
-            textInputLayoutEmail.setError(null);
-        }
-
-        if (Validator.isPassword(password)) {
-            valid = true;
-            textInputLayoutPassword.setError(null);
-        } else {
-            valid = false;
+            return false;
+        } else if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
+            return false;
+        } else {
+            textInputLayoutEmail.setError(null);
+            textInputLayoutPassword.setError(null);
         }
 
-        return valid;
+        return true;
     }
 }

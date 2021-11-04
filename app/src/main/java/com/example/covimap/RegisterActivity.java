@@ -73,36 +73,21 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean validate() {
-        boolean valid = false;
-
         String userName = editTextUserName.getText().toString();
         String email = editTextEmail.getText().toString();
         String password = editTextPassword.getText().toString();
 
-        if (Validator.isUsername(userName)) {
-            valid = true;
-            textInputLayoutUserName.setError(null);
-        } else {
-            valid = false;
+        if (!Validator.isUsername(userName)) {
             textInputLayoutUserName.setError("Please enter valid username!");
-        }
-
-        if (!Validator.isEmail(email)) {
-            valid = false;
+            return false;
+        }else if (!Validator.isEmail(email)) {
             textInputLayoutEmail.setError("Please enter valid email!");
-        } else {
-            valid = true;
-            textInputLayoutEmail.setError(null);
-        }
-
-        if (Validator.isPassword(password)) {
-            valid = true;
-            textInputLayoutUserName.setError(null);
-        } else {
-            valid = false;
+            return false;
+        } else if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
+            return false;
         }
 
-        return valid;
+        return true;
     }
 }
