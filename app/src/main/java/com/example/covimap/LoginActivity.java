@@ -33,8 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLogin;
     SQLiteHelper sqliteHelper;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
