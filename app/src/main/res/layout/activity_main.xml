@@ -1,73 +1,22 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <fragment
-        android:id="@+id/ggmap_api"
-        android:name="com.google.android.gms.maps.MapFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
-    <EditText
-        android:layout_gravity="top|center"
-        android:drawableStart="@drawable/search_icon"
-        android:id="@+id/search_location"
-        android:background="@drawable/edittext_custom"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/start_record_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/run_circle_icon"
-        android:layout_gravity="top|right"
-        android:foregroundTint="@color/menu_bar_item_color"
-        android:backgroundTint="@color/menu_bar_item_color"
-        android:layout_marginTop="36dp"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/stop_record_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/stop_icon"
-        android:layout_gravity="top|right"
-        android:backgroundTint="#B9FFC107"
-        android:layout_marginTop="100dp"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/locate_position_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/my_location_icon"
-        android:layout_gravity="top|right"
-        android:backgroundTint="#BE3F51B5"
-        android:layout_marginTop="172dp"/>
-
-    <include layout="@layout/bottom_sheet_layout"/>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_bar"
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/bottom_menu"
-        app:fabCradleRoundedCornerRadius="0dp"
-        app:fabCradleMargin="1dp"
-        app:fabAnimationMode="scale">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:menu="@menu/bottom_menu"
-            android:background="@android:color/transparent"
-            app:labelVisibilityMode="auto"
-            app:itemIconTint="@color/menu_bar_item_color"
-            app:itemTextColor="@color/menu_bar_item_color"/>
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
+        android:layout_gravity="bottom|center"
+        app:menu="@menu/bottom_menu"
+        android:background="#ffffff"
+        app:labelVisibilityMode="selected"
+        app:itemIconTint="@color/menu_bar_item_color"
+        app:itemTextColor="@color/menu_bar_item_color"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

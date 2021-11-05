@@ -26,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLogin;
     SqliteUtil sqliteUtil;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

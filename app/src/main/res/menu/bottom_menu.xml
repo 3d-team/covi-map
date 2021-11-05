@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_new_record"
-        android:title="New Record"
-        android:icon="@drawable/item_icon"
+    <item android:id="@+id/nav_new_record"
+        android:title="Ghi"
+        android:icon="@drawable/new_record_icon"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/menu_history_record"
-        android:title="History Record"
-        android:icon="@drawable/item_icon"
+    <item android:id="@+id/nav_direct_location"
+        android:title="Chỉ đường"
+        android:icon="@drawable/map_search_icon"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/menu_more_option"
-        android:title="More"
-        android:icon="@drawable/item_icon"
+    <item android:id="@+id/nav_history_record"
+        android:title="Lịch sử"
+        android:icon="@drawable/history_record_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/nav_discover"
+        android:title="Khám phá"
+        android:icon="@drawable/services_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/nav_peronal"
+        android:title="Cá nhân"
+        android:icon="@drawable/person_icon"
         app:showAsAction="ifRoom"/>
 </menu>
