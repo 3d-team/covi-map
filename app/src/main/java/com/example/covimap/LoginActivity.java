@@ -57,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initRegisterTextView() {
         TextView textViewRegister = findViewById(R.id.textViewCreateAccount);
-        textViewRegister.setText(Html.fromHtml("<font color='#000000'>Don't have account yet. </font>" +
-                "<font color='#0c0099'>create one</font>", Html.FROM_HTML_MODE_LEGACY));
+        textViewRegister.setText(Html.fromHtml("<font color='#000000'>New to app yet. </font>" +
+                "<font color='#0c0099'>Create one</font>", Html.FROM_HTML_MODE_LEGACY));
         textViewRegister.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);

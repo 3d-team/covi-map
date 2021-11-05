@@ -8,18 +8,20 @@
         <entry key="app/src/main/res/drawable/baseline_icon.xml" value="0.41875" />
         <entry key="app/src/main/res/drawable/bottom_sheet_background.xml" value="0.3765625" />
         <entry key="app/src/main/res/drawable/bottom_sheet_custom.xml" value="0.3765625" />
-        <entry key="app/src/main/res/drawable/bottom_sheet_icon.xml" value="0.196875" />
+        <entry key="app/src/main/res/drawable/button_search_location_custom.xml" value="0.2171875" />
         <entry key="app/src/main/res/drawable/edittext_custom.xml" value="0.3765625" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2171875" />
-        <entry key="app/src/main/res/drawable/item_icon.xml" value="0.196875" />
-        <entry key="app/src/main/res/drawable/my_location_icon.xml" value="0.196875" />
-        <entry key="app/src/main/res/drawable/run_circle_icon.xml" value="0.196875" />
-        <entry key="app/src/main/res/drawable/search_icon.xml" value="0.196875" />
-        <entry key="app/src/main/res/drawable/stop_icon.xml" value="0.196875" />
+        <entry key="app/src/main/res/drawable/new_record_icon.xml" value="0.15462962962962962" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.264" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.27708333333333335" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/layout/bottom_sheet_layout.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/direct_activity.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/discover_activity.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/history_journey_activity.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/new_record_activity.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/new_record_layout.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/personal_activity.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2171875" />
       </map>
