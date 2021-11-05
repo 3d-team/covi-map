@@ -8,10 +8,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class CLocation {
+public class CLocation extends Identity {
     private double latitude;
     private double longitude;
 

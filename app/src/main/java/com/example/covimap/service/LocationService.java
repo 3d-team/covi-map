@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
+import com.example.covimap.config.Config;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -22,8 +23,8 @@ public class LocationService extends Service {
         super.onCreate();
 
         locationRequest = LocationRequest.create()
-                .setInterval(10000)
-                .setFastestInterval(5000)
+                .setInterval(1000 * Config.DEFAULT_UPDATE_INTERVAL)
+                .setFastestInterval(1000 * Config.FASTEST_UPDATE_INTERVAL)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }

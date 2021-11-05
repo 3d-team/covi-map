@@ -1,21 +1,28 @@
 package com.example.covimap;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spanned;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Facility;
+import com.example.covimap.model.Route;
 import com.example.covimap.model.User;
-import com.example.covimap.utils.SqliteUtil;
+import com.example.covimap.repository.FacilityRepository;
+import com.example.covimap.repository.RedzoneRepository;
+import com.example.covimap.repository.RouteRepository;
+import com.example.covimap.utils.SQLiteHelper;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout textInputLayoutEmail;
     TextInputLayout textInputLayoutPassword;
     Button buttonLogin;
-    SqliteUtil sqliteUtil;
+    SQLiteHelper sqliteHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,38 +39,30 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initViews();
-        initCreateAccountTextView();
         initEventButton();
 
-        sqliteUtil = new SqliteUtil(this);
+        sqliteHelper = new SQLiteHelper(this);
+
+        //testRepository();
     }
 
     private void initViews() {
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
-        textInputLayoutPassword = (TextInputLayout) findViewById(R.id.textInputLayoutPassword);
-        buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+        buttonLogin = findViewById(R.id.buttonLogin);
+        initRegisterTextView();
     }
 
-    private void initCreateAccountTextView() {
-        TextView textViewCreateAccount = (TextView) findViewById(R.id.textViewCreateAccount);
-        textViewCreateAccount.setText(fromHtml("<font color='#ffffff'>I don't have account yet. </font><font color='#0c0099'>create one</font>"));
-        textViewCreateAccount.setOnClickListener(view -> {
+    private void initRegisterTextView() {
+        TextView textViewRegister = findViewById(R.id.textViewCreateAccount);
+        textViewRegister.setText(Html.fromHtml("<font color='#000000'>Don't have account yet. </font>" +
+                "<font color='#0c0099'>create one</font>", Html.FROM_HTML_MODE_LEGACY));
+        textViewRegister.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
-    }
-
-    @SuppressWarnings("deprecation")
-    public static Spanned fromHtml(String html) {
-        Spanned result;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            result = Html.fromHtml(html);
-        }
-        return result;
     }
 
     private void initEventButton() {
@@ -74,9 +73,9 @@ public class LoginActivity extends AppCompatActivity {
 
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
-            User currentUser = sqliteUtil.authenticate(new User(null, null, email, password));
+            User authenticatedUser = sqliteHelper.authenticate(new User(null, null, email, password));
 
-            if (currentUser != null) {
+            if (authenticatedUser != null) {
                 Snackbar.make(buttonLogin, "Successfully Logged in!", Snackbar.LENGTH_LONG).show();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -104,5 +103,23 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void testRepository() {
+        Facility facility = new Facility(new CLocation(1, 2), "a", "b", "c");
+        FacilityRepository facilityRepository = new FacilityRepository();
+        facilityRepository.add(facility);
+        System.out.println(facility.getUuid());
+
+        List<CLocation> path = Arrays.asList(new CLocation(1, 2));
+        Route route = new Route(path, "123", "12-01 04:02:01", 123);
+        RouteRepository routeRepository = new RouteRepository();
+        routeRepository.add(route);
+        System.out.println(route.getUuid());
+
+        RedzoneRepository redzoneRepository = new RedzoneRepository();
+        CLocation redzone = new CLocation(1, 2);
+        redzoneRepository.add(redzone);
+        System.out.println(redzone.getUuid());
     }
 }

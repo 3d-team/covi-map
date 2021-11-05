@@ -1,7 +1,5 @@
 package com.example.covimap.model;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Route extends Identity {
-    private List<CLocation> path;
-    private String period;
-    private String createdDay;
-    private long userId;
+public class Facility extends Identity {
+    private CLocation location;
+    private String title;
+    private String summary;
+    private String type;
 }
