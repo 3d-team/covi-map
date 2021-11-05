@@ -1,7 +1,5 @@
 package com.example.covimap.manager;
 
-import android.location.Location;
-
 import androidx.annotation.NonNull;
 
 import com.example.covimap.config.MapConfig;

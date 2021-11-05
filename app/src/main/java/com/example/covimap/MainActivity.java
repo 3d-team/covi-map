@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mappingWidget(){
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_view);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setBackground(null);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.start_record_btn);
-        bottomSheetLayout = (LinearLayout) findViewById(R.id.bottom_sheet);
+        floatingActionButton = findViewById(R.id.start_record_btn);
+        bottomSheetLayout = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetBehavior.setPeekHeight(175, true);
     }
