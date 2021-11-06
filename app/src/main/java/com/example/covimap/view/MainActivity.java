@@ -1,31 +1,15 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.example.covimap.manager.MapManager;
-import com.example.covimap.model.CLocation;
-import com.example.covimap.service.LocationService;
-import com.google.android.gms.maps.MapFragment;
+import com.example.covimap.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import butterknife.BindView;
 
 public class MainActivity extends FragmentActivity {
     private BottomNavigationView bottomNav;

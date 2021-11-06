@@ -1,4 +1,4 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.covimap.R;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
@@ -37,10 +38,6 @@ public class NewRecordActivity extends Fragment {
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
-
-    public NewRecordActivity(){
-        // do something here for constructor
-    }
 
     @Nullable
     @Override

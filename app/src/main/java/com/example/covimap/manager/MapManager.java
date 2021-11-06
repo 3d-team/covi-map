@@ -1,13 +1,12 @@
 package com.example.covimap.manager;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import com.example.covimap.R;
 import com.example.covimap.config.MapConfig;
 import com.example.covimap.model.CLocation;
+import com.example.covimap.utils.MapHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,26 +33,7 @@ public class MapManager implements OnMapReadyCallback {
     }
 
     public void drawRoute(CLocation start, CLocation end, DirectionMode mode) {
-        String url = getDirectionUrl(start, end, mode);
-    }
-
-    private String getDirectionUrl(CLocation start, CLocation end, DirectionMode mode) {
-        String startLocationClause = "origin=" + start.getLatitude() + ","
-                + start.getLatitude();
-        String endLocationClause = "destination=" + end.getLatitude() + ","
-                + end.getLongitude();
-        String sensorClause = "sensor=false";
-        String modeClaude = "mode=" + mode;
-        String parameters = startLocationClause + "&" + endLocationClause + "&"
-                + sensorClause + "&" + modeClaude;
-        String outputClause = "json";
-        String apiKeyClause = Resources.getSystem().getString(R.string.map_api_key);
-        String url = "https://maps.googleapis.com/maps/api/directions/"
-                + outputClause + "?"
-                + parameters + "&key="
-                + apiKeyClause;
-
-        return url;
+        String url = MapHelper.generateDirectionUrl(start, end, mode);
     }
 
     public void reset() {

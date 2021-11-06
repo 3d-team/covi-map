@@ -1,4 +1,4 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.covimap.R;
 import com.example.covimap.model.User;
 import com.example.covimap.utils.SQLiteHelper;
 import com.example.covimap.utils.Validator;
