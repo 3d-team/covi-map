@@ -12,7 +12,10 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import butterknife.BindView;
 
@@ -34,9 +38,14 @@ public class NewRecordActivity extends Fragment {
     private Context context;
     private static View view;
 
-    @BindView(R.id.bottom_sheet)
-    LinearLayout bottomSheetLayout;
-    private BottomSheetBehavior bottomSheetBehavior;
+    private EditText searchLocationEdt;
+    private Button searchLocationBtn;
+    private FloatingActionButton locateCurrentBtn;
+    private TextView distanceTextView;
+    private TextView timeTextView;
+    private Button stopRecordBtn;
+    private Button recordBtn;
+    private Button saveRecordBtn;
 
     public NewRecordActivity(){
         // do something here for constructor
@@ -71,8 +80,6 @@ public class NewRecordActivity extends Fragment {
         try{
             context = getActivity();
             main = (MainActivity) getActivity();
-
-
         }
         catch (IllegalStateException e){
             throw new IllegalStateException("Error");
@@ -155,11 +162,64 @@ public class NewRecordActivity extends Fragment {
             }
         }
     }
+    //Listener for searchLocationBtn
+    private View.OnClickListener searchLocationBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
 
-    //UI---------------------------------------------
+        }
+    };
+    //Listener for locateCurrentbtn
+    private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if(main != null) {
+                requestCurrentLocation();
+                MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
+                mapManager = new MapManager();
+                mapFragment.getMapAsync(mapManager);
+            }
+        }
+    };
+    //Listener for stopRecordBtn
+    private View.OnClickListener stopRecordBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+    //Listener for recordBtn
+    private View.OnClickListener recordBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+    //Listener for saveRecordBtn
+    private View.OnClickListener saveRecordBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
+    //Prepare for UI---------------------------------------------
     public void prepareWidget(){
-        bottomSheetLayout = (LinearLayout) view.findViewById(R.id.bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-        bottomSheetBehavior.setPeekHeight(175, true);
+        searchLocationEdt = (EditText) view.findViewById(R.id.search_location_edt);
+        distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
+        timeTextView = (TextView) view.findViewById(R.id.time_text_view);
+
+        searchLocationBtn = (Button) view.findViewById(R.id.search_location_btn);
+        locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
+        stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);
+        recordBtn = (Button) view.findViewById(R.id.record_btn);
+        saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
+
+        searchLocationBtn.setOnClickListener(searchLocationBtnListener);
+        locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
+        stopRecordBtn.setOnClickListener(stopRecordBtnListener);
+        recordBtn.setOnClickListener(recordBtnListener);
+        saveRecordBtn.setOnClickListener(saveRecordBtnListener);
     }
+
 }

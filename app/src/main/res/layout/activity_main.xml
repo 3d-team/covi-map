@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         app:menu="@menu/bottom_menu"
-        android:background="#ffffff"
+        android:background="#B9F1BB"
         app:labelVisibilityMode="selected"
         app:itemIconTint="@color/menu_bar_item_color"
         app:itemTextColor="@color/menu_bar_item_color"/>
