@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CoviMap</string>
     <string name="map_api_key">AIzaSyDE1hSjk381yOSSqnR9khTVsNdg9A83tYE</string>
-
+    <string name="direction_api_key">AIzaSyDw0fKWP-VzEX911Qd1PQ4llSrejuydED0</string>
     <string name="create_account">
         <font color="#00ff00">text</font>
     </string>
