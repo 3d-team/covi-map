@@ -185,14 +185,44 @@ public class NewRecordActivity extends Fragment {
     private View.OnClickListener stopRecordBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-
+            switch (statusRecord){
+                case NOT_START:
+                    break;
+                case RUNNING:
+                    statusRecord = StatusRecord.NOT_START;
+                    recordBtn.setText("Record");
+                    break;
+                case PAUSED:
+                    statusRecord = StatusRecord.NOT_START;
+                    recordBtn.setText("Record");
+                    break;
+            }
         }
     };
     //Listener for recordBtn
+    private enum StatusRecord{
+        NOT_START, RUNNING, PAUSED
+    }
+    private static StatusRecord statusRecord = StatusRecord.NOT_START;
     private View.OnClickListener recordBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-
+            switch (statusRecord){
+                case NOT_START:
+                    stopRecordBtn.setVisibility(View.VISIBLE);
+                    saveRecordBtn.setVisibility(View.VISIBLE);
+                    statusRecord = StatusRecord.RUNNING;
+                    recordBtn.setText("Pause");
+                    break;
+                case RUNNING:
+                    statusRecord = StatusRecord.PAUSED;
+                    recordBtn.setText("Resume");
+                    break;
+                case PAUSED:
+                    statusRecord = StatusRecord.RUNNING;
+                    recordBtn.setText("Pause");
+                    break;
+            }
         }
     };
     //Listener for saveRecordBtn

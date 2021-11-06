@@ -79,7 +79,8 @@
                 android:text="Stop"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@drawable/stop_record_button_custom"/>
+                android:background="@drawable/stop_record_button_custom"
+                android:visibility="invisible"/>
             <Button
                 android:id="@+id/record_btn"
                 android:text="Ghi"
@@ -93,7 +94,8 @@
                 android:text="Lưu"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@drawable/save_record_button_custom"/>
+                android:background="@drawable/save_record_button_custom"
+                android:visibility="invisible"/>
         </LinearLayout>
         <LinearLayout
             android:layout_weight="1"
