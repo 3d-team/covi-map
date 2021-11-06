@@ -1,4 +1,4 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.covimap.R;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.model.Facility;
 import com.example.covimap.model.Route;

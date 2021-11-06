@@ -1,4 +1,4 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,15 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class HistoryJourneyActivity extends Fragment {
-    public HistoryJourneyActivity(){
+import com.example.covimap.R;
 
-    }
-
+public class DiscoverActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.history_journey_activity, null);
+        View view = inflater.inflate(R.layout.discover_activity, null);
         return view;
     }
 

@@ -1,4 +1,4 @@
-package com.example.covimap;
+package com.example.covimap.view;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.covimap.R;
+import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
@@ -38,9 +40,7 @@ public class NewRecordActivity extends Fragment {
     LinearLayout bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
 
-    public NewRecordActivity(){
-        // do something here for constructor
-    }
+    private CLocation lastLocation;
 
     @Nullable
     @Override
@@ -108,7 +108,7 @@ public class NewRecordActivity extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-    //--------------------------------------------------------------------------
+
     private void requestCurrentLocation() {
         if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -128,9 +128,13 @@ public class NewRecordActivity extends Fragment {
                             intent.getDoubleExtra("latitude", 0f),
                             intent.getDoubleExtra("longitude", 0f));
 
-                    mapManager.reset();
+                    if (lastLocation != null) {
+                        mapManager.drawRoute(lastLocation, currentLocation);
+                    }
+                    lastLocation = currentLocation;
                     mapManager.addMarker(currentLocation, "Here");
                     mapManager.animateCamera(currentLocation);
+
                     Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
                 }
             }
