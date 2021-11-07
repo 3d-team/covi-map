@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <RelativeLayout
+        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
@@ -17,6 +18,7 @@
             android:drawableStart="@drawable/search_icon"
             android:background="@drawable/edittext_custom"
             android:layout_width="match_parent"
+
             android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"/>
@@ -30,34 +32,91 @@
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/start_record_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/run_circle_icon"
-        android:layout_gravity="top|right"
-        android:foregroundTint="@color/menu_bar_item_color"
-        android:backgroundTint="@color/menu_bar_item_color"
-        android:layout_marginTop="40dp"
-        app:fabSize="mini"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/stop_record_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/stop_icon"
-        android:layout_gravity="top|right"
-        android:backgroundTint="#EAE2E1"
-        android:layout_marginTop="85dp"
-        app:fabSize="mini"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/locate_position_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/my_location_icon"
-        android:layout_gravity="top|right"
-        android:backgroundTint="#BEEDEDF1"
-        android:layout_marginTop="130dp"
+        android:layout_gravity="center|right"
+        android:backgroundTint="#EDEDF1"
         app:fabSize="mini"/>
-    <include layout="@layout/bottom_sheet_layout"/>
+    <LinearLayout
+        android:weightSum="3"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="65dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/radius_layout_custom">
+        <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:text="Quảng đường"/>
+            <TextView
+                android:id="@+id/distance_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:text="7749 km"
+                android:drawableLeft="@drawable/road_icon"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/stop_record_btn"
+                android:text="Stop"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/stop_record_button_custom"
+                android:visibility="invisible"/>
+            <Button
+                android:id="@+id/record_btn"
+                android:text="Ghi"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/record_button_custom"/>
+            <Button
+                android:id="@+id/save_record_btn"
+                android:text="Lưu"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/save_record_button_custom"
+                android:visibility="invisible"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:text="Thời gian"/>
+            <TextView
+                android:id="@+id/time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:text="49 hour"
+                android:drawableLeft="@drawable/time_icon"/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
