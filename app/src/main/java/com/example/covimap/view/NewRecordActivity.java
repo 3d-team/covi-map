@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.InflateException;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,13 +26,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
+import com.example.covimap.config.Config;
 import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -58,7 +68,7 @@ public class NewRecordActivity extends Fragment {
             view = (View)inflater.inflate(R.layout.new_record_activity, null);
             prepareWidget();
 
-            requestCurrentLocation();
+            //requestCurrentLocation();
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
             mapManager = new MapManager();
             mapFragment.getMapAsync(mapManager);
@@ -80,40 +90,11 @@ public class NewRecordActivity extends Fragment {
         try{
             context = getActivity();
             main = (MainActivity) getActivity();
+
         }
         catch (IllegalStateException e){
             throw new IllegalStateException("Error");
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     private void requestCurrentLocation() {
@@ -167,10 +148,27 @@ public class NewRecordActivity extends Fragment {
         }
     }
     //Listener for searchLocationBtn
-    private View.OnClickListener searchLocationBtnListener = new View.OnClickListener(){
+    private View.OnClickListener searchLocationBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            String locationName = searchLocationEdt.getText().toString();
+            List<Address> geoResults = null;
+            if (locationName != null || !locationName.equals("")) {
+                Geocoder geocoder = new Geocoder(NewRecordActivity.view.getContext(), Locale.getDefault());
+                try {
+                    geoResults = geocoder.getFromLocationName(locationName, 1);
 
+                    if (geoResults.size() > 0) {
+                        Address address = geoResults.get(0);
+                        CLocation locationSearch = new CLocation(address.getLatitude(), address.getLongitude());
+                        mapManager.addMarker(locationSearch, "Search");
+                        mapManager.animateCamera(locationSearch);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     };
     //Listener for locateCurrentbtn
@@ -179,9 +177,6 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             if(main != null) {
                 requestCurrentLocation();
-                MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
-                mapManager = new MapManager();
-                mapFragment.getMapAsync(mapManager);
             }
         }
     };
@@ -249,11 +244,11 @@ public class NewRecordActivity extends Fragment {
         recordBtn = (Button) view.findViewById(R.id.record_btn);
         saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
 
-        searchLocationBtn.setOnClickListener(searchLocationBtnListener);
         locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
         stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
+        searchLocationBtn.setOnClickListener(searchLocationBtnListener);
     }
 
 }
