@@ -4,19 +4,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <fragment
-        android:id="@+id/ggmap_api"
+        android:id="@+id/record_ggmap_api"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <RelativeLayout
+        android:visibility="gone"
         android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ListView
-            android:id="@+id/result_search_list_view"
+        <TextView
+            android:id="@+id/result_location_text_view"
+            android:layout_below="@+id/search_location_edt"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:drawableStart="@drawable/location_icon"
+            android:background="@drawable/result_location_textview_custom"
+            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/search_location_edt"/>
+            android:layout_height="wrap_content"/>
         <SearchView
             android:id="@+id/search_location_edt"
             android:layout_gravity="top|center"
@@ -27,13 +33,6 @@
             android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"/>
-        <Button
-            android:id="@+id/search_location_btn"
-            android:layout_alignRight="@+id/search_location_edt"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/button_search_location_custom"
-            android:text="Find"/>
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

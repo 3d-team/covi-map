@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +39,10 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -46,11 +54,8 @@ public class NewRecordActivity extends Fragment {
     private static View view;
 
     private SearchView searchLocationEdt;
-    private ArrayList<String> listResult;
-    private ArrayAdapter<String> adapter;
-    private ListView resultListView;
+    private TextView resultTextView;
 
-    private Button searchLocationBtn;
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
     private TextView timeTextView;
@@ -68,7 +73,7 @@ public class NewRecordActivity extends Fragment {
             prepareWidget();
 
             requestCurrentLocation();
-            MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
+            MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.record_ggmap_api);
             mapManager = new MapManager();
             mapFragment.getMapAsync(mapManager);
         }
@@ -151,7 +156,7 @@ public class NewRecordActivity extends Fragment {
                     mapManager.addMarker(currentLocation, "Here");
                     mapManager.animateCamera(currentLocation);
 
-                    Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -179,7 +184,6 @@ public class NewRecordActivity extends Fragment {
     private View.OnClickListener searchLocationBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-
         }
     };
     //Listener for locateCurrentbtn
@@ -188,7 +192,7 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             if(main != null) {
                 requestCurrentLocation();
-                MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
+                MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.record_ggmap_api);
                 mapManager = new MapManager();
                 mapFragment.getMapAsync(mapManager);
             }
@@ -246,51 +250,96 @@ public class NewRecordActivity extends Fragment {
         }
     };
     //Listener for searchLoctionEdt
+    private String resultLocationStr;
+    private Address address;
     private SearchView.OnQueryTextListener searchLocationEdtOnQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String s) {
-            if(listResult.contains(s)){
-                adapter.getFilter().filter(s);
-            }else{
-                Toast.makeText(context, "No Match found",Toast.LENGTH_LONG).show();
-            }
+////                        CLocation locationSearch = new CLocation(address.getLatitude(), address.getLongitude());
+////                        mapManager.addMarker(locationSearch, "Search");
+////                        mapManager.animateCamera(locationSearch);
             return false;
         }
-
+        private CountDownTimer countDownTimer;
         @Override
         public boolean onQueryTextChange(String s) {
+            if(countDownTimer != null){
+                countDownTimer.cancel();
+            }
+            countDownTimer = new CountDownTimer(500, 1000) {
+                @Override
+                public void onTick(long l) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    String locationName = searchLocationEdt.getQuery().toString();
+                    List<Address> geoResults = null;
+
+                    if(locationName.equals("")){
+                        resultTextView.setVisibility(View.GONE);
+                        resultTextView.setText("");
+                    }
+                    else if (locationName != null) {
+                        Geocoder geocoder = new Geocoder(NewRecordActivity.view.getContext(), Locale.getDefault());
+                        try {
+                            geoResults = geocoder.getFromLocationName(locationName, 1);
+                            if (geoResults.size() > 0) {
+                                address = geoResults.get(0);
+                                Log.d("LocationResultSetSize:", "" + geoResults.size());
+                                resultLocationStr = "";
+                                int max = address.getMaxAddressLineIndex();
+                                for (int i = 0; i <= max; i++) {
+                                    resultLocationStr += address.getAddressLine(i);
+                                }
+                                resultTextView.setText(resultLocationStr);
+                                resultTextView.setVisibility(View.VISIBLE);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        resultTextView.setVisibility(View.GONE);
+                        resultTextView.setText("");
+                    }
+                }
+            };
+            countDownTimer.start();
             return false;
+        }
+    };
+    // Listener for resultTextView
+    private View.OnClickListener resultTextViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            view.setVisibility(View.INVISIBLE);
+                CLocation locationSearch = new CLocation(address.getLatitude(), address.getLongitude());
+                mapManager.addMarker(locationSearch, "Search");
+                mapManager.animateCamera(locationSearch);
         }
     };
 
     //Prepare for UI---------------------------------------------
     public void prepareWidget(){
         searchLocationEdt = (SearchView) view.findViewById(R.id.search_location_edt);
+        resultTextView = (TextView) view.findViewById(R.id.result_location_text_view);
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
         timeTextView = (TextView) view.findViewById(R.id.time_text_view);
 
-        searchLocationBtn = (Button) view.findViewById(R.id.search_location_btn);
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
         stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);
         recordBtn = (Button) view.findViewById(R.id.record_btn);
         saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
 
-        searchLocationBtn.setOnClickListener(searchLocationBtnListener);
         locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
         stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
 
-        listResult = new ArrayList<>();
-        listResult.add("ABC");
-        listResult.add("ABD");
-        listResult.add("ABE");
-        listResult.add("ABF");
-
-        resultListView = view.findViewById(R.id.result_search_list_view);
-        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listResult);
-        resultListView.setAdapter(adapter);
         searchLocationEdt.setOnQueryTextListener(searchLocationEdtOnQueryTextListener);
+        resultTextView.setOnClickListener(resultTextViewListener);
     }
 
 }
