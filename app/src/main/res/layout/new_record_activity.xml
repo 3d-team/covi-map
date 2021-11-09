@@ -12,13 +12,18 @@
         android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+        <ListView
+            android:id="@+id/result_search_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/search_location_edt"/>
+        <SearchView
             android:id="@+id/search_location_edt"
             android:layout_gravity="top|center"
-            android:drawableStart="@drawable/search_icon"
             android:background="@drawable/edittext_custom"
             android:layout_width="match_parent"
-
+            android:iconifiedByDefault="false"
+            android:queryHint="Search location here"
             android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"/>

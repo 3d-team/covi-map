@@ -12,9 +12,12 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 
 
@@ -40,7 +45,11 @@ public class NewRecordActivity extends Fragment {
     private Context context;
     private static View view;
 
-    private EditText searchLocationEdt;
+    private SearchView searchLocationEdt;
+    private ArrayList<String> listResult;
+    private ArrayAdapter<String> adapter;
+    private ListView resultListView;
+
     private Button searchLocationBtn;
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
@@ -236,10 +245,27 @@ public class NewRecordActivity extends Fragment {
 
         }
     };
+    //Listener for searchLoctionEdt
+    private SearchView.OnQueryTextListener searchLocationEdtOnQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+            if(listResult.contains(s)){
+                adapter.getFilter().filter(s);
+            }else{
+                Toast.makeText(context, "No Match found",Toast.LENGTH_LONG).show();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+            return false;
+        }
+    };
 
     //Prepare for UI---------------------------------------------
     public void prepareWidget(){
-        searchLocationEdt = (EditText) view.findViewById(R.id.search_location_edt);
+        searchLocationEdt = (SearchView) view.findViewById(R.id.search_location_edt);
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
         timeTextView = (TextView) view.findViewById(R.id.time_text_view);
 
@@ -254,6 +280,17 @@ public class NewRecordActivity extends Fragment {
         stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
+
+        listResult = new ArrayList<>();
+        listResult.add("ABC");
+        listResult.add("ABD");
+        listResult.add("ABE");
+        listResult.add("ABF");
+
+        resultListView = view.findViewById(R.id.result_search_list_view);
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listResult);
+        resultListView.setAdapter(adapter);
+        searchLocationEdt.setOnQueryTextListener(searchLocationEdtOnQueryTextListener);
     }
 
 }
