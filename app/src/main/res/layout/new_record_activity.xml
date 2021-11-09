@@ -10,32 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
-        android:focusableInTouchMode="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/search_location_edt"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="top|center"
-            android:layout_marginLeft="4dp"
-
-            android:layout_marginRight="4dp"
-            android:background="@drawable/edittext_custom"
-            android:drawableStart="@drawable/search_icon"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <Button
-            android:id="@+id/search_location_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignRight="@+id/search_location_edt"
-            android:background="@drawable/button_search_location_custom"
-            android:text="Find" />
-    </RelativeLayout>
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/locate_position_btn"
         android:layout_width="wrap_content"

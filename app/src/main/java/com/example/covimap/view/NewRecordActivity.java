@@ -50,8 +50,6 @@ public class NewRecordActivity extends Fragment {
     private Context context;
     private static View view;
 
-    private EditText searchLocationEdt;
-    private Button searchLocationBtn;
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
     private TextView timeTextView;
@@ -147,30 +145,7 @@ public class NewRecordActivity extends Fragment {
             }
         }
     }
-    //Listener for searchLocationBtn
-    private View.OnClickListener searchLocationBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String locationName = searchLocationEdt.getText().toString();
-            List<Address> geoResults = null;
-            if (locationName != null || !locationName.equals("")) {
-                Geocoder geocoder = new Geocoder(NewRecordActivity.view.getContext(), Locale.getDefault());
-                try {
-                    geoResults = geocoder.getFromLocationName(locationName, 1);
 
-                    if (geoResults.size() > 0) {
-                        Address address = geoResults.get(0);
-                        CLocation locationSearch = new CLocation(address.getLatitude(), address.getLongitude());
-                        mapManager.addMarker(locationSearch, "Search");
-                        mapManager.animateCamera(locationSearch);
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
     //Listener for locateCurrentbtn
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
@@ -232,13 +207,11 @@ public class NewRecordActivity extends Fragment {
         }
     };
 
-    //Prepare for UI---------------------------------------------
+    //Prepare for UI
     public void prepareWidget(){
-        searchLocationEdt = (EditText) view.findViewById(R.id.search_location_edt);
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
         timeTextView = (TextView) view.findViewById(R.id.time_text_view);
 
-        searchLocationBtn = (Button) view.findViewById(R.id.search_location_btn);
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
         stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);
         recordBtn = (Button) view.findViewById(R.id.record_btn);
@@ -248,7 +221,6 @@ public class NewRecordActivity extends Fragment {
         stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
-        searchLocationBtn.setOnClickListener(searchLocationBtnListener);
     }
 
 }

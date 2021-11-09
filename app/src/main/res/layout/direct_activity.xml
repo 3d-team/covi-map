@@ -11,7 +11,7 @@
         android:layout_height="match_parent" />
 
     <RelativeLayout
-        android:background="#FFFFFF"
+        android:background="@drawable/radius_bottom_layout_custom"
         android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
