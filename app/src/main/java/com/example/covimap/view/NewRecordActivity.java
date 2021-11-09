@@ -121,7 +121,7 @@ public class NewRecordActivity extends Fragment {
                     mapManager.addMarker(currentLocation, "Here");
                     mapManager.animateCamera(currentLocation);
 
-                    Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
                 }
             }
         };
