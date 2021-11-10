@@ -4,6 +4,7 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
+        android:background="@drawable/day_chooser_area_background"
         android:weightSum="2"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -60,7 +61,11 @@
 
 
     <ListView
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/history_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"/>
 
 </LinearLayout>

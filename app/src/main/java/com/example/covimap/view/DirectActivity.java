@@ -1,50 +1,33 @@
 package com.example.covimap.view;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.InflateException;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
-import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
-import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import butterknife.BindView;
 
 
 public class DirectActivity extends Fragment {
@@ -60,12 +43,6 @@ public class DirectActivity extends Fragment {
     private TextView resultDestTextView;
 
     private FloatingActionButton locateCurrentBtn;
-//    private TextView distanceTextView;
-//    private TextView timeTextView;
-//    private Button stopRecordBtn;
-//    private Button recordBtn;
-//    private Button saveRecordBtn;
-
     private CLocation currentLocation;
 
     @Nullable
