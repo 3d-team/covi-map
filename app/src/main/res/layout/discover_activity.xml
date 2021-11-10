@@ -33,12 +33,13 @@
 
         <HorizontalScrollView
             android:scrollbars="none"
-            android:layout_marginTop="7dp"
+            android:padding="2dp"
             android:fadeScrollbars="false"
             android:layout_below="@+id/search_discover_edt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <RadioGroup
+                android:layout_marginTop="2dp"
                 android:id="@+id/place_option"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
