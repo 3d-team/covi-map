@@ -254,7 +254,7 @@ public class NewRecordActivity extends Fragment {
         @Override
         public void onClick(View v) {
             String period = timeTextView.getText().toString();
-            Route route = new Route(path, period, distance, createdTime, 1234);
+            Route route = new Route(path, period, String.format("%.2f",distance), createdTime, 1234);
             RouteRepository routeRepository = new RouteRepository();
             routeRepository.add(route);
 
