@@ -21,9 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/search_src_location_edt"
-            android:src="@drawable/circle_icon"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="4dp"
-            android:layout_marginLeft="2dp"/>
+            android:src="@drawable/start_location_icon" />
 
         <ImageView
             android:id="@+id/connect_icon"
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/connect_icon"
-            android:src="@drawable/destination_icon"
+            android:src="@drawable/target_location_icon"
             android:layout_marginLeft="2dp"/>
 
         <SearchView
@@ -85,52 +85,40 @@
             android:layout_height="35dp">
             <RadioButton
                 android:id="@+id/walk_radiobutton"
-                android:paddingHorizontal="16dp"
+                android:layout_marginRight="28dp"
                 android:button="@drawable/radiobutton_walk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-<!--            <RadioButton-->
-<!--                android:id="@+id/bike_radiobutton"-->
-<!--                android:paddingHorizontal="16dp"-->
-<!--                android:button="@drawable/radiobutton_bike"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
             <RadioButton
                 android:id="@+id/motobike_radiobutton"
-                android:paddingHorizontal="16dp"
+                android:layout_marginRight="28dp"
                 android:button="@drawable/radiobutton_motobike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <RadioButton
                 android:id="@+id/car_radiobutton"
-                android:paddingHorizontal="16dp"
+                android:layout_marginRight="28dp"
                 android:button="@drawable/radiobutton_car"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <RadioButton
                 android:id="@+id/bus_radiobutton"
-                android:paddingHorizontal="6dp"
+                android:layout_marginRight="6dp"
                 android:button="@drawable/radiobutton_train"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-<!--            <RadioButton-->
-<!--                android:id="@+id/airplane_radiobutton"-->
-<!--                android:paddingHorizontal="6dp"-->
-<!--                android:button="@drawable/radiobutton_airplane"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
         </RadioGroup>
 
         <TextView
             android:id="@+id/result_src_location_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/search_src_location_edt"
+            android:background="@drawable/result_location_textview_custom"
+            android:drawableStart="@drawable/location_icon"
             android:padding="8dp"
             android:textColor="@color/black"
-            android:drawableStart="@drawable/location_icon"
-            android:background="@drawable/result_location_textview_custom"
-            android:visibility="invisible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/result_dest_location_text_view"
@@ -152,87 +140,5 @@
         android:layout_gravity="center|right"
         android:backgroundTint="#EDEDF1"
         app:fabSize="mini"/>
-    <LinearLayout
-        android:visibility="gone"
-        android:weightSum="3"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="65dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@drawable/radius_layout_custom">
-        <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textColor="#000000"
-                android:text="Quảng đường"/>
-            <TextView
-                android:id="@+id/distance_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textColor="#000000"
-                android:text="7749 km"
-                android:drawableLeft="@drawable/road_icon"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <Button
-                android:id="@+id/stop_record_btn"
-                android:text="Stop"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/stop_record_button_custom"
-                android:visibility="invisible"/>
-            <Button
-                android:id="@+id/record_btn"
-                android:text="Ghi"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:background="@drawable/record_button_custom"/>
-            <Button
-                android:id="@+id/save_record_btn"
-                android:text="Lưu"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/save_record_button_custom"
-                android:visibility="invisible"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textColor="#000000"
-                android:text="Thời gian"/>
-            <TextView
-                android:id="@+id/time_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textColor="#000000"
-                android:text="49 hour"
-                android:drawableLeft="@drawable/time_icon"/>
-        </LinearLayout>
-    </LinearLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

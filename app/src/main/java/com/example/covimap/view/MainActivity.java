@@ -19,7 +19,6 @@ public class MainActivity extends FragmentActivity {
     private HistoryJourneyActivity historyJourneyActivity;
     private DiscoverActivity discoverActivity;
     private PersonalActivity personalActivity;
-
     private Fragment currentFragment;
 
 //    private boolean stateDestroy;
