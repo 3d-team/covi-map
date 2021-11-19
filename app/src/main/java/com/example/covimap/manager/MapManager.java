@@ -13,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -32,8 +33,8 @@ import lombok.NoArgsConstructor;
 public class MapManager implements OnMapReadyCallback {
     private GoogleMap map;
 
-    public void addMarker(CLocation location, String title) {
-        map.addMarker(new MarkerOptions().position(location.toLatLng()).title(title));
+    public Marker addMarker(CLocation location, String title) {
+        return map.addMarker(new MarkerOptions().position(location.toLatLng()).title(title));
     }
 
     public void moveCamera(CLocation location) {

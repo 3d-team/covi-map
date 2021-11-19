@@ -9,12 +9,15 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -30,16 +33,24 @@ import com.example.covimap.config.Config;
 import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Route;
+import com.example.covimap.repository.RouteRepository;
 import com.example.covimap.service.LocationService;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 
 import butterknife.BindView;
 
@@ -52,12 +63,18 @@ public class NewRecordActivity extends Fragment {
 
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
-    private TextView timeTextView;
+    private Chronometer timeTextView;
     private Button stopRecordBtn;
     private Button recordBtn;
     private Button saveRecordBtn;
 
+    private Marker currentMarker = null;
+    private List<CLocation> path = new ArrayList<>();
     private CLocation lastLocation;
+    private double distance = 0;
+    private String createdTime = "";
+    private long PauseOffSet = 0;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
 
     @Nullable
     @Override
@@ -114,14 +131,25 @@ public class NewRecordActivity extends Fragment {
                             intent.getDoubleExtra("latitude", 0f),
                             intent.getDoubleExtra("longitude", 0f));
 
-                    if (lastLocation != null) {
-                        mapManager.drawRoute(lastLocation, currentLocation);
+                    if(statusRecord == StatusRecord.RUNNING){
+                        if (lastLocation != null) {
+                            currentMarker.remove();
+                            mapManager.drawRoute(lastLocation, currentLocation);
+                            distance += CLocation.getDistance(lastLocation, currentLocation);
+                            distanceTextView.setText(String.format("%.2f km", distance));
+                        }
+                        lastLocation = currentLocation;
+                        currentMarker = mapManager.addMarker(currentLocation, "Here");
+                        mapManager.animateCamera(currentLocation);
+                        path.add(lastLocation);
+                    }else{
+                        if (lastLocation != null) {
+                            currentMarker.remove();
+                        }
+                        lastLocation = currentLocation;
+                        currentMarker = mapManager.addMarker(currentLocation, "Here");
+                        mapManager.animateCamera(currentLocation);
                     }
-                    lastLocation = currentLocation;
-                    mapManager.addMarker(currentLocation, "Here");
-                    mapManager.animateCamera(currentLocation);
-
-//                    Toast.makeText(context, "Location: " + currentLocation, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -150,7 +178,7 @@ public class NewRecordActivity extends Fragment {
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if(main != null) {
+            if (main !=null){
                 requestCurrentLocation();
             }
         }
@@ -163,16 +191,27 @@ public class NewRecordActivity extends Fragment {
                 case NOT_START:
                     break;
                 case RUNNING:
+                    timeTextView.setBase(SystemClock.elapsedRealtime());
+                    PauseOffSet = 0;
+                    distance = 0;
+                    timeTextView.stop();
+
                     statusRecord = StatusRecord.NOT_START;
                     recordBtn.setText("Record");
                     break;
                 case PAUSED:
+                    timeTextView.setBase(SystemClock.elapsedRealtime());
+                    PauseOffSet = 0;
+                    distance = 0;
+                    timeTextView.stop();
+
                     statusRecord = StatusRecord.NOT_START;
                     recordBtn.setText("Record");
                     break;
             }
         }
     };
+
     //Listener for recordBtn
     private enum StatusRecord{
         NOT_START, RUNNING, PAUSED
@@ -183,16 +222,27 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             switch (statusRecord){
                 case NOT_START:
+                    requestCurrentLocation();
+                    timeTextView.setBase(SystemClock.elapsedRealtime()-PauseOffSet);
+                    timeTextView.start();
+                    createdTime = sdf.format(Calendar.getInstance().getTime());
+
                     stopRecordBtn.setVisibility(View.VISIBLE);
                     saveRecordBtn.setVisibility(View.VISIBLE);
                     statusRecord = StatusRecord.RUNNING;
                     recordBtn.setText("Pause");
                     break;
                 case RUNNING:
+                    timeTextView.stop();
+                    PauseOffSet = SystemClock.elapsedRealtime() - timeTextView.getBase();
+
                     statusRecord = StatusRecord.PAUSED;
                     recordBtn.setText("Resume");
                     break;
                 case PAUSED:
+                    timeTextView.setBase(SystemClock.elapsedRealtime()-PauseOffSet);
+                    timeTextView.start();
+
                     statusRecord = StatusRecord.RUNNING;
                     recordBtn.setText("Pause");
                     break;
@@ -203,14 +253,28 @@ public class NewRecordActivity extends Fragment {
     private View.OnClickListener saveRecordBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
+            String period = timeTextView.getText().toString();
+            Route route = new Route(path, period, distance, createdTime, 1234);
+            RouteRepository routeRepository = new RouteRepository();
+            routeRepository.add(route);
 
+            Toast.makeText(context, "Time :" + period + ", Distance: " + String.format("%.2f km",distance) + "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();
+            path.removeAll(path);
+            mapManager.reset();
+            statusRecord = StatusRecord.NOT_START;
+            recordBtn.setText("Record");
+            timeTextView.setBase(SystemClock.elapsedRealtime());
+            distanceTextView.setText("0.00 km");
+            PauseOffSet = 0;
+            timeTextView.stop();
+            distance = 0;
         }
     };
 
     //Prepare for UI
     public void prepareWidget(){
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
-        timeTextView = (TextView) view.findViewById(R.id.time_text_view);
+        timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
 
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
         stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);

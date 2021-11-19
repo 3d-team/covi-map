@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         System.out.println(facility.getUuid());
 
         List<CLocation> path = Arrays.asList(new CLocation(1, 2));
-        Route route = new Route(path, "123", "12-01 04:02:01", 123);
+        Route route = new Route(path, "123",10, "12-01 04:02:01", 123);
         RouteRepository routeRepository = new RouteRepository();
         routeRepository.add(route);
         System.out.println(route.getUuid());

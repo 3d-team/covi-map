@@ -14,6 +14,7 @@ import lombok.Setter;
 public class Route extends Identity {
     private List<CLocation> path;
     private String period;
+    private double distance;
     private String createdDay;
     private long userId;
 }
