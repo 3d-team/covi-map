@@ -11,4 +11,43 @@
     <string name="username">Username</string>
     <string name="register">Register</string>
     <string name="back_to_login">Back to Login</string>
+
+    <!-- For personal page   -->
+    <string name="vaccine_green_title">Vaccine Green Card</string>
+    <string name="menu_record_title">Record</string>
+    <string name="menu_direct_title">Wayfinding</string>
+    <string name="menu_history_title">Routes History</string>
+    <string name="menu_dicover_title">Discover</string>
+    <string name="menu_personal_tilte">Personal</string>
+    <string name="distance_title">" Distance:  "</string>
+    <string name="period_title">" Period:  "</string>
+    <string name="record_button">Record</string>
+    <string name="paused_button">Paused</string>
+    <string name="resume_button">Resume</string>
+    <string name="save_button">Save</string>
+    <string name="start_point_hint">Starting location</string>
+    <string name="end_point_hint">Ending location</string>
+    <string name="start_date_title">Start date</string>
+    <string name="end_date_title">End date</string>
+    <string name="start_title">" Start:  "</string>
+    <string name="end_title">" End:  "</string>
+    <string name="find_location_hint">Search location</string>
+    <string name="grocery_store_title">Grocery store</string>
+    <string name="hospital_title">Hospital</string>
+    <string name="school_title">School</string>
+    <string name="coffee_title">Coffee</string>
+    <string name="bank_title">Bank</string>
+    <string name="post_office_title">Post office</string>
+    <string name="airport_title">Airport</string>
+    <string name="vaccine_green_status">Completed 2 doses of vaccine</string>
+    <string name="vaccine_yellow_status">Just one dose of vaccine</string>
+    <string name="vaccine_red_status">No dose yet</string>
+    <string name="vaccine_yellow_title">Vaccine Yellow Card</string>
+    <string name="vaccine_red_title">Vaccine Red Card</string>
+    <string name="fullname_title">"  Fullname"</string>
+    <string name="birthday_title">"  Date born"</string>
+    <string name="vi_title">Vietnamese</string>
+    <string name="en_title">English</string>
+    <string name="update_info_button">Update info</string>
+    <string name="mess_change_language">You need to open CoviApp again!</string>
 </resources>

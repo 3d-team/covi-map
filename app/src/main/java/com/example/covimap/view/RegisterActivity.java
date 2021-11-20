@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class RegisterActivity extends AppCompatActivity {
-
     EditText editTextUserName;
     EditText editTextEmail;
     EditText editTextPassword;

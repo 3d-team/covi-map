@@ -53,7 +53,6 @@ public class NewRecordActivity extends Fragment {
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
     private TextView timeTextView;
-    private Button stopRecordBtn;
     private Button recordBtn;
     private Button saveRecordBtn;
 
@@ -155,24 +154,7 @@ public class NewRecordActivity extends Fragment {
             }
         }
     };
-    //Listener for stopRecordBtn
-    private View.OnClickListener stopRecordBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            switch (statusRecord){
-                case NOT_START:
-                    break;
-                case RUNNING:
-                    statusRecord = StatusRecord.NOT_START;
-                    recordBtn.setText("Record");
-                    break;
-                case PAUSED:
-                    statusRecord = StatusRecord.NOT_START;
-                    recordBtn.setText("Record");
-                    break;
-            }
-        }
-    };
+
     //Listener for recordBtn
     private enum StatusRecord{
         NOT_START, RUNNING, PAUSED
@@ -183,27 +165,41 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             switch (statusRecord){
                 case NOT_START:
-                    stopRecordBtn.setVisibility(View.VISIBLE);
+//                    stopRecordBtn.setVisibility(View.VISIBLE);
                     saveRecordBtn.setVisibility(View.VISIBLE);
                     statusRecord = StatusRecord.RUNNING;
-                    recordBtn.setText("Pause");
+                    recordBtn.setText(R.string.paused_button);
                     break;
                 case RUNNING:
                     statusRecord = StatusRecord.PAUSED;
-                    recordBtn.setText("Resume");
+                    recordBtn.setText(R.string.resume_button);
                     break;
                 case PAUSED:
                     statusRecord = StatusRecord.RUNNING;
-                    recordBtn.setText("Pause");
+                    recordBtn.setText(R.string.paused_button);
                     break;
             }
         }
     };
+
     //Listener for saveRecordBtn
     private View.OnClickListener saveRecordBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-
+            switch (statusRecord){
+                case NOT_START:
+                    break;
+                case RUNNING:
+                    statusRecord = StatusRecord.NOT_START;
+                    recordBtn.setText(R.string.record_button);
+                    saveRecordBtn.setVisibility(View.GONE);
+                    break;
+                case PAUSED:
+                    statusRecord = StatusRecord.NOT_START;
+                    recordBtn.setText(R.string.record_button);
+                    saveRecordBtn.setVisibility(View.GONE);
+                    break;
+            }
         }
     };
 
@@ -213,12 +209,10 @@ public class NewRecordActivity extends Fragment {
         timeTextView = (TextView) view.findViewById(R.id.time_text_view);
 
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
-        stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);
         recordBtn = (Button) view.findViewById(R.id.record_btn);
         saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
 
         locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
-        stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
     }

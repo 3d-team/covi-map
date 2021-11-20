@@ -13,12 +13,12 @@
             android:padding="10dp"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:background="#06F010"
+            android:background="@color/green_vaccine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="5">
             <TextView
-                android:text="Thẻ xanh chó dại"
+                android:text="@string/vaccine_green_title"
                 android:textAlignment="center"
                 android:textSize="24dp"
                 android:textColor="@color/black"
@@ -32,11 +32,11 @@
                 android:layout_width="180dp"
                 android:layout_height="150dp"
                 android:layout_weight="2"
-                android:tooltipText="Hinh anh minh hoa"
+                android:tooltipText="QR minh họa"
                 android:background="@drawable/radius_layout_custom"/>
             <TextView
                 android:layout_marginTop="16dp"
-                android:text="Đã tiêm đủ 2 mũi ngừa chó dại"
+                android:text="@string/vaccine_green_status"
                 android:textAlignment="center"
                 android:textSize="20dp"
                 android:textColor="@color/black"
@@ -57,45 +57,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="16dp"
-                android:text=" Họ và tên"
+                android:textSize="16sp"
+                android:text="@string/fullname_title"
                 android:drawableStart="@drawable/person_icon"/>
             <TextView
                 android:layout_marginLeft="28dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="18dp"
-                android:text="American Bully"/>
+                android:textSize="18sp"
+                android:text="Nguyễn Văn A"/>
 
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="16dp"
-                android:text=" Ngày sinh"
+                android:textSize="16sp"
+                android:text="@string/birthday_title"
                 android:drawableStart="@drawable/birthday_icon"/>
             <TextView
                 android:layout_marginLeft="28dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="18dp"
-                android:text="09/09/2019"/>
+                android:textSize="18sp"
+                android:text="09/09/2001"/>
 
             <RadioGroup
                 android:layout_marginTop="4dp"
-                android:id="@+id/place_option"
+                android:id="@+id/language_option"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:layout_height="35dp">
                 <RadioButton
-                    android:id="@+id/store_radiobutton"
+                    android:id="@+id/vietnamese_radiobutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tiếng Việt"
+                    android:text="@string/vi_title"
                     android:button="@drawable/radio_vietnamese_custom"
                     android:textColor="@drawable/color_state_radio_button"
                     android:background="@drawable/radio_background_custom"
@@ -103,10 +103,10 @@
                     android:checked="true"/>
 
                 <RadioButton
-                    android:id="@+id/hospital_radiobutton"
+                    android:id="@+id/english_radiobutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="English"
+                    android:text="@string/en_title"
                     android:button="@drawable/radio_english_custom"
                     android:textColor="@drawable/color_state_radio_button"
                     android:background="@drawable/radio_background_custom"
@@ -124,7 +124,7 @@
         android:layout_centerInParent="true"
         android:background="@drawable/update_button_custom"
         android:textAllCaps="false"
-        android:text="Cập nhật thẻ thông hành"
+        android:text="@string/update_info_button"
         android:textSize="16dp"/>
 
     <ImageButton

@@ -2,27 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/nav_new_record"
-        android:title="Ghi"
+        android:title="@string/menu_record_title"
         android:icon="@drawable/new_record_icon"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/nav_direct_location"
-        android:title="Chỉ đường"
+        android:title="@string/menu_direct_title"
         android:icon="@drawable/map_search_icon"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/nav_history_record"
-        android:title="Lịch sử"
+        android:title="@string/menu_history_title"
         android:icon="@drawable/history_record_icon"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/nav_discover"
-        android:title="Khám phá"
+        android:title="@string/menu_dicover_title"
         android:icon="@drawable/services_icon"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/nav_peronal"
-        android:title="Cá nhân"
+        android:title="@string/menu_personal_tilte"
         android:icon="@drawable/person_icon"
         app:showAsAction="ifRoom"/>
 </menu>
