@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             textInputLayoutEmail.setError(null);
             textInputLayoutPassword.setError(null);
         }
-
         return true;
     }
 

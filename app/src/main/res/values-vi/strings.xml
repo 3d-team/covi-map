@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">CoviMap</string>
+    <string name="map_api_key">AIzaSyDE1hSjk381yOSSqnR9khTVsNdg9A83tYE</string>
+    <string name="direction_api_key">AIzaSyDw0fKWP-VzEX911Qd1PQ4llSrejuydED0</string>
+    <string name="create_account">
+        <font color="#00ff00">text</font>
+    </string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="login">Đăng nhập</string>
+    <string name="username">Tên người dùng</string>
+    <string name="register">Đăng ký</string>
+    <string name="back_to_login">Trở về trang đăng nhập</string>
+
+    <!-- For personal page   -->
+    <string name="vaccine_green_title">Thẻ xanh covid</string>
+    <string name="menu_record_title">Ghi</string>
+    <string name="menu_direct_title">Tìm đường</string>
+    <string name="menu_history_title">Lịch sử hành trình</string>
+    <string name="menu_dicover_title">Khám phá</string>
+    <string name="menu_personal_tilte">Cá nhân</string>
+    <string name="distance_title">" Quảng đường:  "</string>
+    <string name="record_button">Ghi</string>
+    <string name="paused_button">Tạm dừng</string>
+    <string name="period_title">" Thời gian:  "</string>
+    <string name="resume_button">Tiếp tục</string>
+    <string name="save_button">Lưu</string>
+    <string name="start_point_hint">Điểm bắt đầu</string>
+    <string name="end_point_hint">Điểm kết thúc</string>
+    <string name="start_date_title">Ngày bắt đầu</string>
+    <string name="end_date_title">Ngày kết thúc</string>
+    <string name="start_title">" Bắt đầu:  "</string>
+    <string name="end_title">" Kết thúc:  "</string>
+    <string name="find_location_hint">Tìm kiếm địa điểm</string>
+    <string name="grocery_store_title">Cửa hàng tiện lợi</string>
+    <string name="hospital_title">Bệnh viện</string>
+    <string name="school_title">Trường học</string>
+    <string name="coffee_title">Quán cà phê</string>
+    <string name="bank_title">Ngân hàng</string>
+    <string name="post_office_title">Bưu điện</string>
+    <string name="airport_title">Sân bay</string>
+    <string name="vaccine_green_status">Đã tiêm đủ 2 liều vaccine</string>
+    <string name="vaccine_yellow_status">Chỉ mới tiêm 1 liều vaccine</string>
+    <string name="vaccine_red_status">Chưa tiêm liều nào</string>
+    <string name="vaccine_yellow_title">Thẻ vàng covid</string>
+    <string name="vaccine_red_title">Thẻ đỏ covid</string>
+    <string name="fullname_title">"  Họ và tên"</string>
+    <string name="birthday_title">"  Ngày sinh"</string>
+    <string name="vi_title">Tiếng Việt</string>
+    <string name="en_title">Tiếng Anh</string>
+    <string name="update_info_button">Cập nhật thông tin</string>
+    <string name="mess_change_language">Bạn cần khởi động lại CoviApp!</string>
+</resources>

@@ -26,6 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="16dp"
                 android:src="@drawable/run_circle_icon"
+                app:tint="@color/main_theme_color"
                 android:contentDescription="@string/register"/>
 
             <TextView
@@ -33,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/register"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/main_theme_color"
                 android:textSize="18pt" />
         </LinearLayout>
 
@@ -74,7 +75,7 @@
             android:layout_marginTop="8dp"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/colorAccent">
+            app:passwordToggleTint="@color/main_theme_color">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword"
@@ -92,7 +93,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
-            android:background="@color/colorAccent"
+            android:background="@color/main_theme_color"
             android:text="@string/register" />
 
         <TextView

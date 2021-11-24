@@ -64,7 +64,6 @@ public class NewRecordActivity extends Fragment {
     private FloatingActionButton locateCurrentBtn;
     private TextView distanceTextView;
     private Chronometer timeTextView;
-    private Button stopRecordBtn;
     private Button recordBtn;
     private Button saveRecordBtn;
 
@@ -178,36 +177,8 @@ public class NewRecordActivity extends Fragment {
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if (main !=null){
+            if(main != null) {
                 requestCurrentLocation();
-            }
-        }
-    };
-    //Listener for stopRecordBtn
-    private View.OnClickListener stopRecordBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            switch (statusRecord){
-                case NOT_START:
-                    break;
-                case RUNNING:
-                    timeTextView.setBase(SystemClock.elapsedRealtime());
-                    PauseOffSet = 0;
-                    distance = 0;
-                    timeTextView.stop();
-
-                    statusRecord = StatusRecord.NOT_START;
-                    recordBtn.setText("Record");
-                    break;
-                case PAUSED:
-                    timeTextView.setBase(SystemClock.elapsedRealtime());
-                    PauseOffSet = 0;
-                    distance = 0;
-                    timeTextView.stop();
-
-                    statusRecord = StatusRecord.NOT_START;
-                    recordBtn.setText("Record");
-                    break;
             }
         }
     };
@@ -222,29 +193,29 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             switch (statusRecord){
                 case NOT_START:
+//                    stopRecordBtn.setVisibility(View.VISIBLE);
                     requestCurrentLocation();
                     timeTextView.setBase(SystemClock.elapsedRealtime()-PauseOffSet);
                     timeTextView.start();
                     createdTime = sdf.format(Calendar.getInstance().getTime());
 
-                    stopRecordBtn.setVisibility(View.VISIBLE);
                     saveRecordBtn.setVisibility(View.VISIBLE);
                     statusRecord = StatusRecord.RUNNING;
-                    recordBtn.setText("Pause");
+                    recordBtn.setText(R.string.paused_button);
                     break;
                 case RUNNING:
                     timeTextView.stop();
                     PauseOffSet = SystemClock.elapsedRealtime() - timeTextView.getBase();
 
                     statusRecord = StatusRecord.PAUSED;
-                    recordBtn.setText("Resume");
+                    recordBtn.setText(R.string.resume_button);
                     break;
                 case PAUSED:
                     timeTextView.setBase(SystemClock.elapsedRealtime()-PauseOffSet);
                     timeTextView.start();
 
                     statusRecord = StatusRecord.RUNNING;
-                    recordBtn.setText("Pause");
+                    recordBtn.setText(R.string.paused_button);
                     break;
             }
         }
@@ -277,12 +248,10 @@ public class NewRecordActivity extends Fragment {
         timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
 
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
-        stopRecordBtn = (Button) view.findViewById(R.id.stop_record_btn);
         recordBtn = (Button) view.findViewById(R.id.record_btn);
         saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
 
         locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
-        stopRecordBtn.setOnClickListener(stopRecordBtnListener);
         recordBtn.setOnClickListener(recordBtnListener);
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
     }

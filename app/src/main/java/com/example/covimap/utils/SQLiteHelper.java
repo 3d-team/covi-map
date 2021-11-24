@@ -12,6 +12,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "covimap";
     public static final int DATABASE_VERSION = 1;
+
     public static final String TABLE_USERS = "users";
     public static final String KEY_ID = "id";
     public static final String KEY_USER_NAME = "username";
@@ -33,6 +34,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_TABLE_USERS);
+        sqLiteDatabase.execSQL(SQL_TABLE_STATUS_APP);
+
     }
 
     @Override
@@ -85,4 +88,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         return false;
     }
+    public static final String TABLE_STATUS_APP = "status_app";
+    public static final String STATUS_APP_ID = "app_id";
+    public static final String STATUS_APP_LANGUAGE = "language";
+    public static final String SQL_TABLE_STATUS_APP = "create table if not exists " + TABLE_STATUS_APP + "(" +
+            STATUS_APP_ID + "primary key," +
+            STATUS_APP_LANGUAGE + ");";
+
+
 }
