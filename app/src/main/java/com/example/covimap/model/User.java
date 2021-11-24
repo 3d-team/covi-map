@@ -12,6 +12,7 @@ public class User {
     private String password;
 //    private String birthday;
 
+
     public boolean matchedPassword(User user) {
         return this.password.equals(user.getPassword());
     }

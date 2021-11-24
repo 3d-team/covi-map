@@ -23,6 +23,7 @@ import com.example.covimap.R;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;

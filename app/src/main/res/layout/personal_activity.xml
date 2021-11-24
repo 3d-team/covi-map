@@ -116,6 +116,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/update_info_button"
         android:drawableStart="@drawable/update_icon_custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -125,7 +126,7 @@
         android:background="@drawable/update_button_custom"
         android:textAllCaps="false"
         android:text="@string/update_info_button"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 
     <ImageButton
         android:layout_alignParentBottom="true"

@@ -12,7 +12,7 @@ import com.example.covimap.R;
 import java.util.List;
 
 public class RouteAdapter extends BaseAdapter {
-    public class ViewHolder{
+    private class ViewHolder{
         private TextView createdDayTextView;
         private TextView startLocationTextView;
         private TextView endLocationTextView;
@@ -49,7 +49,6 @@ public class RouteAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if(view == null){
-            // LayoutInflater để đọc cái file XML xong biến nó thành layout show lên đó m tml =))
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(layout, null);
             holder = new ViewHolder();
@@ -61,7 +60,6 @@ public class RouteAdapter extends BaseAdapter {
             holder.distanceTextVew = (TextView) view.findViewById(R.id.distance_text_view_item);
             holder.periodTextView = (TextView) view.findViewById(R.id.period_text_view_item);
             view.setTag(holder);
-
         }
         else {
             holder = (ViewHolder) view.getTag();

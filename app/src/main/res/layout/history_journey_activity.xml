@@ -61,8 +61,6 @@
 
 
     <ListView
-        android:clickable="true"
-        android:focusable="true"
         android:id="@+id/history_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

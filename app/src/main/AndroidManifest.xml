@@ -35,6 +35,7 @@
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
         </activity>
+
         <activity
             android:name=".view.MainActivity"
             android:exported="true">
@@ -44,6 +45,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".view.RenderHistoryItemActivity"  android:theme="@style/RenderMapDialog" >
+        </activity>
 <!--        <activity-->
 <!--            android:name=".view.MainActivity"-->
 <!--            android:exported="true">-->

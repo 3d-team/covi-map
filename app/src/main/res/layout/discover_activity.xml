@@ -137,5 +137,4 @@
         android:layout_gravity="center|right"
         android:backgroundTint="#EDEDF1"
         app:fabSize="mini"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,12 +3,14 @@ package com.example.covimap.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -32,6 +34,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private RadioGroup languageOptionRG;
     private RadioButton vi_button;
     private RadioButton en_button;
+    private Button updateButton;
 
     @Nullable
     @Override
@@ -39,8 +42,11 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         view = inflater.inflate(R.layout.personal_activity, null);
 
         languageOptionRG = view.findViewById(R.id.language_option);
-        vi_button = view.findViewById(R.id.vietnamese_radiobutton);
-        en_button = view.findViewById(R.id.english_radiobutton);
+        vi_button = (RadioButton) view.findViewById(R.id.vietnamese_radiobutton);
+        en_button = (RadioButton) view.findViewById(R.id.english_radiobutton);
+
+        updateButton = (Button) view.findViewById(R.id.update_info_button);
+        updateButton.setOnClickListener(updateButtonOnclick);
 
         languageOptionRG.clearCheck();
         if(createStatus.getLanguage().equals(LanguageConfig.VI)){
@@ -94,6 +100,13 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
                         }
                     })
                     .show();
+        }
+    };
+
+    private View.OnClickListener updateButtonOnclick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
         }
     };
 
