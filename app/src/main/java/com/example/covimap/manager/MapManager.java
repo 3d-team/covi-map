@@ -15,6 +15,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
@@ -45,12 +47,27 @@ public class MapManager implements OnMapReadyCallback {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), MapConfig.ZOOM));
     }
 
+    public void animateCamera(CLocation location, int zoom) {
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), zoom));
+    }
+
     public void drawRoute(CLocation start, CLocation end) {
         PolylineOptions lineOptions = new PolylineOptions();
         lineOptions.add(start.toLatLng(), end.toLatLng());
         lineOptions.width(15);
         lineOptions.color(Color.RED);
         map.addPolyline(lineOptions);
+    }
+
+    public void fillArea(ArrayList<CLocation> bounds, String color){
+        PolygonOptions polygonOptions = new PolygonOptions();
+        for(CLocation c:bounds){
+            polygonOptions.add(c.toLatLng());
+        }
+        polygonOptions.strokeWidth(2);
+        polygonOptions.strokeColor(Color.parseColor(color));
+        polygonOptions.fillColor(Color.parseColor(color));
+        map.addPolygon(polygonOptions);
     }
 
     public void findRouteBetweenTwoLocations(CLocation start, CLocation end, DirectionMode mode) {
@@ -81,7 +98,6 @@ public class MapManager implements OnMapReadyCallback {
 
             return data;
         }
-
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);

@@ -33,6 +33,7 @@ import com.example.covimap.config.Config;
 import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
+import com.example.covimap.model.DataRenderRoute;
 import com.example.covimap.model.Route;
 import com.example.covimap.repository.RouteRepository;
 import com.example.covimap.service.LocationService;
@@ -82,7 +83,6 @@ public class NewRecordActivity extends Fragment {
             view = (View)inflater.inflate(R.layout.new_record_activity, null);
             prepareWidget();
 
-            //requestCurrentLocation();
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
             mapManager = new MapManager();
             mapFragment.getMapAsync(mapManager);
@@ -94,17 +94,11 @@ public class NewRecordActivity extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try{
             context = getActivity();
             main = (MainActivity) getActivity();
-
         }
         catch (IllegalStateException e){
             throw new IllegalStateException("Error");
@@ -152,7 +146,6 @@ public class NewRecordActivity extends Fragment {
                 }
             }
         };
-
         main.registerReceiver(locationReceiver, new IntentFilter("CURRENT_LOCATION"));
     }
 
@@ -179,6 +172,10 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             if(main != null) {
                 requestCurrentLocation();
+//                DataRenderRoute dataRenderRoute = new DataRenderRoute();
+//                ArrayList<CLocation> locations = dataRenderRoute.getData();
+//                mapManager.animateCamera(locations.get(0));
+//                mapManager.fillArea(locations, "#2500C277");
             }
         }
     };
@@ -193,7 +190,6 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             switch (statusRecord){
                 case NOT_START:
-//                    stopRecordBtn.setVisibility(View.VISIBLE);
                     requestCurrentLocation();
                     timeTextView.setBase(SystemClock.elapsedRealtime()-PauseOffSet);
                     timeTextView.start();

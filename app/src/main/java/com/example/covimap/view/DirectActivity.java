@@ -55,16 +55,12 @@ public class DirectActivity extends Fragment {
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.direct_ggmap_api);
             mapManager = new MapManager();
             mapFragment.getMapAsync(mapManager);
+            CLocation cLocation = new CLocation(60,60);
         }
         catch (InflateException e){
             Log.e("NEW RECORD ERROR", "onCreateView", e);
         }
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     @Override
@@ -79,21 +75,6 @@ public class DirectActivity extends Fragment {
         }
     }
 
-    private void registerLocationReceiver() {
-        BroadcastReceiver locationReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("CURRENT_LOCATION")) {
-                    CLocation currentLocation = new CLocation(
-                            intent.getDoubleExtra("latitude", 0f),
-                            intent.getDoubleExtra("longitude", 0f));
-
-                    mapManager.addMarker(currentLocation, "Here");
-                    mapManager.animateCamera(currentLocation);
-                }
-            }
-        };
-    }
 
     //Listener for searchLocationBtn
     private View.OnClickListener searchLocationBtnListener = new View.OnClickListener(){
@@ -105,7 +86,7 @@ public class DirectActivity extends Fragment {
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            registerLocationReceiver();
+
         }
     };
 

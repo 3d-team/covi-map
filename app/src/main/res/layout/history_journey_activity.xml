@@ -27,8 +27,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:textSize="22dp"
+                android:focusable="false"
                 android:textColor="@color/main_theme_color"
-                android:hint="01/01/2021"
+                android:hint="dd/MM/yy"
                 android:drawableStart="@drawable/calendar_icon"
                 android:background="@drawable/day_chooser_edit_custom"/>
         </LinearLayout>
@@ -50,8 +51,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:textSize="22dp"
+                android:focusable="false"
                 android:textColor="@color/main_theme_color"
-                android:hint="01/01/2021"
+                android:hint="dd/MM/yy"
                 android:drawableStart="@drawable/calendar_icon"
                 android:background="@drawable/day_chooser_edit_custom"/>
         </LinearLayout>

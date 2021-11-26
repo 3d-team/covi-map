@@ -1,11 +1,14 @@
 package com.example.covimap.model;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +20,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CLocation extends Identity {
+public class CLocation extends Identity implements Serializable {
     private double latitude;
     private double longitude;
 
@@ -56,4 +59,5 @@ public class CLocation extends Identity {
 
         return (double) Math.round(valueResult*100)/100;
     }
+
 }
