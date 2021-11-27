@@ -16,9 +16,9 @@
         android:icon="@drawable/history_record_icon"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/nav_discover"
-        android:title="@string/menu_dicover_title"
-        android:icon="@drawable/services_icon"
+    <item android:id="@+id/nav_epidemic_zone"
+        android:title="@string/menu_epidemiczone_title"
+        android:icon="@drawable/coronavirus_icon"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/nav_peronal"

@@ -166,7 +166,6 @@ public class NewRecordActivity extends Fragment {
         }
     }
 
-    //Listener for locateCurrentbtn
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
@@ -180,7 +179,6 @@ public class NewRecordActivity extends Fragment {
         }
     };
 
-    //Listener for recordBtn
     private enum StatusRecord{
         NOT_START, RUNNING, PAUSED
     }
@@ -216,7 +214,7 @@ public class NewRecordActivity extends Fragment {
             }
         }
     };
-    //Listener for saveRecordBtn
+
     private View.OnClickListener saveRecordBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
@@ -238,7 +236,6 @@ public class NewRecordActivity extends Fragment {
         }
     };
 
-    //Prepare for UI
     public void prepareWidget(){
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
         timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);

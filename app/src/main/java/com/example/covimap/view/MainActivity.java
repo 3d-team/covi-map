@@ -31,7 +31,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     private NewRecordActivity newRecordActivity;
     private DirectActivity directActivity;
     private HistoryJourneyActivity historyJourneyActivity;
-    private DiscoverActivity discoverActivity;
+//    private DiscoverActivity discoverActivity;
+    private EpidemicZoneActivity epidemicZoneActivity;
     private PersonalActivity personalActivity;
     private Fragment currentFragment;
 
@@ -48,7 +49,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         newRecordActivity = new NewRecordActivity();
         directActivity = new DirectActivity();
         historyJourneyActivity = new HistoryJourneyActivity();
-        discoverActivity = new DiscoverActivity();
+//        discoverActivity = new DiscoverActivity();
+        epidemicZoneActivity = new EpidemicZoneActivity();
         personalActivity = new PersonalActivity();
 
 
@@ -68,8 +70,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     case R.id.nav_history_record:
                         currentFragment = historyJourneyActivity;
                         break;
-                    case R.id.nav_discover:
-                        currentFragment = discoverActivity;
+                    case R.id.nav_epidemic_zone:
+                        currentFragment = epidemicZoneActivity;
                         break;
                     case R.id.nav_peronal:
                         personalActivity.setStatus(appStatus);

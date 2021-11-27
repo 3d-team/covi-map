@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/bottom_sheet_icon"
+        android:src="@drawable/zoom_out_icon"
         app:layout_constraintStart_toStartOf="parent"/>
     <TextView
         android:layout_width="match_parent"

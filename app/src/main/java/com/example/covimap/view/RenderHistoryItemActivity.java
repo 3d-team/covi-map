@@ -35,21 +35,34 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.android.data.geojson.GeoJsonPolygonStyle;
+import com.google.maps.android.data.kml.KmlContainer;
+import com.google.maps.android.data.kml.KmlLayer;
+import com.google.maps.android.data.kml.KmlPlacemark;
+import com.google.maps.android.data.kml.KmlPolygon;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.xml.transform.stream.StreamSource;
 
 public class RenderHistoryItemActivity extends Activity implements OnMapReadyCallback {
-    private MapManager mapManager;
     private FloatingActionButton closeBtn;
     private TextView createdDateTV;
     private TextView distanceTextView;
     private TextView periodTextView;
-    private CLocation currentLocation;
     private ArrayList<CLocation> routes;
     private PolylineOptions polylineOptions;
     private PolygonOptions polygonOptions;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +91,7 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
         routes = (ArrayList<CLocation>) args.getSerializable("DATA-ROUTE");
         polylineOptions = new PolylineOptions();
         polygonOptions = new PolygonOptions();
-        for(CLocation c : routes){
+        for (CLocation c : routes) {
             polylineOptions.add(c.toLatLng());
             polygonOptions.add(c.toLatLng());
         }
@@ -88,7 +101,7 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         googleMap.addPolyline(polylineOptions.width(1).color(Color.parseColor("#00C277")));
-        googleMap.addPolygon(polygonOptions.strokeWidth(3).strokeColor(Color.RED).fillColor(Color.argb(50, 255,0,0)));
+        googleMap.addPolygon(polygonOptions.strokeWidth(3).strokeColor(Color.RED).fillColor(Color.argb(50, 255, 0, 0)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.get(0).toLatLng(), MapConfig.ZOOM_CITY));
     }
 }

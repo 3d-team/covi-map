@@ -50,4 +50,19 @@
     <string name="en_title">Tiếng Anh</string>
     <string name="update_info_button">Cập nhật thông tin</string>
     <string name="mess_change_language">Bạn cần khởi động lại CoviApp!</string>
+    <string name="province_button_text">T</string>
+    <string name="district_button_text">H</string>
+    <string name="ward_button_text">X</string>
+    <string name="province_button_hint">Tỉnh thành</string>
+    <string name="district_button_hint">Quận, huyện</string>
+    <string name="ward_button_hint">Xã, phường</string>
+
+    <string name="epidemic_status_exmple"><p>Title</p><br/><i>Description here</i></string>
+    <string name="note_button_hint">Chú thích  </string>
+    <string name="red_zone_danger">Nguy cơ rất cao  </string>
+    <string name="orange_zone_danger">Nguy cơ cao  </string>
+    <string name="yellow_zone_danger">Nguy cơ trung bình  </string>
+    <string name="green_zone_danger">Nguy cơ thấp (bình thường mới)  </string>
+    <string name="gray_zone_danger">Chưa cập nhật  </string>
+    <string name="menu_epidemiczone_title">Vùng dịch</string>
 </resources>

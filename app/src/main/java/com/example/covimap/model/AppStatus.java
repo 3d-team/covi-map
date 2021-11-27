@@ -11,19 +11,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AppStatus implements Serializable {
     private String language;
 
     public AppStatus(){
         this.language = LanguageConfig.VI;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public void writeStatusToFile(FileOutputStream fileOutputStream){

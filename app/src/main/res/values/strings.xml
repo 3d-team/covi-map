@@ -50,4 +50,19 @@
     <string name="en_title">English</string>
     <string name="update_info_button">Update info</string>
     <string name="mess_change_language">You need to open CoviApp again!</string>
+    <string name="province_button_text">P</string>
+    <string name="district_button_text">D</string>
+    <string name="ward_button_text">W</string>
+    <string name="province_button_hint">Province</string>
+    <string name="district_button_hint">District</string>
+    <string name="ward_button_hint">Ward, commune</string>
+
+    <string name="epidemic_status_exmple"><b>Phú Yên</b><br/><i>Nguy cơ</i></string>
+    <string name="note_button_hint">Note</string>
+    <string name="red_zone_danger">Very high risk  </string>
+    <string name="orange_zone_danger">High risk  </string>
+    <string name="yellow_zone_danger">Moderate risk  </string>
+    <string name="green_zone_danger">Low risk (new normal)  </string>
+    <string name="gray_zone_danger">Not update  </string>
+    <string name="menu_epidemiczone_title">Epidemic Zone</string>
 </resources>
