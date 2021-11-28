@@ -57,7 +57,7 @@
     <string name="district_button_hint">Quận, huyện</string>
     <string name="ward_button_hint">Xã, phường</string>
 
-    <string name="epidemic_status_exmple"><p>Title</p><br/><i>Description here</i></string>
+    <string name="epidemic_status_exmple"><b>Phú Yên</b>\n<i>Nguy cơ</i></string>
     <string name="note_button_hint">Chú thích  </string>
     <string name="red_zone_danger">Nguy cơ rất cao  </string>
     <string name="orange_zone_danger">Nguy cơ cao  </string>

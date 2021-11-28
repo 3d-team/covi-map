@@ -1,10 +1,14 @@
 package com.example.covimap.view;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
@@ -41,9 +46,7 @@ public class DirectActivity extends Fragment {
 
     private SearchView searchDestLocationEdt;
     private TextView resultDestTextView;
-
     private FloatingActionButton locateCurrentBtn;
-    private CLocation currentLocation;
 
     @Nullable
     @Override
@@ -75,18 +78,18 @@ public class DirectActivity extends Fragment {
         }
     }
 
-
-    //Listener for searchLocationBtn
-    private View.OnClickListener searchLocationBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-        }
-    };
-    //Listener for locateCurrentbtn
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-
+            LocationManager locationManager = (LocationManager) main.getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            CLocation cLocation = new CLocation(location.getLatitude(), location.getLongitude());
+            mapManager.reset();
+            mapManager.animateCamera(cLocation);
+            mapManager.addMarker(cLocation, "");
         }
     };
 

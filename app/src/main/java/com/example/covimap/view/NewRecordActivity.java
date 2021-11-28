@@ -171,10 +171,6 @@ public class NewRecordActivity extends Fragment {
         public void onClick(View v) {
             if(main != null) {
                 requestCurrentLocation();
-//                DataRenderRoute dataRenderRoute = new DataRenderRoute();
-//                ArrayList<CLocation> locations = dataRenderRoute.getData();
-//                mapManager.animateCamera(locations.get(0));
-//                mapManager.fillArea(locations, "#2500C277");
             }
         }
     };
