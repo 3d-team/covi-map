@@ -41,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
 
         initViews();
         initEventButton();
-
         sqliteHelper = new SQLiteHelper(this);
 
         //testRepository();

@@ -13,6 +13,7 @@ public abstract class Repository<E extends Identity> {
         data.setUuid(uuid);
         mDatabase.child(uuid).setValue(data);
     }
+
     public void update(E data) {
         FirebaseDatabase.getInstance().getReference().child(field)
                 .child(data.getUuid()).setValue(data);
