@@ -37,12 +37,15 @@ import com.example.covimap.model.DataRenderRoute;
 import com.example.covimap.model.Route;
 import com.example.covimap.repository.RouteRepository;
 import com.example.covimap.service.LocationService;
+import com.example.covimap.service.NewRecordFragmentCallBacks;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -56,7 +59,8 @@ import java.util.Timer;
 import butterknife.BindView;
 
 
-public class NewRecordActivity extends Fragment {
+public class NewRecordActivity extends Fragment implements NewRecordFragmentCallBacks {
+    private String phoneNumber;
     private MapManager mapManager;
     private MainActivity main;
     private Context context;
@@ -74,7 +78,7 @@ public class NewRecordActivity extends Fragment {
     private double distance = 0;
     private String createdTime = "";
     private long PauseOffSet = 0;
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+    private SimpleDateFormat sdf = new SimpleDateFormat(Config.DATETIME_FORMAT, Locale.getDefault());
 
     @Nullable
     @Override
@@ -82,7 +86,6 @@ public class NewRecordActivity extends Fragment {
         try{
             view = (View)inflater.inflate(R.layout.new_record_activity, null);
             prepareWidget();
-
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
             mapManager = new MapManager();
             mapFragment.getMapAsync(mapManager);
@@ -114,6 +117,8 @@ public class NewRecordActivity extends Fragment {
             startLocationService();
         }
     }
+
+
 
     private void registerLocationReceiver() {
         BroadcastReceiver locationReceiver = new BroadcastReceiver() {
@@ -215,9 +220,11 @@ public class NewRecordActivity extends Fragment {
         @Override
         public void onClick(View v) {
             String period = timeTextView.getText().toString();
-            Route route = new Route(path, period, String.format("%.2f",distance), createdTime, 1234);
-            RouteRepository routeRepository = new RouteRepository();
-            routeRepository.add(route);
+            String startAdress = getAddress(path.get(0));
+            String endAddress = getAddress(path.get(path.size() - 1));
+            Route route = new Route(path, period, String.format("%.2f",distance), createdTime, startAdress, endAddress);
+            Log.d("MyLog", "NEW RECORD FRAGMENT--- " + phoneNumber);
+            Route.addToFireBase(phoneNumber, route);
 
             Toast.makeText(context, "Time :" + period + ", Distance: " + String.format("%.2f km",distance) + "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();
             path.removeAll(path);
@@ -232,6 +239,21 @@ public class NewRecordActivity extends Fragment {
         }
     };
 
+    public String getAddress(CLocation location) {
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            return obj.getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public void prepareWidget(){
         distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
         timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
@@ -245,4 +267,8 @@ public class NewRecordActivity extends Fragment {
         saveRecordBtn.setOnClickListener(saveRecordBtnListener);
     }
 
+    @Override
+    public void getPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

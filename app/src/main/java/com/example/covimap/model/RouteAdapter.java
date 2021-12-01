@@ -21,23 +21,23 @@ public class RouteAdapter extends BaseAdapter {
     }
 
     private Context context;
-    private List<Route> routes;
+    private List<RouteLabel> routeLabels;
     private int layout;
 
-    public RouteAdapter(Context context, int layout, List<Route> routes){
+    public RouteAdapter(Context context, int layout, List<RouteLabel> routeLabels){
         this.context = context;
         this.layout = layout;
-        this.routes = routes;
+        this.routeLabels = routeLabels;
     }
 
     @Override
     public int getCount() {
-        return this.routes.size();
+        return this.routeLabels.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return this.routes.get(i);
+        return this.routeLabels.get(i);
     }
 
     @Override
@@ -65,12 +65,12 @@ public class RouteAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         // assignment values
-        Route route = routes.get(i);
-        holder.createdDayTextView.setText(route.getCreatedDay());
-        holder.startLocationTextView.setText("Dak Lak");
-        holder.endLocationTextView.setText("Binh Dinh");
-        holder.distanceTextVew.setText(route.getDistance());
-        holder.periodTextView.setText(route.getPeriod());
+        RouteLabel routeLabel = routeLabels.get(i);
+        holder.createdDayTextView.setText(routeLabel.getCreatedDay());
+        holder.startLocationTextView.setText(routeLabel.getStartAddress());
+        holder.endLocationTextView.setText(routeLabel.getEndAddress());
+        holder.distanceTextVew.setText(routeLabel.getDistance());
+        holder.periodTextView.setText(routeLabel.getPeriod());
 
         return view;
     }

@@ -17,4 +17,15 @@ public class MyAccount implements Serializable {
     private String fullname;
     private String birthday;
     private String gender;
+
+    @Override
+    public String toString() {
+        return "MyAccount{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", fullname='" + fullname + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", gender='" + gender + '\'' +
+                '}';
+    }
 }

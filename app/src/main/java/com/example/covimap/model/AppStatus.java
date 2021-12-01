@@ -18,9 +18,13 @@ import lombok.Setter;
 @Setter
 public class AppStatus implements Serializable {
     private String language;
+    private boolean isLogged;
+    private String phoneNumber;
 
     public AppStatus(){
         this.language = LanguageConfig.VI;
+        this.isLogged = false;
+        this.phoneNumber = "";
     }
 
     public void writeStatusToFile(FileOutputStream fileOutputStream){
@@ -32,5 +36,18 @@ public class AppStatus implements Serializable {
         catch (Exception e){
             Log.d("Exception", e.getMessage());
         }
+    }
+
+    public boolean isLogged() {
+        return isLogged;
+    }
+
+    @Override
+    public String toString() {
+        return "AppStatus{" +
+                "language='" + language + '\'' +
+                ", isLogged=" + isLogged +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }

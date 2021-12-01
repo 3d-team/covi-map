@@ -25,6 +25,13 @@ import com.example.covimap.model.CLocation;
 import com.example.covimap.model.DataRenderRoute;
 import com.example.covimap.model.Route;
 import com.example.covimap.model.RouteAdapter;
+import com.example.covimap.model.RouteLabel;
+import com.example.covimap.service.HistoryJourneyFragmentCallBacks;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -34,10 +41,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class HistoryJourneyActivity extends Fragment {
+public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFragmentCallBacks {
+    private String phoneNumber;
     private static View view;
-    private ArrayList<Route> originRouteList;
-    private ArrayList<Route> routes;
+    private ArrayList<RouteLabel> originRouteList;
+    private ArrayList<RouteLabel> routes;
     private ListView routeListView;
     private RouteAdapter routeAdapter;
 
@@ -49,7 +57,6 @@ public class HistoryJourneyActivity extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.history_journey_activity, null);
         prepareUI();
-
         return view;
     }
 
@@ -65,17 +72,23 @@ public class HistoryJourneyActivity extends Fragment {
         }
     }
 
-    private void createRouteList(){
-        originRouteList.add(new Route(null, "1h30m", "77.5km", "07:00:00 - 01/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "17.5km", "07:00:00 - 02/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "27.5km", "07:00:00 - 03/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "37.5km", "07:00:00 - 04/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "47.5km", "07:00:00 - 05/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "77.5km", "07:00:00 - 06/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "67.5km", "07:00:00 - 07/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "77.5km", "07:00:00 - 08/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "87.5km", "07:00:00 - 09/11/2021", 1));
-        originRouteList.add(new Route(null, "1h30m", "97.5km", "07:00:00 - 10/11/2021", 1));
+    private void initOriginRouteList(){
+        originRouteList = new ArrayList<>();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber);
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    RouteLabel routeLabel = snapshot.getValue(RouteLabel.class);
+                    originRouteList.add(routeLabel);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private EditText beginDayTextView;
@@ -90,10 +103,10 @@ public class HistoryJourneyActivity extends Fragment {
     }
 
     public void filterListView() {
-        routes = new ArrayList<Route>();
+        routes = new ArrayList<RouteLabel>();
         int n = originRouteList.size();
         for(int i = 0; i < n; ++i){
-            Route route = originRouteList.get(i);
+            RouteLabel route = originRouteList.get(i);
             String datetimeStr = route.getCreatedDay();
 
             try {
@@ -155,12 +168,8 @@ public class HistoryJourneyActivity extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent(context, RenderHistoryItemActivity.class);
-            DataRenderRoute dataRenderRoute = new DataRenderRoute();
-            Bundle args = new Bundle();
-            args.putString("DISTANCE",routes.get(i).getDistance());
-            args.putString("PERIOD",routes.get(i).getPeriod());
-            args.putSerializable("DATA-ROUTE", (Serializable) dataRenderRoute.getData());
-            intent.putExtra("BUNDLE", args);
+            intent.putExtra("PHONE-NUMBER", phoneNumber);
+            intent.putExtra("UUID", routes.get(i).getUuid());
             main.startActivity(intent);
         }
     };
@@ -168,18 +177,21 @@ public class HistoryJourneyActivity extends Fragment {
     // Prepare UI before start fragment
     public void prepareUI(){
         routeListView = (ListView) view.findViewById(R.id.history_list_view);
-        originRouteList = new ArrayList<>();
-        createRouteList();
+        initOriginRouteList();
         routes = new ArrayList<>(originRouteList);
 
-        routeAdapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routes);
         routeListView.setOnItemClickListener(routeListViewAction);
+        routeAdapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routes);
         routeListView.setAdapter(routeAdapter);
 
         beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
         endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
-
         beginDayTextView.setOnClickListener(getBeginDate);
         endDayTextView.setOnClickListener(getEndDate);
+    }
+
+    @Override
+    public void getPhoneNumber(String phone) {
+        this.phoneNumber = phone;
     }
 }

@@ -2,6 +2,7 @@ package com.example.covimap.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
+import com.example.covimap.model.MyAccount;
 import com.example.covimap.service.MainCallbacks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -27,6 +29,7 @@ import java.util.Locale;
 public class MainActivity extends FragmentActivity implements MainCallbacks {
     private BottomNavigationView bottomNav;
     private AppStatus appStatus;
+    private MyAccount myAccount;
 
     private NewRecordActivity newRecordActivity;
     private DirectActivity directActivity;
@@ -43,8 +46,11 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
         prepareStatus();
         setContentView(R.layout.activity_main);
+        myAccount = (MyAccount)intent.getSerializableExtra("AccountData");
 
         newRecordActivity = new NewRecordActivity();
         directActivity = new DirectActivity();
@@ -53,8 +59,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         epidemicZoneActivity = new EpidemicZoneActivity();
         personalActivity = new PersonalActivity();
 
-
-        currentFragment = null;
+        newRecordActivity.getPhoneNumber(myAccount.getPhoneNumber());
+        currentFragment = newRecordActivity;
 
         bottomNav = findViewById(R.id.bottom_nav_view);
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,12 +68,15 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.nav_new_record:
+                        newRecordActivity.getPhoneNumber(myAccount.getPhoneNumber());
+                        Log.d("MyLog", myAccount.toString());
                         currentFragment = newRecordActivity;
                         break;
                     case R.id.nav_direct_location:
                         currentFragment = directActivity;
                         break;
                     case R.id.nav_history_record:
+                        historyJourneyActivity.getPhoneNumber(myAccount.getPhoneNumber());
                         currentFragment = historyJourneyActivity;
                         break;
                     case R.id.nav_epidemic_zone:
@@ -133,24 +142,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     }
 
     public void prepareStatus(){
-        try {
-            FileInputStream inputStream = this.openFileInput(Config.STATUS_FILE_DIR);
-            ObjectInputStream os = new ObjectInputStream(inputStream);
-            appStatus = (AppStatus) os.readObject();
-            os.close();
-        }
-        catch (Exception e){
-            try {
-                FileOutputStream outputStream = this.openFileOutput(Config.STATUS_FILE_DIR, MODE_PRIVATE);
-                appStatus = new AppStatus();
-                appStatus.writeStatusToFile(outputStream);
-            }
-            catch (Exception e1){
-                Log.d("__477_484_495", e1.getMessage());
-            }
-            Log.d("__477_484_495", e.getMessage());
-        }
         if(appStatus != null){
+            Log.d("MyLog", appStatus.toString());
             Locale locale = new Locale(appStatus.getLanguage());
             Locale.setDefault(locale);
             Configuration config = new Configuration();
