@@ -107,8 +107,8 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     route = (Route)snapshot.getValue(Route.class);
                     createdDateTV.setText(route.getCreatedDay());
-                    distanceTextView.setText(route.getDistance());
-                    periodTextView.setText(route.getPeriod());
+                    distanceTextView.setText(route.getDistance() + "km");
+                    periodTextView.setText(route.getPeriod() +"min ");
                     List<CLocation> path = route.getPath();
                     polylineOptions = new PolylineOptions();
                     for (CLocation c : path) {
