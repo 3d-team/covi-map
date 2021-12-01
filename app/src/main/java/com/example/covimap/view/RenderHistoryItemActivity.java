@@ -83,13 +83,39 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
         Intent intent = getIntent();
         phoneNumber = intent.getStringExtra("PHONE-NUMBER");
         uuid = intent.getStringExtra("UUID");
-        // get data from firebase
+
+
+        distanceTextView = (TextView) findViewById(R.id.distance_text_view_item);
+        periodTextView = (TextView) findViewById(R.id.period_text_view_item);
+        closeBtn = (FloatingActionButton) findViewById(R.id.close_render_history_item);
+        createdDateTV = (TextView) findViewById(R.id.created_day_text_view);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         if(phoneNumber != null && uuid != null){
             DatabaseReference data = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber).child("Routes").child(uuid);
             data.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     route = (Route)snapshot.getValue(Route.class);
+                    createdDateTV.setText(route.getCreatedDay());
+                    distanceTextView.setText(route.getDistance());
+                    periodTextView.setText(route.getPeriod());
+                    List<CLocation> path = route.getPath();
+                    polylineOptions = new PolylineOptions();
+                    for (CLocation c : path) {
+                        polylineOptions.add(c.toLatLng());
+                    }
+                    googleMap.addPolyline(polylineOptions.width(5).color(Color.parseColor("#00C277")));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(path.get(0).toLatLng(), MapConfig.ZOOM_CITY));
                 }
 
                 @Override
@@ -98,28 +124,5 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
                 }
             });
         }
-
-        distanceTextView = (TextView) findViewById(R.id.distance_text_view_item);
-        periodTextView = (TextView) findViewById(R.id.period_text_view_item);
-        closeBtn = (FloatingActionButton) findViewById(R.id.close_render_history_item);
-        createdDateTV = (TextView) findViewById(R.id.created_day_text_view);
-        createdDateTV.setText("9h30 25/11/2021");
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        List<CLocation> path = route.getPath();
-        polylineOptions = new PolylineOptions();
-        for (CLocation c : path) {
-            polylineOptions.add(c.toLatLng());
-        }
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        googleMap.addPolyline(polylineOptions.width(1).color(Color.parseColor("#00C277")));
     }
 }

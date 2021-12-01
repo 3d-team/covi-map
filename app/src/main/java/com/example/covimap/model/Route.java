@@ -27,4 +27,16 @@ public class Route extends Identity {
         route.setUuid(mDatabaseReference.push().getKey());
         mDatabaseReference.child(route.uuid).setValue(route);
     }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "path=" + path +
+                ", period='" + period + '\'' +
+                ", distance='" + distance + '\'' +
+                ", createdDay='" + createdDay + '\'' +
+                ", startAddress='" + startAddress + '\'' +
+                ", endAddress='" + endAddress + '\'' +
+                '}';
+    }
 }

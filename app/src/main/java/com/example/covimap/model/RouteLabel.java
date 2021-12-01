@@ -41,4 +41,16 @@ public class RouteLabel implements Serializable {
     public String getEndAddress() {
         return endAddress;
     }
+
+    @Override
+    public String toString() {
+        return "RouteLabel{" +
+                "uuid='" + uuid + '\'' +
+                ", period='" + period + '\'' +
+                ", distance='" + distance + '\'' +
+                ", createdDay='" + createdDay + '\'' +
+                ", startAddress='" + startAddress + '\'' +
+                ", endAddress='" + endAddress + '\'' +
+                '}';
+    }
 }

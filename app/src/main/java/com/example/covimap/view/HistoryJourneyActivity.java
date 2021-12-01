@@ -39,15 +39,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFragmentCallBacks {
     private String phoneNumber;
     private static View view;
-    private ArrayList<RouteLabel> originRouteList;
-    private ArrayList<RouteLabel> routes;
+    private ArrayList<RouteLabel> originRouteLbList;
+    private ArrayList<RouteLabel> routeLbs;
     private ListView routeListView;
-    private RouteAdapter routeAdapter;
+    private RouteAdapter routeLbAdapter;
 
     private Context context;
     private MainActivity main;
@@ -73,21 +74,20 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
     }
 
     private void initOriginRouteList(){
-        originRouteList = new ArrayList<>();
-        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber);
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        originRouteLbList = new ArrayList<>();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber).child("Routes");
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    RouteLabel routeLabel = snapshot.getValue(RouteLabel.class);
-                    originRouteList.add(routeLabel);
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    RouteLabel routeLabel = dataSnapshot.getValue(RouteLabel.class);
+                    Log.d("MyLog-Fragment History", routeLabel.toString());
+                    originRouteLbList.add(routeLabel);
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) { }
         });
     }
 
@@ -103,16 +103,16 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
     }
 
     public void filterListView() {
-        routes = new ArrayList<RouteLabel>();
-        int n = originRouteList.size();
+        routeLbs = new ArrayList<RouteLabel>();
+        int n = originRouteLbList.size();
         for(int i = 0; i < n; ++i){
-            RouteLabel route = originRouteList.get(i);
+            RouteLabel route = originRouteLbList.get(i);
             String datetimeStr = route.getCreatedDay();
 
             try {
                 Date dateItem = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy").parse(datetimeStr);
                 if(dateItem.after(beginDayCalendar.getTime()) && dateItem.before(endDayCalendar.getTime())){
-                    routes.add(route);
+                    routeLbs.add(route);
                     Log.d("DATE-IN-RANGE", dateItem.toString());
                 }
             }
@@ -120,7 +120,7 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
                 Log.d("DATE-FORMAT-ERROR", e.getMessage());
             }
         }
-        RouteAdapter adapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routes);
+        RouteAdapter adapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routeLbs);
         routeListView.setAdapter(adapter);
     }
 
@@ -169,7 +169,7 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent(context, RenderHistoryItemActivity.class);
             intent.putExtra("PHONE-NUMBER", phoneNumber);
-            intent.putExtra("UUID", routes.get(i).getUuid());
+            intent.putExtra("UUID", routeLbs.get(i).getUuid());
             main.startActivity(intent);
         }
     };
@@ -177,17 +177,31 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
     // Prepare UI before start fragment
     public void prepareUI(){
         routeListView = (ListView) view.findViewById(R.id.history_list_view);
-        initOriginRouteList();
-        routes = new ArrayList<>(originRouteList);
 
-        routeListView.setOnItemClickListener(routeListViewAction);
-        routeAdapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routes);
-        routeListView.setAdapter(routeAdapter);
+        originRouteLbList = new ArrayList<>();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber).child("Routes");
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    RouteLabel routeLabel = dataSnapshot.getValue(RouteLabel.class);
+                    originRouteLbList.add(routeLabel);
+                }
 
-        beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
-        endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
-        beginDayTextView.setOnClickListener(getBeginDate);
-        endDayTextView.setOnClickListener(getEndDate);
+                routeLbs = new ArrayList<>(originRouteLbList);
+                routeListView.setOnItemClickListener(routeListViewAction);
+                routeLbAdapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routeLbs);
+                routeListView.setAdapter(routeLbAdapter);
+
+                beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
+                endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
+                beginDayTextView.setOnClickListener(getBeginDate);
+                endDayTextView.setOnClickListener(getEndDate);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
     }
 
     @Override
