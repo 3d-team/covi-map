@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covimap.R;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.model.Facility;
+import com.example.covimap.model.MyAccount;
 import com.example.covimap.model.Route;
 import com.example.covimap.model.User;
 import com.example.covimap.repository.FacilityRepository;
@@ -21,18 +25,27 @@ import com.example.covimap.utils.SQLiteHelper;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText editTextEmail;
-    EditText editTextPassword;
-    TextInputLayout textInputLayoutEmail;
-    TextInputLayout textInputLayoutPassword;
-    Button buttonLogin;
-    SQLiteHelper sqliteHelper;
+    private EditText editTextPhoneNumber;
+    private EditText editTextPassword;
+
+    private TextInputLayout textInputLayoutPhoneNumber;
+    private TextInputLayout textInputLayoutPassword;
+
+    private String phoneNumber, password;
+
+    private Button buttonLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +54,22 @@ public class LoginActivity extends AppCompatActivity {
 
         initViews();
         initEventButton();
-        sqliteHelper = new SQLiteHelper(this);
 
         //testRepository();
     }
 
     private void initViews() {
-        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPhoneNumber = findViewById(R.id.editTextPhoneNumber);
         editTextPassword = findViewById(R.id.editTextPassword);
-        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPhoneNumber = findViewById(R.id.textInputPhoneNumber);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
+
+        Intent intent = getIntent();
+        String phone = intent.getStringExtra("phone-number");
+        if(phone != null && !phone.isEmpty()){
+            editTextPhoneNumber.setText(phone);
+        }
         initRegisterTextView();
     }
 
@@ -67,40 +85,51 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initEventButton() {
         buttonLogin.setOnClickListener(view -> {
-            if (!validate()) {
+            phoneNumber = editTextPhoneNumber.getText().toString();
+            if (!Validator.isPhoneNumber(phoneNumber)) {
+                textInputLayoutPhoneNumber.setError("Please enter valid phone number");
                 return;
             }
+            else{
+                textInputLayoutPhoneNumber.setError(null);
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber);
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            MyAccount myAccount = snapshot.getValue(MyAccount.class);
+                            if(validate()){
+                                if(myAccount.getPassword().equals(password)) {
+                                    textInputLayoutPassword.setError(null);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    textInputLayoutPassword.setError("Wrong password!");
+                                }
+                            }else {return;}
+                        }
+                        else {
+                            textInputLayoutPhoneNumber.setError("Your account is not exist!");
+                        }
+                    }
 
-            String email = editTextEmail.getText().toString();
-            String password = editTextPassword.getText().toString();
-            User authenticatedUser = sqliteHelper.authenticate(new User(null, null, email, password));
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            if (authenticatedUser != null) {
-                Snackbar.make(buttonLogin, "Successfully Logged in!", Snackbar.LENGTH_LONG).show();
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Snackbar.make(buttonLogin, "Failed to log in , please try again", Snackbar.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
 
-    public boolean validate() {
-        String email = editTextEmail.getText().toString();
-        String password = editTextPassword.getText().toString();
+    private boolean validate() {
+        password = editTextPassword.getText().toString();
+        if (!Validator.isPassword(password)) {
+            textInputLayoutPassword.setError("Please enter valid password!");
+            return false;
+        }else {textInputLayoutPassword.setError(null);}
 
-//        if (!Validator.isEmail(email)) {
-//            textInputLayoutEmail.setError("Please enter valid email!");
-//            return false;
-//        } else if (!Validator.isPassword(password)) {
-//            textInputLayoutPassword.setError("Please enter valid password!");
-//            return false;
-//        } else {
-//            textInputLayoutEmail.setError(null);
-//            textInputLayoutPassword.setError(null);
-//        }
         return true;
     }
 

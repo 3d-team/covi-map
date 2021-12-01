@@ -5,7 +5,7 @@ import com.example.covimap.config.Config;
 public class Validator {
 
     public static boolean isPhoneNumber(String phone) {
-        return !phone.isEmpty() && phone.length() > Config.PASSWORD_LENGTH;
+        return !phone.isEmpty() && phone.length() > Config.PHONENUMBER_LENGTH;
     }
 
     public static boolean isPassword(String password) {

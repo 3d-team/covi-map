@@ -2,10 +2,12 @@ package com.example.covimap.view;
 
 import static com.example.covimap.R.string.phone_number_error;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,11 +20,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.covimap.R;
+import com.example.covimap.model.MyAccount;
 import com.example.covimap.model.User;
 import com.example.covimap.utils.SQLiteHelper;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -81,8 +89,36 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void initEventButton() {
         buttonRegister.setOnClickListener(view -> {
-            if (validate()) {
+            phoneNumber = editTextPhoneNumber.getText().toString();
+            if (!Validator.isPhoneNumber(phoneNumber)) {
+                textInputLayoutPhoneNumber.setError("Please enter valid phone number");
+                return;
+            }
+            else{
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber);
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            textInputLayoutPhoneNumber.setError("Your account has already existed!");
+                        }
+                        else {
+                            textInputLayoutPhoneNumber.setError(null);
+                            if(validate()){
+                                MyAccount myAccount = new MyAccount(phoneNumber, password, fullname, birthday, gender);
+                                mDatabase.setValue(myAccount);
+                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                intent.putExtra("phone-number", myAccount.getPhoneNumber());
+                                startActivity(intent);
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
     }
@@ -107,21 +143,29 @@ public class RegisterActivity extends AppCompatActivity {
     };
 
     public boolean validate() {
-        phoneNumber = editTextPhoneNumber.getText().toString();
         password = editTextPassword.getText().toString();
         fullname = editTextFullName.getText().toString();
         birthday = editTextBirthday.getText().toString();
         RadioButton radioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
 
-
-        if (!Validator.isPhoneNumber(phoneNumber)) {
-//            textInputLayoutPhoneNumber.setError(phone_number_error);
-            return false;
-        }
-        else{textInputLayoutPhoneNumber.setError(null);}
-
         if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
+            return false;
+        }else {textInputLayoutPassword.setError(null);}
+
+        if(fullname.isEmpty()){
+            textInputLayoutFullName.setError("Please enter your fullname!");
+            return false;
+        }else{textInputLayoutFullName.setError(null);}
+
+        if(birthday.isEmpty()){
+            textInputLayoutBirthday.setError("Please enter your birthday!");
+            return false;
+        }else{textInputLayoutBirthday.setError(null);}
+
+
+        if(radioButton == null){
+            Snackbar.make(buttonRegister, "Please choose your gender!", Snackbar.LENGTH_LONG);
             return false;
         }
 

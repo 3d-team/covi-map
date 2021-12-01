@@ -1,5 +1,7 @@
 package com.example.covimap.model;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyAccount {
+public class MyAccount implements Serializable {
     private String phoneNumber;
     private String password;
     private String fullname;
