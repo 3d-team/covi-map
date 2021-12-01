@@ -91,16 +91,16 @@ public class LoginActivity extends AppCompatActivity {
         String email = editTextEmail.getText().toString();
         String password = editTextPassword.getText().toString();
 
-        if (!Validator.isEmail(email)) {
-            textInputLayoutEmail.setError("Please enter valid email!");
-            return false;
-        } else if (!Validator.isPassword(password)) {
-            textInputLayoutPassword.setError("Please enter valid password!");
-            return false;
-        } else {
-            textInputLayoutEmail.setError(null);
-            textInputLayoutPassword.setError(null);
-        }
+//        if (!Validator.isEmail(email)) {
+//            textInputLayoutEmail.setError("Please enter valid email!");
+//            return false;
+//        } else if (!Validator.isPassword(password)) {
+//            textInputLayoutPassword.setError("Please enter valid password!");
+//            return false;
+//        } else {
+//            textInputLayoutEmail.setError(null);
+//            textInputLayoutPassword.setError(null);
+//        }
         return true;
     }
 

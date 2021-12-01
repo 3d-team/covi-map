@@ -44,8 +44,8 @@
     <string name="vaccine_red_status">No dose yet</string>
     <string name="vaccine_yellow_title">Vaccine Yellow Card</string>
     <string name="vaccine_red_title">Vaccine Red Card</string>
-    <string name="fullname_title">"  Fullname"</string>
-    <string name="birthday_title">"  Date born"</string>
+    <string name="fullname_title">  Fullname</string>
+    <string name="birthday_title">  Date born</string>
     <string name="vi_title">Vietnamese</string>
     <string name="en_title">English</string>
     <string name="update_info_button">Update info</string>
@@ -65,4 +65,8 @@
     <string name="green_zone_danger">Low risk (new normal)  </string>
     <string name="gray_zone_danger">Not update  </string>
     <string name="menu_epidemiczone_title">Epidemic Zone</string>
+    <string name="phone_number">Phone number</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="phone_number_error">Please enter valid phone number!</string>
 </resources>

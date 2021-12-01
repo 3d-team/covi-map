@@ -44,8 +44,8 @@
     <string name="vaccine_red_status">Chưa tiêm liều nào</string>
     <string name="vaccine_yellow_title">Thẻ vàng covid</string>
     <string name="vaccine_red_title">Thẻ đỏ covid</string>
-    <string name="fullname_title">"  Họ và tên"</string>
-    <string name="birthday_title">"  Ngày sinh"</string>
+    <string name="fullname_title">  Họ và tên</string>
+    <string name="birthday_title">  Ngày sinh</string>
     <string name="vi_title">Tiếng Việt</string>
     <string name="en_title">Tiếng Anh</string>
     <string name="update_info_button">Cập nhật thông tin</string>
@@ -65,4 +65,8 @@
     <string name="green_zone_danger">Nguy cơ thấp (bình thường mới)  </string>
     <string name="gray_zone_danger">Chưa cập nhật  </string>
     <string name="menu_epidemiczone_title">Vùng dịch</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="male">Nam</string>
+    <string name="female">Nữ</string>
+    <string name="phone_number_error">Số điện thoại bạn nhập không hợp lệ!</string>
 </resources>

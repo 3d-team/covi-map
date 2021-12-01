@@ -1,12 +1,20 @@
 package com.example.covimap.view;
 
+import static com.example.covimap.R.string.phone_number_error;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.covimap.R;
@@ -16,15 +24,22 @@ import com.example.covimap.utils.Validator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class RegisterActivity extends AppCompatActivity {
-    EditText editTextUserName;
-    EditText editTextEmail;
+    EditText editTextPhoneNumber;
     EditText editTextPassword;
-    TextInputLayout textInputLayoutUserName;
-    TextInputLayout textInputLayoutEmail;
+    EditText editTextFullName;
+    EditText editTextBirthday;
+    RadioGroup genderRadioGroup;
+
+    TextInputLayout textInputLayoutPhoneNumber;
+    TextInputLayout textInputLayoutFullName;
     TextInputLayout textInputLayoutPassword;
+    TextInputLayout textInputLayoutBirthday;
+
     Button buttonRegister;
-    SQLiteHelper sqLiteHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,56 +48,79 @@ public class RegisterActivity extends AppCompatActivity {
 
         initViews();
         initEventButton();
-
-        sqLiteHelper = new SQLiteHelper(this);
     }
+
+    private String phoneNumber;
+    private String password;
+    private String fullname;
+    private String birthday;
+    private String gender;
+
 
     private void initViews() {
-        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPhoneNumber = findViewById(R.id.editTextPhoneNumber);
         editTextPassword = findViewById(R.id.editTextPassword);
-        editTextUserName = findViewById(R.id.editTextUserName);
-        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        editTextFullName = findViewById(R.id.editTextFullName);
+        editTextBirthday = findViewById(R.id.editTextBirthday);
+        editTextBirthday.setOnClickListener(getBirtday);
+        genderRadioGroup = findViewById(R.id.gender_raido_group);
+
+        textInputLayoutPhoneNumber = findViewById(R.id.textInputPhoneNumber);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
-        textInputLayoutUserName = findViewById(R.id.textInputLayoutUserName);
+        textInputLayoutFullName = findViewById(R.id.textInputLayoutFullName);
+        textInputLayoutBirthday = findViewById(R.id.textInputLayoutBirthday);
+
         buttonRegister = findViewById(R.id.buttonRegister);
-        initLoginTextView();
+//        initLoginTextView();
     }
 
-    private void initLoginTextView() {
-        TextView textViewLogin = findViewById(R.id.textViewLogin);
-        textViewLogin.setOnClickListener(view -> finish());
-    }
+//    private void initLoginTextView() {
+//        TextView textViewLogin = findViewById(R.id.textViewLogin);
+//        textViewLogin.setOnClickListener(view -> finish());
+//    }
 
     private void initEventButton() {
         buttonRegister.setOnClickListener(view -> {
             if (validate()) {
-                String userName = editTextUserName.getText().toString();
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
 
-                if (!sqLiteHelper.isEmailExists(email)) {
-                    long userId = sqLiteHelper.addUser(new User(null, userName, email, password));
-                    Snackbar.make(buttonRegister, "User created successfully! Please Login ", Snackbar.LENGTH_LONG).show();
-                    new Handler().postDelayed(() -> finish(), Snackbar.LENGTH_LONG);
-                }else {
-                    Snackbar.make(buttonRegister, "User already exists with same email ", Snackbar.LENGTH_LONG).show();
-                }
             }
         });
     }
 
-    public boolean validate() {
-        String userName = editTextUserName.getText().toString();
-        String email = editTextEmail.getText().toString();
-        String password = editTextPassword.getText().toString();
+    private Calendar calendar;
+    View.OnClickListener getBirtday = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar);
+            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                   calendar = Calendar.getInstance();
+                   calendar.set(year, month, day, 7, 0);
+                   SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                   editTextBirthday.setText(simpleDateFormat.format(calendar.getTime()));
+                }
+            };
+            datePickerDialog.setOnDateSetListener(dateSetListener);
+            datePickerDialog.show();
+        }
+    };
 
-        if (!Validator.isUsername(userName)) {
-            textInputLayoutUserName.setError("Please enter valid username!");
+    public boolean validate() {
+        phoneNumber = editTextPhoneNumber.getText().toString();
+        password = editTextPassword.getText().toString();
+        fullname = editTextFullName.getText().toString();
+        birthday = editTextBirthday.getText().toString();
+        RadioButton radioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
+
+
+        if (!Validator.isPhoneNumber(phoneNumber)) {
+//            textInputLayoutPhoneNumber.setError(phone_number_error);
             return false;
-        }else if (!Validator.isEmail(email)) {
-            textInputLayoutEmail.setError("Please enter valid email!");
-            return false;
-        } else if (!Validator.isPassword(password)) {
+        }
+        else{textInputLayoutPhoneNumber.setError(null);}
+
+        if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
             return false;
         }
