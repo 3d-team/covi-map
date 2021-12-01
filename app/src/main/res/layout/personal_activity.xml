@@ -9,124 +9,160 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="2">
+
         <LinearLayout
-            android:padding="10dp"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:background="@color/green_vaccine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="5">
-            <TextView
-                android:text="@string/vaccine_green_title"
-                android:textAlignment="center"
-                android:textSize="24dp"
-                android:textColor="@color/black"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:layout_gravity="center"
-                android:src="@drawable/qr_code_example"
-                android:layout_width="180dp"
-                android:layout_height="150dp"
-                android:layout_weight="2"
-                android:tooltipText="QR minh họa"
-                android:background="@drawable/radius_layout_custom"/>
-            <TextView
-                android:layout_marginTop="16dp"
-                android:text="@string/vaccine_green_status"
-                android:textAlignment="center"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:padding="12dp"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_marginTop="25dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:text="@string/fullname_title"
-                android:drawableStart="@drawable/person_icon"/>
-            <TextView
-                android:layout_marginLeft="28dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:text="Nguyễn Văn A"/>
+            android:background="#2196F3"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <TextView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:text="@string/birthday_title"
-                android:drawableStart="@drawable/birthday_icon"/>
-            <TextView
-                android:layout_marginLeft="28dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:text="09/09/2001"/>
-
-            <RadioGroup
-                android:layout_marginTop="4dp"
-                android:id="@+id/language_option"
+            <RelativeLayout
+                android:layout_marginBottom="10dp"
+                android:padding="2dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:gravity="center"
-                android:layout_height="35dp">
-                <RadioButton
-                    android:id="@+id/vietnamese_radiobutton"
+                android:layout_height="wrap_content">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/vi_title"
-                    android:button="@drawable/radio_vietnamese_custom"
-                    android:textColor="@drawable/color_state_radio_button"
-                    android:background="@drawable/radio_background_custom"
+                    android:text="@string/vaccine_green_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:checked="true"/>
+                    android:layout_toLeftOf="@id/logout_textview_button"
+                    android:background="@drawable/button_epidemic_zone_style"
+                    android:clickable="true"
+                    android:text="Update"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/logout_textview_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_epidemic_zone_style"
+                    android:text="Logout"
+                    android:clickable="true"
+                    android:textColor="@color/gray" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_epidemic_zone_style"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_epidemic_zone_style"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/qr_code_example"
+                    android:tooltipText="QR minh họa" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/person_icon"
+                        android:gravity="center_vertical"
+                        android:text="@string/fullname_title"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/fullname_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="28dp"
+                        android:text="Nguyễn Văn A"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:drawableStart="@drawable/birthday_icon"
+                        android:gravity="center_vertical"
+                        android:text="@string/birthday_title"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/birthday_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="28dp"
+                        android:text="09/09/2001"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/language_option"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RadioButton
+                    android:id="@+id/vietnamese_radiobutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_background_custom"
+                    android:button="@drawable/radio_vietnamese_custom"
+                    android:checked="true"
+                    android:text="@string/vi_title"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/color_state_radio_button" />
 
                 <RadioButton
                     android:id="@+id/english_radiobutton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/en_title"
-                    android:button="@drawable/radio_english_custom"
-                    android:textColor="@drawable/color_state_radio_button"
+                    android:layout_weight="1"
                     android:background="@drawable/radio_background_custom"
-                    android:layout_marginRight="10dp"/>
+                    android:button="@drawable/radio_english_custom"
+                    android:text="@string/en_title"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/color_state_radio_button" />
             </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginBottom="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:src="@drawable/quytac5k_hcmus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"/>
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/update_info_button"
-        android:drawableStart="@drawable/update_icon_custom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/update_button_custom"
-        android:textAllCaps="false"
-        android:text="@string/update_info_button"
-        android:textSize="16sp"/>
 
     <ImageButton
         android:layout_alignParentBottom="true"

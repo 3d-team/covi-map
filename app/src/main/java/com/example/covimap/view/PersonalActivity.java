@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.covimap.R;
 import com.example.covimap.config.LanguageConfig;
 import com.example.covimap.model.AppStatus;
+import com.example.covimap.model.MyAccount;
 import com.example.covimap.service.PersonalFragmentCallbacks;
 
 import java.util.Locale;
@@ -30,11 +33,15 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private Context context;
     private static View view;
     private static AppStatus createStatus;
+    private MyAccount myAccount;
 
     private RadioGroup languageOptionRG;
     private RadioButton vi_button;
     private RadioButton en_button;
-    private Button updateButton;
+    private TextView fullNameTextView;
+    private TextView birthdatTextView;
+    private TextView logoutButton;
+    private TextView updateButton;
 
     @Nullable
     @Override
@@ -44,9 +51,15 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         languageOptionRG = view.findViewById(R.id.language_option);
         vi_button = (RadioButton) view.findViewById(R.id.vietnamese_radiobutton);
         en_button = (RadioButton) view.findViewById(R.id.english_radiobutton);
+        fullNameTextView = (TextView) view.findViewById(R.id.fullname_textview);
+        birthdatTextView = (TextView) view.findViewById(R.id.birthday_textview);
 
-        updateButton = (Button) view.findViewById(R.id.update_info_button);
-        updateButton.setOnClickListener(updateButtonOnclick);
+        fullNameTextView.setText(myAccount.getFullname());
+        birthdatTextView.setText(myAccount.getBirthday());
+
+        logoutButton = (TextView)view.findViewById(R.id.logout_textview_button);
+        logoutButton.setOnClickListener(logoutAction);
+//        updateButton.setOnClickListener(updateButtonOnclick);
 
         languageOptionRG.clearCheck();
         if(createStatus.getLanguage().equals(LanguageConfig.VI)){
@@ -72,6 +85,17 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
             throw new IllegalStateException("Error");
         }
     }
+
+    private View.OnClickListener logoutAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(main, LoginActivity.class);
+            main.onChangeLoginStatus(false);
+            intent.putExtra("phone-number", myAccount.getPhoneNumber());
+            startActivity(intent);
+        }
+    };
+
 
     private View.OnClickListener vi_onclick = new View.OnClickListener() {
         @Override
@@ -103,7 +127,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         }
     };
 
-    private View.OnClickListener updateButtonOnclick = new View.OnClickListener() {
+    private View.OnClickListener updateAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
@@ -113,5 +137,10 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     @Override
     public void setStatus(AppStatus appStatus){
         this.createStatus = appStatus;
+    }
+
+    @Override
+    public void setMyAccount(MyAccount myAccount) {
+        this.myAccount = myAccount;
     }
 }

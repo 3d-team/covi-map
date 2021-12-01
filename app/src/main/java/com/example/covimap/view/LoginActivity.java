@@ -73,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         textInputLayoutPhoneNumber = findViewById(R.id.textInputPhoneNumber);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
+        buttonLogin.setEnabled(true);
 
         Intent intent = getIntent();
         String phone = intent.getStringExtra("phone-number");
@@ -115,6 +116,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     intent.putExtra("AccountData", myAccount);
                                     intent.putExtra("AppStatus", appStatus);
+                                    Log.d("MyLog", myAccount.toString());
+                                    Log.d("MyLog", appStatus.toString());
                                     startActivity(intent);
                                     finish();
                                 }
@@ -192,9 +195,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-            }
-            else {
-                buttonLogin.setEnabled(true);
             }
         }
     }

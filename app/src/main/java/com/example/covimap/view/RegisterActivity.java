@@ -53,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         initViews();
         initEventButton();
     }
@@ -110,6 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 intent.putExtra("phone-number", myAccount.getPhoneNumber());
                                 startActivity(intent);
+                                finish();
                             }
                         }
                     }

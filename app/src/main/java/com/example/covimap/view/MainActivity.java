@@ -83,6 +83,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         currentFragment = epidemicZoneActivity;
                         break;
                     case R.id.nav_peronal:
+                        personalActivity.setMyAccount(myAccount);
                         personalActivity.setStatus(appStatus);
                         currentFragment = personalActivity;
                         break;
@@ -159,6 +160,16 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             return;
         }
         appStatus.setLanguage(lang);
+        finish();
+    }
+
+    @Override
+    public void onChangeLoginStatus(boolean islogged) {
+        if(appStatus == null){
+            Log.d("__477_484_495", "APP_STATUS_NULL");
+            return;
+        }
+        appStatus.setLogged(islogged);
         finish();
     }
 }
