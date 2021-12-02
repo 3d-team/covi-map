@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prepareStatus();
         setContentView(R.layout.activity_login);
 
         initViews();
@@ -73,10 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         textInputLayoutPhoneNumber = findViewById(R.id.textInputPhoneNumber);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setEnabled(true);
 
         Intent intent = getIntent();
         String phone = intent.getStringExtra("phone-number");
+        appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
         if(phone != null && !phone.isEmpty()){
             editTextPhoneNumber.setText(phone);
         }
@@ -148,72 +147,5 @@ public class LoginActivity extends AppCompatActivity {
         }else {textInputLayoutPassword.setError(null);}
 
         return true;
-    }
-
-    public void prepareStatus(){
-        try {
-            FileInputStream inputStream = this.openFileInput(Config.STATUS_FILE_DIR);
-            ObjectInputStream os = new ObjectInputStream(inputStream);
-            appStatus = (AppStatus) os.readObject();
-            os.close();
-        }
-        catch (Exception e){
-            try {
-                FileOutputStream outputStream = this.openFileOutput(Config.STATUS_FILE_DIR, MODE_PRIVATE);
-                appStatus = new AppStatus();
-                appStatus.writeStatusToFile(outputStream);
-            }
-            catch (Exception e1){
-                Log.d("MyLog", e1.getMessage());
-            }
-            Log.d("MyLog", e.getMessage());
-        }
-        if(appStatus != null){
-            Locale locale = new Locale(appStatus.getLanguage());
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
-            if(appStatus.isLogged() && appStatus.getPhoneNumber().isEmpty() == false){
-                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(appStatus.getPhoneNumber());
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            MyAccount myAccount = snapshot.getValue(MyAccount.class);
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("AccountData", myAccount);
-                            intent.putExtra("AppStatus", appStatus);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            }
-        }
-    }
-
-    private void testRepository() {
-//        Facility facility = new Facility(new CLocation(1, 2), "a", "b", "c");
-//        FacilityRepository facilityRepository = new FacilityRepository();
-//        facilityRepository.add(facility);
-//        System.out.println(facility.getUuid());
-//
-//        List<CLocation> path = Arrays.asList(new CLocation(1, 2));
-//        Route route = new Route(path, "123", "77749" ,"12-01 04:02:01", 123);
-//        RouteRepository routeRepository = new RouteRepository();
-//        routeRepository.add(route);
-//        System.out.println(route.getUuid());
-//
-//        RedzoneRepository redzoneRepository = new RedzoneRepository();
-//        CLocation redzone = new CLocation(1, 2);
-//        redzoneRepository.add(redzone);
-//        System.out.println(redzone.getUuid());
     }
 }

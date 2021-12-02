@@ -118,8 +118,6 @@ public class NewRecordActivity extends Fragment implements NewRecordFragmentCall
         }
     }
 
-
-
     private void registerLocationReceiver() {
         BroadcastReceiver locationReceiver = new BroadcastReceiver() {
             @Override
@@ -223,7 +221,6 @@ public class NewRecordActivity extends Fragment implements NewRecordFragmentCall
             String startAdress = getAddress(path.get(0));
             String endAddress = getAddress(path.get(path.size() - 1));
             Route route = new Route(path, period, String.format("%.2f",distance), createdTime, startAdress, endAddress);
-            Log.d("MyLog", "NEW RECORD FRAGMENT--- " + phoneNumber);
             Route.addToFireBase(phoneNumber, route);
 
             Toast.makeText(context, "Time :" + period + ", Distance: " + String.format("%.2f km",distance) + "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();

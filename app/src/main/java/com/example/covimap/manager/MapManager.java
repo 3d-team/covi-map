@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.covimap.config.MapConfig;
+import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.utils.MapHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +40,19 @@ public class MapManager implements OnMapReadyCallback {
         return map.addMarker(new MarkerOptions().position(location.toLatLng()).title(title));
     }
 
+    public void zoomIn(){
+        map.moveCamera(CameraUpdateFactory.zoomBy(0.25f));
+    }
+
+    public void zoomOut(){
+        map.moveCamera(CameraUpdateFactory.zoomBy(-0.25f));
+    }
+
+    public void zoomToHome(){
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(16.75013848528283, 107.02439182734477), MapConfig.ZOOM_NATION));
+    }
+
+
     public void moveCamera(CLocation location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()));
     }
@@ -59,7 +73,7 @@ public class MapManager implements OnMapReadyCallback {
         map.addPolyline(lineOptions);
     }
 
-    public void fillArea(ArrayList<CLocation> bounds, String color){
+    public void drawArea(List<CLocation> bounds, String color){
         PolygonOptions polygonOptions = new PolygonOptions();
         for(CLocation c:bounds){
             polygonOptions.add(c.toLatLng());

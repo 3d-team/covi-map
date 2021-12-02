@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -31,27 +32,37 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
+import com.example.covimap.config.Config;
+import com.example.covimap.config.MapConfig;
 import com.example.covimap.manager.MapManager;
+import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
+import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class EpidemicZoneActivity extends Fragment {
+public class EpidemicZoneActivity extends Fragment implements com.example.covimap.service.EpidemicZoneActivity {
     private MapManager mapManager;
     private MainActivity main;
     private Context context;
     private static View view;
     private FloatingActionButton currentLocationButton;
+    private Area vietnam;
+
+    private ImageButton zoomInImgBtn, homeImgBtn, zoomOutImgBtn, playShowImgBtn;
+    private Button provinceBtn, districtBtn, communceBtn;
 
     private ImageButton noteButton;
     private TextView note_1, note_2, note_3, note_4, note_5;
     ArrayList<TextView> noteTVList;
+
 
     @Nullable
     @Override
@@ -88,7 +99,8 @@ public class EpidemicZoneActivity extends Fragment {
 
     private class ShowAnimation implements Runnable {
         @Override
-        public void run() {
+        public void run()
+        {
             if (isNoteShowed) {
                 for (TextView tv : noteTVList) {
                     Animation hide_animation = AnimationUtils.loadAnimation(context, R.anim.hide_down);
@@ -116,7 +128,6 @@ public class EpidemicZoneActivity extends Fragment {
     }
 
     public void prepareWidget() {
-
         noteButton = (ImageButton) view.findViewById(R.id.note_img_button);
         note_1 = (TextView) view.findViewById(R.id.note_1);
         note_2 = (TextView) view.findViewById(R.id.note_2);
@@ -129,7 +140,8 @@ public class EpidemicZoneActivity extends Fragment {
         noteTVList.add(note_3);
         noteTVList.add(note_4);
         noteTVList.add(note_5);
-        noteButton.setOnClickListener(new View.OnClickListener() {
+        noteButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view) {
                 ShowAnimation showAnimation = new ShowAnimation();
@@ -139,21 +151,83 @@ public class EpidemicZoneActivity extends Fragment {
         });
 
         currentLocationButton = (FloatingActionButton) view.findViewById(R.id.get_current_location_btn);
-        currentLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocationManager locationManager = (LocationManager) main.getSystemService(Context.LOCATION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                CLocation cLocation = new CLocation(location.getLatitude(), location.getLongitude());
-                mapManager.reset();
-                mapManager.animateCamera(cLocation);
-                mapManager.addMarker(cLocation, "");
-            }
-        });
+        currentLocationButton.setOnClickListener(locateCurrentBtnListener);
+
+        zoomInImgBtn = view.findViewById(R.id.zoom_in_img_button);
+        zoomInImgBtn.setOnClickListener(zoomInAction);
+        zoomOutImgBtn = view.findViewById(R.id.zoom_out_img_button);
+        zoomOutImgBtn.setOnClickListener(zoomOutAction);
+        homeImgBtn = view.findViewById(R.id.home_img_button);
+        homeImgBtn.setOnClickListener(zoomToHomeAction);
+        playShowImgBtn = view.findViewById(R.id.play_show_button);
+
+        provinceBtn = view.findViewById(R.id.province_button);
+        provinceBtn.setOnClickListener(provinceBtnAction);
+        districtBtn = view.findViewById(R.id.district_button);
+        communceBtn = view.findViewById(R.id.ward_button);
     }
+
+    Intent intentcurrentlocation;
+    private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+            else {
+                BroadcastReceiver receiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if(intent.getAction().equals("CURRENT_LOCATION")){
+                            CLocation location = new CLocation(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
+                            mapManager.reset();
+                            mapManager.animateCamera(location);
+                            mapManager.addMarker(location, "Your Location");
+                            main.stopService(intentcurrentlocation);
+                            main.unregisterReceiver(this);
+                        }
+                    }
+                };
+                main.registerReceiver(receiver, new IntentFilter("CURRENT_LOCATION"));
+                intentcurrentlocation = new Intent(main, LocationService.class);
+                main.startService(intentcurrentlocation);
+            }
+        }
+    };
+
+    private View.OnClickListener zoomInAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.zoomIn();
+        }
+    };
+
+    private View.OnClickListener zoomOutAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.zoomOut();
+        }
+    };
+
+    private View.OnClickListener zoomToHomeAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.zoomToHome();
+        }
+    };
+
+    private View.OnClickListener provinceBtnAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            HashMap<String, Area> provinces = vietnam.getChildAreas();
+            provinces.forEach((s, area) -> {
+                mapManager.drawArea(area.getBoundaries(), Config.ALPHA_COLOR + Config.RED_ZONE_COLOR);
+            });
+//            Area area = provinces.get("Phú Yên");
+//            mapManager.drawArea(area.getBoundaries(), Config.ALPHA_COLOR + Config.RED_ZONE_COLOR);
+        }
+    };
 
     @Override
     public void onPause() {
@@ -163,6 +237,11 @@ public class EpidemicZoneActivity extends Fragment {
             Thread t = new Thread(showAnimation);
             t.start();
         }
+    }
+
+    @Override
+    public void getMapArea(Area area) {
+        this.vietnam = area;
     }
 }
 

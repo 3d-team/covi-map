@@ -10,4 +10,11 @@ public class Config {
 
     public static final String STATUS_FILE_DIR = "coviapp_status.dat";
     public static final String DATETIME_FORMAT = "HH:mm:ss - dd/MM/yyyy";
+
+    public static final String ALPHA_COLOR = "#50";
+    public static final String RED_ZONE_COLOR = "FD0D40";
+    public static final String ORAGNE_ZONE_COLOR = "F1AF49";
+    public static final String YELLOW_ZONE_COLOR = "EBFD16";
+    public static final String GREEN_ZONE_COLOR = "09C4A4";
+    public static final String GRAY_ZONE_COLOR = "909BA2";
 }

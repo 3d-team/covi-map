@@ -21,7 +21,6 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         locationRequest = LocationRequest.create()
                 .setInterval(1000 * Config.DEFAULT_UPDATE_INTERVAL)
                 .setFastestInterval(1000 * Config.FASTEST_UPDATE_INTERVAL)
@@ -41,9 +40,8 @@ public class LocationService extends Service {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-
                 sendLocationBroadcast(locationResult);
-                writeLog(locationResult);
+//                writeLog(locationResult);
             }
         }, Looper.getMainLooper());
     }
