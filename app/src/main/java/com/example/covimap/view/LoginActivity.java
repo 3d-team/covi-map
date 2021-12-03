@@ -1,47 +1,26 @@
 package com.example.covimap.view;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covimap.R;
-import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
-import com.example.covimap.model.Area;
-import com.example.covimap.model.CLocation;
-import com.example.covimap.model.Facility;
 import com.example.covimap.model.MyAccount;
-import com.example.covimap.model.Route;
-import com.example.covimap.model.User;
-import com.example.covimap.repository.FacilityRepository;
-import com.example.covimap.repository.RedzoneRepository;
-import com.example.covimap.repository.RouteRepository;
-import com.example.covimap.utils.SQLiteHelper;
 import com.example.covimap.utils.Validator;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
 

@@ -51,7 +51,6 @@
                     android:text="Logout"
                     android:clickable="true"
                     android:textColor="@color/gray" />
-
             </RelativeLayout>
 
             <LinearLayout

@@ -92,6 +92,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
             Intent intent = new Intent(main, LoginActivity.class);
             main.onChangeLoginStatus(false);
             intent.putExtra("phone-number", myAccount.getPhoneNumber());
+            intent.putExtra("AppStatus", createStatus);
             startActivity(intent);
         }
     };

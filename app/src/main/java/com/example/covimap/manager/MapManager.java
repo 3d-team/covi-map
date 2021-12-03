@@ -103,7 +103,7 @@ public class MapManager implements OnMapReadyCallback {
                 if(childAreas == null) return;// end recursive here
 
                 reset();
-                epidemicZoneActivity.setStatusText(area1.getName(), "#" + area1.getColor());
+                epidemicZoneActivity.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
                 childAreas.forEach((s, area2) -> {
                     drawArea(area2);
                 });

@@ -45,7 +45,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,14 +60,13 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     private FloatingActionButton currentLocationButton;
     private Area vietnam;
 
-    private ImageButton zoomInImgBtn, homeImgBtn, zoomOutImgBtn, playShowImgBtn;
+    private ImageButton zoomInImgBtn, homeImgBtn, zoomOutImgBtn, refreshImgBtn;
     private Button provinceBtn, districtBtn, communceBtn, numberF0Btn;
 
     private ImageButton noteButton;
     private TextView note_1, note_2, note_3, note_4, note_5;
-    private TextView statusTextView;
+    private TextView statusTextView, currentDayTextView;
     ArrayList<TextView> noteTVList;
-
 
     @Nullable
     @Override
@@ -162,7 +163,8 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
         zoomOutImgBtn.setOnClickListener(zoomOutAction);
         homeImgBtn = view.findViewById(R.id.home_img_button);
         homeImgBtn.setOnClickListener(zoomToHomeAction);
-        playShowImgBtn = view.findViewById(R.id.play_show_button);
+        refreshImgBtn = view.findViewById(R.id.refresh_img_button);
+        refreshImgBtn.setOnClickListener(refreshAction);
 
         provinceBtn = view.findViewById(R.id.province_button);
         provinceBtn.setOnClickListener(provinceBtnAction);
@@ -173,6 +175,10 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
         numberF0Btn = view.findViewById(R.id.f0_button);
 
         statusTextView = view.findViewById(R.id.province_name_text_view);
+        currentDayTextView = view.findViewById(R.id.current_day_text_view);
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        currentDayTextView.setText(sdf.format(calendar.getTime()));
     }
 
     Intent intentcurrentlocation;
@@ -257,6 +263,13 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
         }
     };
 
+    private View.OnClickListener refreshAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.reset();
+        }
+    };
+
     private View.OnClickListener communeBtnAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -297,11 +310,34 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     }
 
     @Override
-    public void setStatusText(String address, String color) {
+    public void setStatusText(String address, String numberF0, String color) {
         if(statusTextView != null){
+            String state = MainActivity.getStringByIdName(context, "gray_zone_danger");
+            int backgound = R.drawable.gray_zone_style;
+            switch (color){
+                case Config.RED_ZONE_COLOR:
+                    state = MainActivity.getStringByIdName(context, "red_zone_danger");
+                    backgound = R.drawable.red_zone_style;
+                    break;
+                case Config.ORAGNE_ZONE_COLOR:
+                    state = MainActivity.getStringByIdName(context, "orange_zone_danger");
+                    backgound = R.drawable.orange_zone_style;
+                    break;
+                case Config.YELLOW_ZONE_COLOR:
+                    state = MainActivity.getStringByIdName(context, "yellow_zone_danger");
+                    backgound = R.drawable.yellow_zone_style;
+                    break;
+                case Config.GREEN_ZONE_COLOR:
+                    state = MainActivity.getStringByIdName(context, "green_zone_danger");
+                    backgound = R.drawable.green_zone_style;
+                    break;
+            }
+
+
             statusTextView.setText(Html.fromHtml("<b>" + address + "</b><br />" +
-                    "<i>" + "Chưa cập nhật" + "</i>", Html.FROM_HTML_MODE_LEGACY));
-            statusTextView.setTextColor(Color.parseColor(color));
+                      "F0: " + numberF0 + "<br />" +
+                      "<i>" + state + "</i>", Html.FROM_HTML_MODE_LEGACY));
+            statusTextView.setBackgroundResource(backgound);
         }
     }
 }

@@ -45,7 +45,9 @@
         <entry key="app/src/main/res/drawable/english_icon.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/english_selected_icon.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/gray_zone_icon.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/drawable/gray_zone_style.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/green_zone_icon.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/drawable/green_zone_style.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/history_journey_custom.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/home_icon.xml" value="0.16944444444444445" />
         <entry key="app/src/main/res/drawable/hospital_icon.xml" value="0.353125" />
@@ -61,6 +63,7 @@
         <entry key="app/src/main/res/drawable/my_location_icon.xml" value="0.1984375" />
         <entry key="app/src/main/res/drawable/new_record_icon.xml" value="0.15462962962962962" />
         <entry key="app/src/main/res/drawable/orange_zone_icon.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/drawable/orange_zone_style.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/person_icon.xml" value="0.1984375" />
         <entry key="app/src/main/res/drawable/play_arrow_icon.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/post_office_icon.xml" value="0.353125" />
@@ -84,6 +87,8 @@
         <entry key="app/src/main/res/drawable/radius_layout_custom.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/record_button_custom.xml" value="0.1984375" />
         <entry key="app/src/main/res/drawable/red_zone_icon.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/drawable/red_zone_style.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/refresh_icon.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/result_location_textview_custom.xml" value="0.1984375" />
         <entry key="app/src/main/res/drawable/road_icon.xml" value="0.1984375" />
         <entry key="app/src/main/res/drawable/run_circle_icon.xml" value="0.1984375" />
@@ -102,7 +107,9 @@
         <entry key="app/src/main/res/drawable/vietnamese_icon.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/vietnamese_selected_icon.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/walk_selected_icon.xml" value="0.1398148148148148" />
+        <entry key="app/src/main/res/drawable/yellow.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/yellow_zone_icon.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/drawable/yellow_zone_style.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/zoom_in_icon.xml" value="0.16944444444444445" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3328125" />

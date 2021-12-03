@@ -15,4 +15,9 @@
     <color name="colorAccent">#0c0099</color>
     <color name="gray">#3E4243</color>
     <color name="green_vaccine">#008244</color>
+    <color name="red_zone">#FD0D40</color>
+    <color name="orange_zone">#FF5722</color>
+    <color name="yellow_zone">#FFC107</color>
+    <color name="green_zone">#0FA57F</color>
+    <color name="gray_zone">#909BA2</color>
 </resources>

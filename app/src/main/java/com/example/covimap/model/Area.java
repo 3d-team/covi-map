@@ -53,7 +53,7 @@ public class Area implements Serializable {
                 "level='" + level + '\'' +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
-                ", childAreas=" + childAreas +
+                ", childAreas=" + childAreas.size() +
                 '}';
     }
 }

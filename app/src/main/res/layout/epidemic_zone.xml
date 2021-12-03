@@ -82,17 +82,17 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="10dp"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:visibility="gone"/>
 
         <ImageButton
-            android:id="@+id/play_show_button"
-            android:src="@drawable/play_arrow_icon"
+            android:id="@+id/refresh_img_button"
+            android:src="@drawable/refresh_icon"
             android:background="@drawable/button_epidemic_zone_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:tint="@color/gray"
-            android:enabled="false"/>
+            app:tint="@color/gray"/>
     </LinearLayout>
 
     <LinearLayout
@@ -119,12 +119,14 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+<!--            android:text="@string/epidemic_status_exmple"-->
             <TextView
                 android:id="@+id/province_name_text_view"
                 android:text="@string/epidemic_status_exmple"
                 android:padding="8dp"
+                android:layout_gravity="top"
                 android:textColor="#000000"
-                android:background="@drawable/button_epidemic_zone_style"
+                android:background="@drawable/gray_zone_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

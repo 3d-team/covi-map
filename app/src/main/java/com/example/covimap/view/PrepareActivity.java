@@ -2,6 +2,7 @@ package com.example.covimap.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -47,6 +49,7 @@ public class PrepareActivity extends Activity {
     private AppStatus appStatus;
     private MyAccount myAccount;
     private Area vietnam;
+    private String vietnamJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class PrepareActivity extends Activity {
 //            setContentView(R.layout.prepare_layout);
 
             DatabaseReference data = FirebaseDatabase.getInstance().getReference();
+            data.child("VietNam").child("numberF0").setValue("1,27Tr");
             data.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -89,14 +93,16 @@ public class PrepareActivity extends Activity {
                         String key = dataSnapshot.getKey();
                         if(key.equals("Users")){
                             myAccount = dataSnapshot.child(appStatus.getPhoneNumber()).getValue(MyAccount.class);
-                            for(DataSnapshot snapshot1 : dataSnapshot.getChildren()){
-
-                            }
-//                            Log.d("MyLog", myAccount.toString());
                         }
                         else if(key.equals("VietNam")){
                             vietnam = dataSnapshot.getValue(Area.class);
+                            Gson gson = new Gson();
+                            vietnamJSON = gson.toJson(vietnam);
 //                            Log.d("MyLog", vietnam.toString());
+                            SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("VietNamJSON", vietnamJSON);
+                            editor.commit();
                         }
                     }
                     divideFlow();
@@ -111,35 +117,15 @@ public class PrepareActivity extends Activity {
 
     public void divideFlow(){
         if(appStatus.isLogged() && appStatus.getPhoneNumber().isEmpty() == false){
-//            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(appStatus.getPhoneNumber());
-//            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if(snapshot.exists()){
-//                        myAccount = snapshot.getValue(MyAccount.class);
-                        Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putSerializable("AccountData", myAccount);
-//                        bundle.putSerializable("AppStatus", appStatus);
-//                        bundle.putSerializable("VietNam", vietnam);
-                        intent.putExtra("AccountData", myAccount);
-                        intent.putExtra("AppStatus", appStatus);
-//                        intent.putExtra("VietNam", vietnam);
-//                        intent.putExtra("Bundle", bundle);
-                        startActivity(intent);
-                        finish();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
+            Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
+            intent.putExtra("AccountData", myAccount);
+            intent.putExtra("AppStatus", appStatus);
+            startActivity(intent);
+            finish();
         }
         else {
             Intent intent = new Intent(PrepareActivity.this, LoginActivity.class);
             intent.putExtra("AppStatus", appStatus);
-//            intent.putExtra("VietNam", vietnam);
             startActivity(intent);
             finish();
         }

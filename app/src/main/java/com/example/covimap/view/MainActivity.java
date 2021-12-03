@@ -1,9 +1,13 @@
 package com.example.covimap.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -29,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -65,7 +70,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         Intent intent = getIntent();
         appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
         myAccount = (MyAccount)intent.getSerializableExtra("AccountData");
-//        Log.d("MyLog", vietnam.toString());
 
         prepareStatus();
         setContentView(R.layout.activity_main);
@@ -86,7 +90,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                 switch (item.getItemId()){
                     case R.id.nav_new_record:
                         newRecordActivity.getPhoneNumber(myAccount.getPhoneNumber());
-                        Log.d("MyLog", myAccount.toString());
                         currentFragment = newRecordActivity;
                         break;
                     case R.id.nav_direct_location:
@@ -180,24 +183,39 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         finish();
     }
 
+    public static String getStringByIdName(Context context, String idName) {
+        Resources res = context.getResources();
+        return res.getString(res.getIdentifier(idName, "string", context.getPackageName()));
+    }
+
     private class LoadBoundariesData implements Runnable{
         @Override
         public void run() {
-            vietnam = new Area("0", "VietNam", Config.GRAY_ZONE_COLOR, null,null, null);
-            DatabaseReference data = FirebaseDatabase.getInstance().getReference().child("VietNam");
-            data.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    vietnam = snapshot.getValue(Area.class);
-//                    Log.d("MyLog", vietnam.toString());
+//            vietnam = new Area("0", "VietNam", Config.GRAY_ZONE_COLOR, null,null, null);
+//            DatabaseReference data = FirebaseDatabase.getInstance().getReference().child("VietNam");
+//            data.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    vietnam = snapshot.getValue(Area.class);
+////                    Log.d("MyLog", vietnam.toString());
+//                    getProvince(vietnam.getChildAreas());
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+            SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
+            String key = "VietNamJSON";
+            if(preferences != null && preferences.contains(key)){
+                String vietnamJSON = preferences.getString(key, "");
+                if(!vietnamJSON.isEmpty()){
+                    Gson gson = new Gson();
+                    vietnam = gson.fromJson(vietnamJSON, Area.class);
                     getProvince(vietnam.getChildAreas());
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            }
         }
 
         private void getProvince(HashMap<String, Area> provinces){
@@ -249,10 +267,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                                 if(provinces.get(provinceName) != null){
                                     provinces.get(provinceName).setBoundaries(temp);
                                 }
-
 //                                AreaLabel areaLabel = new AreaLabel(province);
 //                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(province.getName()).setValue(areaLabel);
-
 //                                province = new Area();
                                 boundaries.clear();
                             }
@@ -325,7 +341,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
 
 //                                AreaLabel areaLabel = new AreaLabel(district);
 //                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(provinceName).child("childAreas").child(district.getName()).setValue(areaLabel);
-
 //                                district = new Area();
                                 boundaries.clear();
                             }
@@ -397,8 +412,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                                 if(commune != null){
                                     commune.setBoundaries(temp);
                                 }
-
-
 //                                AreaLabel areaLabel = new AreaLabel(commune);
 //                                FirebaseDatabase.getInstance().getReference().child("VietNam")
 //                                        .child("childAreas").child(provinceName)

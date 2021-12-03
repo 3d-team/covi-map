@@ -57,7 +57,7 @@
     <string name="district_button_hint">District</string>
     <string name="ward_button_hint">Ward, commune</string>
 
-    <string name="epidemic_status_exmple"><b>Phú Yên</b>\n<i>Nguy cơ</i></string>
+    <string name="epidemic_status_exmple"><b>Việt Nam</b>\nF0: Not update\n<i>Nguy cơ</i></string>
     <string name="note_button_hint">Note</string>
     <string name="red_zone_danger">Very high risk  </string>
     <string name="orange_zone_danger">High risk  </string>
