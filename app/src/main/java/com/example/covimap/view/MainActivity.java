@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -23,7 +24,11 @@ import com.example.covimap.model.CLocation;
 import com.example.covimap.model.MyAccount;
 import com.example.covimap.service.MainCallbacks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,7 +50,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     private NewRecordActivity newRecordActivity;
     private DirectActivity directActivity;
     private HistoryJourneyActivity historyJourneyActivity;
-//    private DiscoverActivity discoverActivity;
     private EpidemicZoneActivity epidemicZoneActivity;
     private PersonalActivity personalActivity;
     private Fragment currentFragment;
@@ -60,14 +64,15 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
+        myAccount = (MyAccount)intent.getSerializableExtra("AccountData");
+//        Log.d("MyLog", vietnam.toString());
+
         prepareStatus();
         setContentView(R.layout.activity_main);
-        myAccount = (MyAccount)intent.getSerializableExtra("AccountData");
 
         newRecordActivity = new NewRecordActivity();
         directActivity = new DirectActivity();
         historyJourneyActivity = new HistoryJourneyActivity();
-//        discoverActivity = new DiscoverActivity();
         epidemicZoneActivity = new EpidemicZoneActivity();
         personalActivity = new PersonalActivity();
 
@@ -145,18 +150,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         Log.d("STATUS:", "PAUSE");
     }
 
-    @Override
-    protected void onStop(){
-        super.onStop();
-        Log.d("STATUS:", "STOP");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("STATUS:", "DESTROY");
-    }
-
     public void prepareStatus(){
         if(appStatus != null){
             Log.d("MyLog", appStatus.toString());
@@ -191,15 +184,29 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         @Override
         public void run() {
             vietnam = new Area("0", "VietNam", Config.GRAY_ZONE_COLOR, null,null, null);
-            vietnam.setChildAreas(getProvince());
+            DatabaseReference data = FirebaseDatabase.getInstance().getReference().child("VietNam");
+            data.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    vietnam = snapshot.getValue(Area.class);
+//                    Log.d("MyLog", vietnam.toString());
+                    getProvince(vietnam.getChildAreas());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
-        private HashMap<String, Area> getProvince(){
-            HashMap<String, Area> provinces = new HashMap<>();
+        private void getProvince(HashMap<String, Area> provinces){
+            if(provinces == null) {provinces = new HashMap<>(); Log.d("MyTag", "NULL POINTER");}
+
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_1);
 
             String nodeName, nodeText;
-            Area province = new Area();
+            String provinceName = "";
             List<CLocation> boundaries = new ArrayList<>();
 
             try{
@@ -216,14 +223,14 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
                             if(nodeName.equals("Placemark")){
-                                province.setLevel("1");
+//                                province.setLevel("1");
                             }
                             else if(nodeName.equals("color")){
-                                province.setColor(Config.GRAY_ZONE_COLOR);
-                                province.setNumberF0("0");
+//                                province.setColor(Config.GRAY_ZONE_COLOR);
+//                                province.setNumberF0("0");
                             }
                             else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
-                                province.setName(parser.nextText());
+                                provinceName = parser.nextText();
                             }
                             else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
@@ -238,12 +245,15 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             nodeName = parser.getName();
                             if(nodeName.equals("Placemark")){
                                 List<CLocation> temp = new ArrayList<>(boundaries);
-                                province.setBoundaries(temp);
-                                provinces.put(province.getName(), province);
-//                                AreaLabel areaLabel = new AreaLabel(province);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child(province.getName()).setValue(areaLabel);
 
-                                province = new Area();
+                                if(provinces.get(provinceName) != null){
+                                    provinces.get(provinceName).setBoundaries(temp);
+                                }
+
+//                                AreaLabel areaLabel = new AreaLabel(province);
+//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(province.getName()).setValue(areaLabel);
+
+//                                province = new Area();
                                 boundaries.clear();
                             }
                             break;
@@ -256,80 +266,14 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                 e.printStackTrace();
             }
             getDistrict(provinces);
-            return provinces;
+//            return provinces;
         }
 
         private void getDistrict(HashMap<String, Area> provinces){
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_2);
 
             String nodeName, nodeText;
-            Area district = new Area();
-            List<CLocation> boundaries = new ArrayList<>();
-            String provinceName = "";
-
-            try{
-                int eventType = -1;
-                while(eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    eventType=parser.next();
-                    switch(eventType)
-                    {
-                        case XmlPullParser.START_DOCUMENT:
-                            break;
-                        case XmlPullParser.END_DOCUMENT:
-                            break;
-                        case XmlPullParser.START_TAG:
-                            nodeName = parser.getName();
-                            if(nodeName.equals("Placemark")){
-                                district.setLevel("2");
-                            }
-                            else if(nodeName.equals("color")){
-                                district.setColor(Config.GRAY_ZONE_COLOR);
-                                district.setNumberF0("0");
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
-                                provinceName = parser.nextText();
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
-                                district.setName(parser.nextText());
-                            }
-                            else if(nodeName.equals("coordinates")){
-                                nodeText = parser.nextText();
-                                String[] coordinatePairs = nodeText.split(" ");
-                                for(String coord : coordinatePairs){
-                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
-                                            Double.parseDouble(coord.split(",")[0])));
-                                }
-                            }
-                            break;
-                        case XmlPullParser.END_TAG:
-                            nodeName=parser.getName();
-                            if(nodeName.equals("Placemark")){
-                                List<CLocation> temp = new ArrayList<>(boundaries);
-                                district.setBoundaries(temp);
-                                provinces.get(provinceName).addChildArea(district);
-//                                AreaLabel areaLabel = new AreaLabel(district);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child(provinceName).child(district.getName()).setValue(areaLabel);
-
-                                district = new Area();
-                                boundaries.clear();
-                            }
-                            break;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            }
-            getCommnune(provinces);
-        }
-
-        private void getCommnune(HashMap<String, Area> provinces){
-            XmlPullParser parser = getResources().getXml(R.xml.gadm36_3);
-
-            String nodeName, nodeText;
-            Area commune = new Area();
+//            Area district = new Area();
             List<CLocation> boundaries = new ArrayList<>();
             String provinceName = "";
             String districtName = "";
@@ -348,20 +292,18 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
                             if(nodeName.equals("Placemark")){
-                                commune.setLevel("3");
+//                                district.setLevel("2");
                             }
                             else if(nodeName.equals("color")){
-                                commune.setColor(Config.GRAY_ZONE_COLOR);
-                                commune.setNumberF0("0");
+//                                district.setColor(Config.GRAY_ZONE_COLOR);
+//                                district.setNumberF0("0");
                             }
                             else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
                                 provinceName = parser.nextText();
                             }
                             else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
+//                                district.setName(parser.nextText());
                                 districtName = parser.nextText();
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_3")){
-                                commune.setName(parser.nextText());
                             }
                             else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
@@ -376,12 +318,94 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             nodeName=parser.getName();
                             if(nodeName.equals("Placemark")){
                                 List<CLocation> temp = new ArrayList<>(boundaries);
-                                commune.setBoundaries(temp);
-                                provinces.get(provinceName).getChildAreas().get(districtName).addChildArea(commune);
-//                                AreaLabel areaLabel = new AreaLabel(commune);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child(provinceName).child(districtName).child(commune.getName()).setValue(areaLabel);
+                                Area district = provinces.get(provinceName).getChildAreas().get(districtName);
+                                if(district != null){
+                                    district.setBoundaries(temp);
+                                }
 
-                                commune = new Area();
+//                                AreaLabel areaLabel = new AreaLabel(district);
+//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(provinceName).child("childAreas").child(district.getName()).setValue(areaLabel);
+
+//                                district = new Area();
+                                boundaries.clear();
+                            }
+                            break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
+            getCommnune(provinces);
+        }
+
+        private void getCommnune(HashMap<String, Area> provinces){
+            XmlPullParser parser = getResources().getXml(R.xml.gadm36_3);
+
+            String nodeName, nodeText;
+//            Area commune = new Area();
+            List<CLocation> boundaries = new ArrayList<>();
+            String provinceName = "";
+            String districtName = "";
+            String communeName = "";
+
+            try{
+                int eventType = -1;
+                while(eventType != XmlPullParser.END_DOCUMENT)
+                {
+                    eventType=parser.next();
+                    switch(eventType)
+                    {
+                        case XmlPullParser.START_DOCUMENT:
+                            break;
+                        case XmlPullParser.END_DOCUMENT:
+                            break;
+                        case XmlPullParser.START_TAG:
+                            nodeName = parser.getName();
+                            if(nodeName.equals("Placemark")){
+//                                commune.setLevel("3");
+                            }
+                            else if(nodeName.equals("color")){
+//                                commune.setColor(Config.GRAY_ZONE_COLOR);
+//                                commune.setNumberF0("0");
+                            }
+                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
+                                provinceName = parser.nextText();
+                            }
+                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
+                                districtName = parser.nextText();
+                            }
+                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_3")){
+//                                commune.setName(parser.nextText());
+                                communeName = parser.nextText();
+                            }
+                            else if(nodeName.equals("coordinates")){
+                                nodeText = parser.nextText();
+                                String[] coordinatePairs = nodeText.split(" ");
+                                for(String coord : coordinatePairs){
+                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
+                                            Double.parseDouble(coord.split(",")[0])));
+                                }
+                            }
+                            break;
+                        case XmlPullParser.END_TAG:
+                            nodeName=parser.getName();
+                            if(nodeName.equals("Placemark")){
+                                List<CLocation> temp = new ArrayList<>(boundaries);
+                                Area commune = provinces.get(provinceName).getChildAreas().get(districtName).getChildAreas().get(communeName);
+                                if(commune != null){
+                                    commune.setBoundaries(temp);
+                                }
+
+
+//                                AreaLabel areaLabel = new AreaLabel(commune);
+//                                FirebaseDatabase.getInstance().getReference().child("VietNam")
+//                                        .child("childAreas").child(provinceName)
+//                                        .child("childAreas").child(districtName)
+//                                        .child("childAreas").child(commune.getName()).setValue(areaLabel);
+
+//                                commune = new Area();
                                 boundaries.clear();
                             }
                             break;

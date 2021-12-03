@@ -89,7 +89,7 @@ public class MapManager implements OnMapReadyCallback {
         for(CLocation c:bounds){
             polygonOptions.add(c.toLatLng());
         }
-        polygonOptions.strokeWidth(2);
+        polygonOptions.strokeWidth(3);
         polygonOptions.strokeColor(Color.parseColor("#" + area.getColor()));
         polygonOptions.fillColor(Color.parseColor(Config.ALPHA_COLOR + area.getColor()));
         Polygon polygon = map.addPolygon(polygonOptions);

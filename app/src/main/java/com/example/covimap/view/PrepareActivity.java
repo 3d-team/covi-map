@@ -46,7 +46,7 @@ import java.util.concurrent.ExecutionException;
 public class PrepareActivity extends Activity {
     private AppStatus appStatus;
     private MyAccount myAccount;
-    List<Area> provinces;
+    private Area vietnam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,179 +54,6 @@ public class PrepareActivity extends Activity {
         setContentView(R.layout.prepare_layout);
         prepareStatus();
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//            try {
-//                FileInputStream inputStream = openFileInput("area.dat");
-//                ObjectInputStream os = new ObjectInputStream(inputStream);
-//                Area area = (Area) os.readObject();
-//                os.close();
-//                area.toString();
-//            }
-//            catch (Exception e){}
-//    }
-//
-//
-//    private class ReadXMLFileLevel1 extends AsyncTask<Void, Void, List<Area>> {
-//        @Override
-//        protected List<Area> doInBackground(Void... voids) {
-//            int xmlResFile = R.xml.gadm36_1;
-//            XmlPullParser parser = getResources().getXml(xmlResFile);
-//            String nodeName;
-//            String nodeText;
-//            Area province = new Area();
-//            List<Area> provinces = new ArrayList<>();
-//            List<CLocation> boundaries = new ArrayList<>();
-//            try{
-//                int eventType = -1;
-//                while(eventType != XmlPullParser.END_DOCUMENT)
-//                {
-//                    eventType=parser.next();
-//                    switch(eventType)
-//                    {
-//                        case XmlPullParser.START_DOCUMENT:
-//                            break;
-//                        case XmlPullParser.END_DOCUMENT:
-//                            break;
-//                        case XmlPullParser.START_TAG:
-//                            nodeName = parser.getName();
-//                            if(nodeName.equals("Placemark")){
-//                                province.setLevel("1");
-//                            }
-//                            else if(nodeName.equals("color")){
-//                                province.setColor(parser.nextText());
-//                            }
-//                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
-//                                province.setName(parser.nextText());
-//                            }
-//                            else if(nodeName.equals("coordinates")){
-//                                nodeText = parser.nextText();
-//                                String[] coordinatePairs = nodeText.split(" ");
-//                                for(String coord : coordinatePairs){
-//                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
-//                                            Double.parseDouble(coord.split(",")[0])));
-//                                }
-//                            }
-//                            break;
-//                        case XmlPullParser.END_TAG:
-//                            nodeName=parser.getName();
-//                            if(nodeName.equals("Placemark")){
-//                                List<CLocation> temp = new ArrayList<>(boundaries);
-//                                province.setBoundaries(temp);
-//                                provinces.add(province);
-//
-//                                province = new Area();
-//                                boundaries.clear();
-//                            }
-//                            break;
-//                    }
-//                }
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (XmlPullParserException e) {
-//                e.printStackTrace();
-//            }
-//            return provinces;
-//        }
-//    }
-//
-//    private class ReadXMLFileLevel2 extends AsyncTask<List<Area>, Void, List<Area>> {
-//        protected List<Area> doInBackground(List<Area>... lists) {
-//            int xmlResFile = R.xml.gadm36_2;
-//            int i = 0;
-//            XmlPullParser parser = getResources().getXml(xmlResFile);
-//            List<Area> provinces = lists[0];
-//            String nodeName;
-//            String nodeText;
-//            String provinceName = "";
-//            Area district = new Area();
-//            List<Area> districts = new ArrayList<>();
-//            List<CLocation> boundaries = new ArrayList<>();
-//
-//            try{
-//                int eventType = -1;
-//                while(eventType != XmlPullParser.END_DOCUMENT)
-//                {
-//                    eventType=parser.next();
-//                    switch(eventType)
-//                    {
-//                        case XmlPullParser.START_DOCUMENT:
-//                            break;
-//                        case XmlPullParser.END_DOCUMENT:
-//                            for(Area p : provinces){// Add districts to Yen Bai
-//                                if(p.getName().equals(provinceName)){
-//                                    p.setChildAreas(districts);
-//                                }
-//                            }
-//                            break;
-//                        case XmlPullParser.START_TAG:
-//                            nodeName = parser.getName();
-//                            if(nodeName.equals("Placemark")){
-//                                district.setLevel("2");
-//                            }
-//                            else if(nodeName.equals("color")){
-//                                district.setColor(parser.nextText());
-//                            }
-//                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
-//                                String temp = parser.nextText();
-//                                if(!provinceName.isEmpty() && !temp.equals(provinceName)){
-//                                    List<Area> temp_districts = new ArrayList<>(districts);
-//                                    for(Area p : provinces){
-//                                        if(p.getName().equals(provinceName)){
-//                                            p.setChildAreas(temp_districts);
-//                                        }
-//                                    }
-//                                    districts.clear();
-//                                }
-//                                provinceName = temp;
-//                            }
-//                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
-//                                district.setName(parser.nextText());
-//                            }
-//                            else if(nodeName.equals("coordinates")){
-//                                nodeText = parser.nextText();
-//                                String[] coordinatePairs = nodeText.split(" ");
-//                                for(String coord : coordinatePairs){
-//                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
-//                                            Double.parseDouble(coord.split(",")[0])));
-//                                }
-//                            }
-//                            break;
-//                        case XmlPullParser.END_TAG:
-//                            nodeName=parser.getName();
-//                            if(nodeName.equals("Placemark")){
-//                                List<CLocation> temp = new ArrayList<>(boundaries);
-//                                district.setBoundaries(temp);
-//                                districts.add(district);
-//
-//                                district = new Area();
-//                                boundaries.clear();
-//                            }
-//                            break;
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (XmlPullParserException e) {
-//                e.printStackTrace();
-//            }
-//            for(Area area: provinces){
-//                area.toString();
-//            }
-//
-////            Area vietnam = new Area("0", "VietNam", "000000", new ArrayList<>(), provinces);
-////            try{
-////                FileOutputStream outputStream = openFileOutput("area.dat", MODE_PRIVATE);
-////                vietnam.writeStatusToFile(outputStream);
-////            }
-////            catch (Exception e){}
-//
-//            return provinces;
-//        }
-//    }
 
     public void prepareStatus(){
         try {
@@ -254,34 +81,67 @@ public class PrepareActivity extends Activity {
             getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 //            setContentView(R.layout.prepare_layout);
 
-            if(appStatus.isLogged() && appStatus.getPhoneNumber().isEmpty() == false){
-                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(appStatus.getPhoneNumber());
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            myAccount = snapshot.getValue(MyAccount.class);
-                            Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
-                            intent.putExtra("AccountData", myAccount);
-                            intent.putExtra("AppStatus", appStatus);
-                            startActivity(intent);
-                            finish();
+            DatabaseReference data = FirebaseDatabase.getInstance().getReference();
+            data.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        String key = dataSnapshot.getKey();
+                        if(key.equals("Users")){
+                            myAccount = dataSnapshot.child(appStatus.getPhoneNumber()).getValue(MyAccount.class);
+                            for(DataSnapshot snapshot1 : dataSnapshot.getChildren()){
+
+                            }
+//                            Log.d("MyLog", myAccount.toString());
+                        }
+                        else if(key.equals("VietNam")){
+                            vietnam = dataSnapshot.getValue(Area.class);
+//                            Log.d("MyLog", vietnam.toString());
                         }
                     }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                    divideFlow();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            }
-            else {
-                Intent intent = new Intent(PrepareActivity.this, LoginActivity.class);
-                intent.putExtra("AppStatus", appStatus);
-                startActivity(intent);
-                finish();
-            }
+                }
+            });
         }
     }
 
-
+    public void divideFlow(){
+        if(appStatus.isLogged() && appStatus.getPhoneNumber().isEmpty() == false){
+//            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(appStatus.getPhoneNumber());
+//            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if(snapshot.exists()){
+//                        myAccount = snapshot.getValue(MyAccount.class);
+                        Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putSerializable("AccountData", myAccount);
+//                        bundle.putSerializable("AppStatus", appStatus);
+//                        bundle.putSerializable("VietNam", vietnam);
+                        intent.putExtra("AccountData", myAccount);
+                        intent.putExtra("AppStatus", appStatus);
+//                        intent.putExtra("VietNam", vietnam);
+//                        intent.putExtra("Bundle", bundle);
+                        startActivity(intent);
+                        finish();
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+        }
+        else {
+            Intent intent = new Intent(PrepareActivity.this, LoginActivity.class);
+            intent.putExtra("AppStatus", appStatus);
+//            intent.putExtra("VietNam", vietnam);
+            startActivity(intent);
+            finish();
+        }
+    }
 }

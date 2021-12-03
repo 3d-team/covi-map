@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
+import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.model.Facility;
 import com.example.covimap.model.MyAccount;
@@ -52,9 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String phoneNumber, password;
     private AppStatus appStatus;
-
     private Button buttonLogin;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
