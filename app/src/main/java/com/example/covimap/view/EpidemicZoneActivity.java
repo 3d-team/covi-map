@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.location.LocationManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -57,10 +59,11 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     private Area vietnam;
 
     private ImageButton zoomInImgBtn, homeImgBtn, zoomOutImgBtn, playShowImgBtn;
-    private Button provinceBtn, districtBtn, communceBtn;
+    private Button provinceBtn, districtBtn, communceBtn, numberF0Btn;
 
     private ImageButton noteButton;
     private TextView note_1, note_2, note_3, note_4, note_5;
+    private TextView statusTextView;
     ArrayList<TextView> noteTVList;
 
 
@@ -72,7 +75,7 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
             prepareWidget();
 
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.epidemic_ggmap_api);
-            mapManager = new MapManager();
+            mapManager = new MapManager(this);
             mapFragment.getMapAsync(mapManager);
         } catch (InflateException e) {
             Log.e("NEW RECORD ERROR", "onCreateView", e);
@@ -164,7 +167,12 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
         provinceBtn = view.findViewById(R.id.province_button);
         provinceBtn.setOnClickListener(provinceBtnAction);
         districtBtn = view.findViewById(R.id.district_button);
+        districtBtn.setOnClickListener(districtBtnAction);
         communceBtn = view.findViewById(R.id.ward_button);
+        communceBtn.setOnClickListener(communeBtnAction);
+        numberF0Btn = view.findViewById(R.id.f0_button);
+
+        statusTextView = view.findViewById(R.id.province_name_text_view);
     }
 
     Intent intentcurrentlocation;
@@ -220,12 +228,56 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     private View.OnClickListener provinceBtnAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            mapManager.reset();
+            if (vietnam == null) return;
             HashMap<String, Area> provinces = vietnam.getChildAreas();
+            if(provinces == null) return;
             provinces.forEach((s, area) -> {
-                mapManager.drawArea(area.getBoundaries(), Config.ALPHA_COLOR + Config.RED_ZONE_COLOR);
+                mapManager.drawArea(area);
             });
-//            Area area = provinces.get("Phú Yên");
-//            mapManager.drawArea(area.getBoundaries(), Config.ALPHA_COLOR + Config.RED_ZONE_COLOR);
+        }
+    };
+
+    private View.OnClickListener districtBtnAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.reset();
+            HashMap<String, Area> provinces = vietnam.getChildAreas();
+            if(provinces == null){return;}
+
+            provinces.forEach((s, area) -> {
+                HashMap<String, Area> districts = area.getChildAreas();
+                if (districts == null){return;}
+
+                districts.forEach((s1, area1) -> {
+                    mapManager.drawArea(area1);
+                });
+
+            });
+        }
+    };
+
+    private View.OnClickListener communeBtnAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mapManager.reset();
+            HashMap<String, Area> provinces = vietnam.getChildAreas();
+            if(provinces == null){return;}
+
+            provinces.forEach((s, area) -> {
+                HashMap<String, Area> districts = area.getChildAreas();
+                if (districts == null){return;}
+
+                districts.forEach((s1, area1) -> {
+                    HashMap<String, Area> communes = area.getChildAreas();
+                    if (communes == null){return;}
+
+                    districts.forEach((s2, area2) -> {
+                        mapManager.drawArea(area2);
+                    });
+                });
+
+            });
         }
     };
 
@@ -242,6 +294,15 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     @Override
     public void getMapArea(Area area) {
         this.vietnam = area;
+    }
+
+    @Override
+    public void setStatusText(String address, String color) {
+        if(statusTextView != null){
+            statusTextView.setText(Html.fromHtml("<b>" + address + "</b><br />" +
+                    "<i>" + "Chưa cập nhật" + "</i>", Html.FROM_HTML_MODE_LEGACY));
+            statusTextView.setTextColor(Color.parseColor(color));
+        }
     }
 }
 

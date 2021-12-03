@@ -6,10 +6,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.covimap.config.Config;
 import com.example.covimap.config.MapConfig;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.utils.MapHelper;
+import com.example.covimap.view.EpidemicZoneActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,22 +36,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MapManager implements OnMapReadyCallback {
+    private EpidemicZoneActivity epidemicZoneActivity;
     private GoogleMap map;
+
+    public MapManager(EpidemicZoneActivity epidemicZoneActivity){
+        this.epidemicZoneActivity = epidemicZoneActivity;
+    }
 
     public Marker addMarker(CLocation location, String title) {
         return map.addMarker(new MarkerOptions().position(location.toLatLng()).title(title));
     }
 
     public void zoomIn(){
-        map.moveCamera(CameraUpdateFactory.zoomBy(0.25f));
+        map.moveCamera(CameraUpdateFactory.zoomBy(0.1f));
     }
 
     public void zoomOut(){
-        map.moveCamera(CameraUpdateFactory.zoomBy(-0.25f));
+        map.moveCamera(CameraUpdateFactory.zoomBy(-0.1f));
     }
 
     public void zoomToHome(){
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(16.75013848528283, 107.02439182734477), MapConfig.ZOOM_NATION));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(15.843777859194317, 106.75648784826494), 5.32f));
     }
 
 
@@ -73,15 +80,35 @@ public class MapManager implements OnMapReadyCallback {
         map.addPolyline(lineOptions);
     }
 
-    public void drawArea(List<CLocation> bounds, String color){
+    public void drawArea(Area area){
+        if(area == null) return;
+        List<CLocation> bounds = area.getBoundaries();
+        if(bounds == null) return;
+
         PolygonOptions polygonOptions = new PolygonOptions();
         for(CLocation c:bounds){
             polygonOptions.add(c.toLatLng());
         }
         polygonOptions.strokeWidth(2);
-        polygonOptions.strokeColor(Color.parseColor(color));
-        polygonOptions.fillColor(Color.parseColor(color));
-        map.addPolygon(polygonOptions);
+        polygonOptions.strokeColor(Color.parseColor("#" + area.getColor()));
+        polygonOptions.fillColor(Color.parseColor(Config.ALPHA_COLOR + area.getColor()));
+        Polygon polygon = map.addPolygon(polygonOptions);
+        polygon.setClickable(true);
+        polygon.setTag(area);
+        map.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
+            @Override
+            public void onPolygonClick(@NonNull Polygon polygon) {
+                Area area1 = (Area)polygon.getTag();
+                HashMap<String, Area> childAreas = area1.getChildAreas();
+                if(childAreas == null) return;// end recursive here
+
+                reset();
+                epidemicZoneActivity.setStatusText(area1.getName(), "#" + area1.getColor());
+                childAreas.forEach((s, area2) -> {
+                    drawArea(area2);
+                });
+            }
+        });
     }
 
     public void findRouteBetweenTwoLocations(CLocation start, CLocation end, DirectionMode mode) {
@@ -96,6 +123,9 @@ public class MapManager implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
+        if(this.epidemicZoneActivity != null){
+            zoomToHome();
+        }
     }
 
     public class FetchURL extends AsyncTask<String, Void, String> {
