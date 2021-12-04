@@ -69,4 +69,6 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="phone_number_error">Please enter valid phone number!</string>
+    <string name="your_location">Your current location</string>
+    <string name="covid_passport">Covid Passport</string>
 </resources>

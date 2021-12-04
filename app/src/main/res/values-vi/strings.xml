@@ -25,8 +25,8 @@
     <string name="period_title">" Thời gian:  "</string>
     <string name="resume_button">Tiếp tục</string>
     <string name="save_button">Lưu</string>
-    <string name="start_point_hint">Điểm bắt đầu</string>
-    <string name="end_point_hint">Điểm kết thúc</string>
+    <string name="start_point_hint">Điểm đi</string>
+    <string name="end_point_hint">Điểm đến</string>
     <string name="start_date_title">Ngày bắt đầu</string>
     <string name="end_date_title">Ngày kết thúc</string>
     <string name="start_title">" Bắt đầu:  "</string>
@@ -69,4 +69,6 @@
     <string name="male">Nam</string>
     <string name="female">Nữ</string>
     <string name="phone_number_error">Số điện thoại bạn nhập không hợp lệ!</string>
+    <string name="your_location">Vị trí hiện tại của bạn</string>
+    <string name="covid_passport">Thẻ thông hành</string>
 </resources>

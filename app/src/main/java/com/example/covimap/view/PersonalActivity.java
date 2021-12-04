@@ -1,10 +1,16 @@
 package com.example.covimap.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -19,13 +27,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.loader.content.AsyncTaskLoader;
 
 import com.example.covimap.R;
+import com.example.covimap.config.Config;
 import com.example.covimap.config.LanguageConfig;
 import com.example.covimap.model.AppStatus;
+import com.example.covimap.model.Area;
 import com.example.covimap.model.MyAccount;
 import com.example.covimap.service.PersonalFragmentCallbacks;
+import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Locale;
 
 public class PersonalActivity extends Fragment implements PersonalFragmentCallbacks {
@@ -43,6 +59,9 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private TextView logoutButton;
     private TextView updateButton;
 
+    private LinearLayout passportLayout;
+    private ImageView qrCode;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +78,11 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
 
         logoutButton = (TextView)view.findViewById(R.id.logout_textview_button);
         logoutButton.setOnClickListener(logoutAction);
-//        updateButton.setOnClickListener(updateButtonOnclick);
+        updateButton = (TextView) view.findViewById(R.id.update_passport_text_view);
+        updateButton.setOnClickListener(updateAction);
+
+        passportLayout = (LinearLayout) view.findViewById(R.id.covid_passport);
+        qrCode = (ImageView) view.findViewById(R.id.qr_code_imgview);
 
         languageOptionRG.clearCheck();
         if(createStatus.getLanguage().equals(LanguageConfig.VI)){
@@ -71,6 +94,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
 
         vi_button.setOnClickListener(vi_onclick);
         en_button.setOnClickListener(en_onclick);
+        Log.d("ABCDEF", "ONCREATEVIEW");
         return view;
     }
 
@@ -80,6 +104,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         try{
             context = getActivity();
             main = (MainActivity) getActivity();
+            Log.d("ABCDEF", "ONCREATE");
         }
         catch (IllegalStateException e){
             throw new IllegalStateException("Error");
@@ -131,7 +156,9 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private View.OnClickListener updateAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Intent intent = new Intent(context, CoviPassportAcivity.class);
+            intent.putExtra("MyAccount", myAccount);
+            startActivity(intent);
         }
     };
 
@@ -143,5 +170,70 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     @Override
     public void setMyAccount(MyAccount myAccount) {
         this.myAccount = myAccount;
+    }
+
+    @Override
+    public void setUpCovidPassPort(String color, Bitmap qrCode) {
+
+    }
+
+    @Override
+    public void onResume() {
+        Log.d("ABCDEF", "RESUME");
+        super.onResume();
+        // setup Color
+        String value = createStatus.getColor();
+        passportLayout.setBackgroundColor(Color.parseColor(value));
+        SharedPreferences preferences = main.getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
+        String color = "#"+Config.GRAY_ZONE_COLOR;
+        String key = "ColorVaccine";
+        if(preferences != null && preferences.contains(key)){
+            color = preferences.getString(key, "");
+            passportLayout.setBackgroundColor(Color.parseColor(color));
+            main.onColorChange(color);
+        }
+
+        value = createStatus.getQRCode();
+        key = "QR_Code";
+        if(preferences != null && preferences.contains(key)){
+            value = preferences.getString(key, "");
+            main.onQRCodeChange(value);
+        }
+
+
+//        new DownloadImage().execute(value);
+    }
+
+    @Override
+    public void onStop() {
+        Log.d("ABCDEF", "STOP");
+        super.onStop();
+    }
+
+    private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected Bitmap doInBackground(String... URL) {
+            String imageURL = URL[0];
+            Bitmap bitmap = null;
+            try {
+                // Download Image from URL
+                InputStream input = new java.net.URL(imageURL).openStream();
+                // Decode Bitmap
+                bitmap = BitmapFactory.decodeStream(input);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            // Set the bitmap into ImageView
+            qrCode.setImageBitmap(result);
+            // Close progressdialog
+        }
     }
 }

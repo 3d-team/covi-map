@@ -17,8 +17,10 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,10 +51,13 @@ public class DirectActivity extends Fragment {
 
     private SearchView searchSrcLocationEdt;
     private TextView resultSrcTextView;
+    private TextView yourLocationSrcTextView, yourLocationDestTextView;
+    private ImageView srcImgView, destImgView, swapSrcDest;
 
     private SearchView searchDestLocationEdt;
     private TextView resultDestTextView;
     private FloatingActionButton locateCurrentBtn;
+    private boolean isSwap = false;
 
     @Nullable
     @Override
@@ -84,37 +89,44 @@ public class DirectActivity extends Fragment {
         }
     }
 
-    Intent intentcurrentlocation;
+
     private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            }
-            else {
-                BroadcastReceiver receiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if(intent.getAction().equals("CURRENT_LOCATION")){
-                            CLocation location = new CLocation(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
-                            mapManager.reset();
-                            mapManager.animateCamera(location);
-                            mapManager.addMarker(location, "Your Location");
-                            main.stopService(intentcurrentlocation);
-                            main.unregisterReceiver(this);
-                        }
-                    }
-                };
-                main.registerReceiver(receiver, new IntentFilter("CURRENT_LOCATION"));
-                intentcurrentlocation = new Intent(main, LocationService.class);
-                main.startService(intentcurrentlocation);
-            }
+            requestCurrentLocation();
         }
     };
 
+    private CLocation currentLocation;
+    Intent intentcurrentlocation;
+    public void requestCurrentLocation(){
+        if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else {
+            BroadcastReceiver receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if(intent.getAction().equals("CURRENT_LOCATION")){
+                        currentLocation = new CLocation(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
+                        mapManager.reset();
+                        mapManager.animateCamera(currentLocation);
+                        mapManager.addMarker(currentLocation, "Your Location");
+                        main.stopService(intentcurrentlocation);
+                        main.unregisterReceiver(this);
+                    }
+                }
+            };
+            main.registerReceiver(receiver, new IntentFilter("CURRENT_LOCATION"));
+            intentcurrentlocation = new Intent(main, LocationService.class);
+            main.startService(intentcurrentlocation);
+        }
+    }
+
     private String srcAddressStr;
     private Address srcAddress;
+    private CLocation srcLocation;
     private SearchView.OnQueryTextListener searchSrcLocationEdtOnQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String s) {
@@ -131,9 +143,9 @@ public class DirectActivity extends Fragment {
                 public void onTick(long l) {
 
                 }
-
                 @Override
                 public void onFinish() {
+                    if(isSwap) return;
                     String locationName = searchSrcLocationEdt.getQuery().toString();
                     List<Address> geoResults = null;
 
@@ -170,19 +182,21 @@ public class DirectActivity extends Fragment {
             return false;
         }
     };
-    // Listener for resultTextView
+
     private View.OnClickListener resultSrcTextViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            view.setVisibility(View.INVISIBLE);
-            CLocation locationSearch = new CLocation(srcAddress.getLatitude(), srcAddress.getLongitude());
-            mapManager.addMarker(locationSearch, "Search");
-            mapManager.animateCamera(locationSearch);
+            view.setVisibility(View.GONE);
+            srcLocation = new CLocation(srcAddress.getLatitude(), srcAddress.getLongitude());
+            mapManager.addMarker(srcLocation, "Search");
+            mapManager.animateCamera(srcLocation);
+            searchSrcLocationEdt.clearFocus();
         }
     };
 
     private String destAddressStr;
     private Address destAddress;
+    private CLocation destLocation;
     private SearchView.OnQueryTextListener searchDestLocationEdtOnQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String s) {
@@ -202,6 +216,7 @@ public class DirectActivity extends Fragment {
 
                 @Override
                 public void onFinish() {
+                    if(isSwap) return;
                     String locationName = searchDestLocationEdt.getQuery().toString();
                     List<Address> geoResults = null;
 
@@ -238,16 +253,42 @@ public class DirectActivity extends Fragment {
             return false;
         }
     };
-    // Listener for resultTextView
+
     private View.OnClickListener resultDestTextViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            view.setVisibility(View.INVISIBLE);
-            CLocation locationSearch = new CLocation(destAddress.getLatitude(), destAddress.getLongitude());
-            mapManager.addMarker(locationSearch, "Search");
-            mapManager.animateCamera(locationSearch);
+            view.setVisibility(View.GONE);
+            destLocation = new CLocation(destAddress.getLatitude(), destAddress.getLongitude());
+            mapManager.addMarker(destLocation, "Search");
+            mapManager.animateCamera(destLocation);
+            searchDestLocationEdt.clearFocus();
         }
     };
+
+    private View.OnClickListener yourLocationSrcTextViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            view.setVisibility(View.GONE);
+            requestCurrentLocation();
+            srcLocation = currentLocation;
+            String str = MainActivity.getStringByIdName(context, "your_location");
+            searchSrcLocationEdt.setQuery(str, false);
+            searchSrcLocationEdt.clearFocus();
+        }
+    };
+
+    private View.OnClickListener yourLocationDestTextViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            view.setVisibility(View.GONE);
+            requestCurrentLocation();
+            destLocation = currentLocation;
+            String str = MainActivity.getStringByIdName(context, "your_location");
+            searchDestLocationEdt.setQuery(str, false);
+            searchDestLocationEdt.clearFocus();
+        }
+    };
+
 
     //Prepare for UI---------------------------------------------
     public void prepareWidget(){
@@ -256,8 +297,6 @@ public class DirectActivity extends Fragment {
 
         searchDestLocationEdt = (SearchView) view.findViewById(R.id.search_dest_location_edt);
         resultDestTextView = (TextView) view.findViewById(R.id.result_dest_location_text_view);
-//        distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
-//        timeTextView = (TextView) view.findViewById(R.id.time_text_view);
 
         locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
         locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
@@ -267,6 +306,52 @@ public class DirectActivity extends Fragment {
 
         searchDestLocationEdt.setOnQueryTextListener(searchDestLocationEdtOnQueryTextListener);
         resultDestTextView.setOnClickListener(resultDestTextViewListener);
-    }
 
+        yourLocationSrcTextView = (TextView) view.findViewById(R.id.your_location_src_text_view);
+        yourLocationSrcTextView.setOnClickListener(yourLocationSrcTextViewListener);
+        yourLocationDestTextView = (TextView) view.findViewById(R.id.your_location_dest_text_view);
+        yourLocationDestTextView.setOnClickListener(yourLocationDestTextViewListener);
+
+        srcImgView = (ImageView) view.findViewById(R.id.src_icon);
+        srcImgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yourLocationSrcTextView.setVisibility(View.VISIBLE);
+            }
+        });
+        destImgView = (ImageView) view.findViewById(R.id.dest_icon);
+        destImgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yourLocationDestTextView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        swapSrcDest = (ImageView) view.findViewById(R.id.swap_src_dest);
+        swapSrcDest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CLocation location = srcLocation;
+                srcLocation = destLocation;
+                destLocation = location;
+
+                CharSequence srcStr = searchSrcLocationEdt.getQuery();
+                searchSrcLocationEdt.setQuery(searchDestLocationEdt.getQuery(), false);
+                searchDestLocationEdt.setQuery(srcStr, false);
+                isSwap = true;
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                            isSwap = false;
+                        }
+                        catch (Exception e){}
+                    }
+                });
+                thread.start();
+            }
+        });
+    }
 }

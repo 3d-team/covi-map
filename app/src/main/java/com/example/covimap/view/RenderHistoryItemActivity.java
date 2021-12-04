@@ -114,8 +114,8 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
                     for (CLocation c : path) {
                         polylineOptions.add(c.toLatLng());
                     }
-                    googleMap.addPolyline(polylineOptions.width(5).color(Color.parseColor("#00C277")));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(path.get(0).toLatLng(), MapConfig.ZOOM_CITY));
+                    googleMap.addPolyline(polylineOptions.width(15).color(Color.parseColor("#FF0000")));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(path.get(0).toLatLng(), MapConfig.ZOOM_STREET));
                 }
 
                 @Override

@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/my_location_icon"
         android:layout_gravity="center|right"
-        android:backgroundTint="#EDEDF1"
+        android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
         app:fabSize="mini"/>
     <LinearLayout
         android:weightSum="3"

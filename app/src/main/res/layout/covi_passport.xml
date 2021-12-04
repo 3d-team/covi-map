@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <WebView
+        android:id="@+id/web_thong_tin_tiem_chung"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/close_render_history_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close_icon"
+        android:layout_gravity="top|right"
+        android:tint="#000000"
+        android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
+        app:fabSize="mini"/>
+
+    <Button
+        android:id="@+id/submit_button"
+        android:text="OK"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/button_login"
+        android:layout_gravity="bottom"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

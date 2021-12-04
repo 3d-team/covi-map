@@ -183,6 +183,16 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         finish();
     }
 
+    @Override
+    public void onColorChange(String color) {
+        appStatus.setColor(color);
+    }
+
+    @Override
+    public void onQRCodeChange(String QRCode) {
+        appStatus.setQRCode(QRCode);
+    }
+
     public static String getStringByIdName(Context context, String idName) {
         Resources res = context.getResources();
         return res.getString(res.getIdentifier(idName, "string", context.getPackageName()));

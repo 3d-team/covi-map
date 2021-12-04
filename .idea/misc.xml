@@ -115,19 +115,21 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3328125" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/bottom_sheet_layout.xml" value="0.36041666666666666" />
-        <entry key="app/src/main/res/layout/direct_activity.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/covi_passport.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/direct_activity.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/discover_activity.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/epidemic_zone.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/history_journey_activity.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/history_journey_item_activity.xml" value="0.2375" />
         <entry key="app/src/main/res/layout/item_list_history_journey_layout.xml" value="0.3578125" />
-        <entry key="app/src/main/res/layout/new_record_activity.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/new_record_activity.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/new_record_layout.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/personal_activity.xml" value="0.3328125" />
         <entry key="app/src/main/res/layout/prepare_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/red_zone.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2171875" />
+        <entry key="app/src/main/res/xml/network_security_config.xml" value="0.3523076923076923" />
       </map>
     </option>
   </component>

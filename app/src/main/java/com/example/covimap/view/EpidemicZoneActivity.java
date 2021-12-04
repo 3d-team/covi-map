@@ -195,7 +195,7 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
                     public void onReceive(Context context, Intent intent) {
                         if(intent.getAction().equals("CURRENT_LOCATION")){
                             CLocation location = new CLocation(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
-                            mapManager.reset();
+//                            mapManager.reset();
                             mapManager.animateCamera(location);
                             mapManager.addMarker(location, "Your Location");
                             main.stopService(intentcurrentlocation);

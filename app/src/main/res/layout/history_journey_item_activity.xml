@@ -18,6 +18,7 @@
         android:layout_gravity="top|right"
         android:tint="#000000"
         android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
         app:fabSize="mini"/>
 
     <LinearLayout

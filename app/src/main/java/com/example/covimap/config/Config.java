@@ -10,6 +10,7 @@ public class Config {
 
     public static final String STATUS_FILE_DIR = "coviapp_status.dat";
     public static final String SHARE_PREF_NAME = "covi_pref_file";
+    public static final String QR_FILE = "QR.png";
     public static final String DATETIME_FORMAT = "HH:mm:ss - dd/MM/yyyy";
 
     public static final String ALPHA_COLOR = "#90";

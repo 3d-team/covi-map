@@ -34,6 +34,7 @@
             android:layout_marginLeft="2dp"/>
 
         <ImageView
+            android:id="@+id/dest_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/connect_icon"
@@ -46,12 +47,12 @@
             android:layout_height="40dp"
             android:layout_gravity="top|center"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="2dp"
             android:layout_marginRight="25dp"
             android:background="@drawable/edittext_custom"
             android:iconifiedByDefault="false"
             android:queryHint="@string/start_point_hint"
             android:searchHintIcon="@null"
-            android:layout_marginTop="2dp"
             android:searchIcon="@null" />
 
         <SearchView
@@ -70,12 +71,13 @@
             android:layout_marginTop="4dp"/>
 
         <ImageView
+            android:id="@+id/swap_src_dest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/swap_vert_icon"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="2dp"
-            android:layout_marginTop="30dp"/>
+            android:src="@drawable/swap_vert_icon" />
 
         <RadioGroup
             android:orientation="horizontal"
@@ -111,6 +113,18 @@
         </RadioGroup>
 
         <TextView
+            android:id="@+id/your_location_src_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/search_src_location_edt"
+            android:background="@drawable/result_location_textview_custom"
+            android:drawableStart="@drawable/location_icon"
+            android:padding="8dp"
+            android:text="@string/your_location"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/result_src_location_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,7 +134,17 @@
             android:padding="8dp"
             android:textColor="@color/black"
             android:visibility="gone" />
-
+        <TextView
+            android:id="@+id/your_location_dest_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/search_dest_location_edt"
+            android:background="@drawable/result_location_textview_custom"
+            android:drawableStart="@drawable/location_icon"
+            android:padding="8dp"
+            android:text="@string/your_location"
+            android:textColor="@color/black"
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/result_dest_location_text_view"
             android:layout_width="match_parent"
@@ -130,7 +154,7 @@
             android:drawableStart="@drawable/location_icon"
             android:padding="8dp"
             android:textColor="@color/black"
-            android:visibility="invisible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -139,7 +163,9 @@
         android:layout_height="wrap_content"
         android:src="@drawable/my_location_icon"
         android:layout_gravity="center|right"
-        android:backgroundTint="#EDEDF1"
+        android:background="@color/gray"
+        android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
         app:fabSize="mini"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

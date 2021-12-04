@@ -220,7 +220,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/my_location_icon"
         android:layout_gravity="center|right"
-        android:backgroundTint="#EDEDF1"
+        android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
         android:layout_marginBottom="100dp"
         app:fabSize="mini"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
