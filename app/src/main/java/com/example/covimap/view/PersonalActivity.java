@@ -94,7 +94,6 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
 
         vi_button.setOnClickListener(vi_onclick);
         en_button.setOnClickListener(en_onclick);
-        Log.d("ABCDEF", "ONCREATEVIEW");
         return view;
     }
 
@@ -104,7 +103,6 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         try{
             context = getActivity();
             main = (MainActivity) getActivity();
-            Log.d("ABCDEF", "ONCREATE");
         }
         catch (IllegalStateException e){
             throw new IllegalStateException("Error");
@@ -193,15 +191,14 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
             main.onColorChange(color);
         }
 
-        value = createStatus.getQRCode();
-        key = "QR_Code";
-        if(preferences != null && preferences.contains(key)){
-            value = preferences.getString(key, "");
-            main.onQRCodeChange(value);
-        }
-
-
-//        new DownloadImage().execute(value);
+//        value = createStatus.getQRCode();
+//        key = "QR_Code";
+//        if(preferences != null && preferences.contains(key)){
+//            value = preferences.getString(key, "");
+//            main.onQRCodeChange(value);
+//        }
+        value = "https://chart.googleapis.com/chart?cht=qr&chl=CoviMap_Project_of_477_484_495&chs=180x180&choe=UTF-8&chld=L|2";
+        new DownloadImage().execute(value);
     }
 
     @Override

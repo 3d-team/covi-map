@@ -64,10 +64,10 @@ public class CoviPassportAcivity extends Activity{
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String jsCode = "var qr_element = document.querySelector(\"div.qrcode img\");\n" +
-                        "console.log(qr_element.src);";
-                webView.evaluateJavascript(jsCode, null);
-                jsCode = "elem = document.querySelector(\".bgcovid\");\n" +
+//                String jsCode = "var qr_element = document.querySelector(\"div.qrcode img\");\n" +
+//                        "console.log(qr_element.src);";
+//                webView.evaluateJavascript(jsCode, null);
+                String jsCode = "elem = document.querySelector(\".bgcovid\");\n" +
                         "style = getComputedStyle(elem);\n" +
                         "console.log(style.backgroundColor);";
                 webView.evaluateJavascript(jsCode, null);
@@ -79,19 +79,15 @@ public class CoviPassportAcivity extends Activity{
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-//            String name = myAccount.getFullname() + "@";
-//            String birthday = myAccount.getBirthday() + "@";
-//            String phone = myAccount.getPhoneNumber()+"@";
-            Log.d("MyLog_WEBLOG", myAccount.toString());
-            String name = "Trầm Hữu Đức"+"@";
-            String birthday = "01/09/2001"+"@";
-            String phone = "0375157298"+"@";
+            String name = myAccount.getFullname() + "@";
+            String birthday = myAccount.getBirthday() + "@";
+            String phone = myAccount.getPhoneNumber()+"@";
 
-            String jsCode = "var qr_element = document.querySelector(\"div.qrcode img\");\n" +
-                    "console.log(qr_element.src);";
-            view.evaluateJavascript(jsCode, null);
+//            String jsCode = "var qr_element = document.querySelector(\"div.qrcode img\");\n" +
+//                    "console.log(qr_element.src);";
+//            view.evaluateJavascript(jsCode, null);
 
-            jsCode = "document.querySelector(\"input[formcontrolname='fullname']\").value = \""+ name +"\";\n" +
+            String jsCode = "document.querySelector(\"input[formcontrolname='fullname']\").value = \""+ name +"\";\n" +
                     "document.querySelector(\"input[formcontrolname='birthday']\").value = \""+ birthday +"\";\n" +
                     "document.querySelector(\"input[formcontrolname='personalPhoneNumber']\").value = \""+ phone +"\";" +
                     "document.querySelector(\"button[type='submit'\").disabled = false;";
@@ -119,15 +115,15 @@ public class CoviPassportAcivity extends Activity{
                 editor.commit();
                 countMess++;
             }
-            if(mess.contains("data")){
-                Log.d("MyTag", consoleMessage.message());
-                SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("QR_Code", mess);
-                editor.commit();
-                countMess++;
-            }
-            if(countMess == 2){
+//            if(mess.contains("data")){
+//                Log.d("MyTag", consoleMessage.message());
+//                SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = preferences.edit();
+//                editor.putString("QR_Code", mess);
+//                editor.commit();
+//                countMess++;
+//            }
+            if(countMess == 1){
                 finish();
             }
             return super.onConsoleMessage(consoleMessage);

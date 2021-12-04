@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
+import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
@@ -39,6 +41,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
+import java.security.acl.Group;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +61,8 @@ public class DirectActivity extends Fragment {
     private TextView resultDestTextView;
     private FloatingActionButton locateCurrentBtn;
     private boolean isSwap = false;
+
+    private RadioGroup directMode;
 
     @Nullable
     @Override
@@ -289,9 +294,35 @@ public class DirectActivity extends Fragment {
         }
     };
 
+    RadioGroup.OnCheckedChangeListener directModeAction = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+            if(srcLocation == null || destLocation == null){
+                Toast.makeText(context, "Lack of start address or target address!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            switch (i){
+                case R.id.walk_radiobutton:
+                    mapManager.findRouteBetweenTwoLocations(srcLocation, destLocation, DirectionMode.WALKING);
+                    break;
+                case R.id.motobike_radiobutton:
+                    mapManager.findRouteBetweenTwoLocations(srcLocation, destLocation, DirectionMode.BICYCLING);
+                    break;
+                case R.id.car_radiobutton:
+                    mapManager.findRouteBetweenTwoLocations(srcLocation, destLocation, DirectionMode.DRIVING);
+                    break;
+                case R.id.bus_radiobutton:
+                    mapManager.findRouteBetweenTwoLocations(srcLocation, destLocation, DirectionMode.TRANSIT);
+                    break;
+            }
+        }
+    };
 
     //Prepare for UI---------------------------------------------
     public void prepareWidget(){
+        directMode = (RadioGroup) view.findViewById(R.id.direction_mode_group);
+        directMode.setOnCheckedChangeListener(directModeAction);
+
         searchSrcLocationEdt = (SearchView) view.findViewById(R.id.search_src_location_edt);
         resultSrcTextView = (TextView) view.findViewById(R.id.result_src_location_text_view);
 

@@ -80,6 +80,7 @@
             android:src="@drawable/swap_vert_icon" />
 
         <RadioGroup
+            android:id="@+id/direction_mode_group"
             android:orientation="horizontal"
             android:layout_marginTop="7dp"
             android:layout_below="@+id/search_dest_location_edt"

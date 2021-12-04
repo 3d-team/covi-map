@@ -99,9 +99,9 @@ public class RegisterActivity extends AppCompatActivity {
                             if(validate()){
                                 MyAccount myAccount = new MyAccount(phoneNumber, password, fullname, birthday, gender);
                                 mDatabase.setValue(myAccount);
-                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                intent.putExtra("phone-number", myAccount.getPhoneNumber());
-                                startActivity(intent);
+//                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+//                                intent.putExtra("phone-number", myAccount.getPhoneNumber());
+//                                startActivity(intent);
                                 finish();
                             }
                         }
