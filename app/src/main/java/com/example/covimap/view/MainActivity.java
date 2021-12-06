@@ -167,7 +167,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     @Override
     public void onChangeLanguage(String lang){
         if(appStatus == null){
-            Log.d("__477_484_495", "APP_STATUS_NULL");
             return;
         }
         appStatus.setLanguage(lang);
@@ -180,6 +179,12 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             return;
         }
         appStatus.setLogged(islogged);
+        String color = "#" + Config.GRAY_ZONE_COLOR;
+        appStatus.setColor(color);
+        SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("ColorVaccine", color);
+        editor.commit();
         finish();
     }
 

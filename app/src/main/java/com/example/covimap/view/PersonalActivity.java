@@ -112,10 +112,10 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private View.OnClickListener logoutAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(main, LoginActivity.class);
+            Intent intent = new Intent(main, PrepareActivity.class);
             main.onChangeLoginStatus(false);
-            intent.putExtra("phone-number", myAccount.getPhoneNumber());
-            intent.putExtra("AppStatus", createStatus);
+//            intent.putExtra("phone-number", myAccount.getPhoneNumber());
+//            intent.putExtra("AppStatus", createStatus);
             startActivity(intent);
         }
     };
@@ -177,7 +177,6 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
 
     @Override
     public void onResume() {
-        Log.d("ABCDEF", "RESUME");
         super.onResume();
         // setup Color
         String value = createStatus.getColor();
@@ -199,12 +198,6 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
 //        }
         value = "https://chart.googleapis.com/chart?cht=qr&chl=CoviMap_Project_of_477_484_495&chs=180x180&choe=UTF-8&chld=L|2";
         new DownloadImage().execute(value);
-    }
-
-    @Override
-    public void onStop() {
-        Log.d("ABCDEF", "STOP");
-        super.onStop();
     }
 
     private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
