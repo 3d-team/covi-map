@@ -6,14 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Html;
 import android.util.Log;
 import android.view.InflateException;
@@ -24,33 +17,26 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
-import com.example.covimap.config.MapConfig;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class EpidemicZoneActivity extends Fragment implements com.example.covimap.service.EpidemicZoneActivity {
     private MapManager mapManager;
@@ -59,6 +45,7 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     private static View view;
     private FloatingActionButton currentLocationButton;
     private Area vietnam;
+    private Marker currentMarker = null;
 
     private ImageButton zoomInImgBtn, homeImgBtn, zoomOutImgBtn, refreshImgBtn;
     private Button provinceBtn, districtBtn, communceBtn, numberF0Btn;
@@ -195,9 +182,11 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
                     public void onReceive(Context context, Intent intent) {
                         if(intent.getAction().equals("CURRENT_LOCATION")){
                             CLocation location = new CLocation(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
-//                            mapManager.reset();
+                            if(currentMarker != null){
+                                currentMarker.remove();
+                            }
                             mapManager.animateCamera(location);
-                            mapManager.addMarker(location, "Your Location");
+                            currentMarker = mapManager.addMarker(location, "Your Location");
                             main.stopService(intentcurrentlocation);
                             main.unregisterReceiver(this);
                         }

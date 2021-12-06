@@ -6,7 +6,7 @@ public class Config {
     public static final int PHONENUMBER_LENGTH = 8;
     public static final int PASSWORD_LENGTH = 5;
 
-    public static final String DIRECTION_API_KEY = "AIzaSyB15AToVgvxLC6sD5unYoiUaq99459iPaQ";
+    public static final String DIRECTION_API_KEY ="AIzaSyB15AToVgvxLC6sD5unYoiUaq99459iPaQ";
 
     public static final String STATUS_FILE_DIR = "coviapp_status.dat";
     public static final String SHARE_PREF_NAME = "covi_pref_file";
