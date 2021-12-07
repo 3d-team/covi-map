@@ -24,18 +24,8 @@ public class CLocation extends Identity implements Serializable {
     private double latitude;
     private double longitude;
 
-    public static CLocation fromNativeLocation(Location data) {
-        return new CLocation(data.getLatitude(), data.getLongitude());
-    }
-
     public LatLng toLatLng() {
         return new LatLng(getLatitude(), getLongitude());
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return latitude + ", " + longitude;
     }
 
     public static double getDistance(CLocation start, CLocation end){
@@ -52,12 +42,13 @@ public class CLocation extends Identity implements Serializable {
                 * Math.sin(dLon / 2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double valueResult = Radius * c;
-        //double km = valueResult / 1;
-        //DecimalFormat newFormat = new DecimalFormat("####");
-//        double meter = valueResult % 1000;
-//        int meterInDec = Integer.valueOf(newFormat.format(meter));
 
         return (double) Math.round(valueResult*100)/100;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return latitude + ", " + longitude;
+    }
 }

@@ -1,18 +1,14 @@
 package com.example.covimap.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,39 +19,36 @@ import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
 import com.example.covimap.model.Area;
-import com.example.covimap.model.AreaLabel;
 import com.example.covimap.model.CLocation;
-import com.example.covimap.model.MyAccount;
+import com.example.covimap.model.User;
 import com.example.covimap.service.MainCallbacks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 public class MainActivity extends FragmentActivity implements MainCallbacks {
     private BottomNavigationView bottomNav;
     private AppStatus appStatus;
-    private MyAccount myAccount;
+    private User user;
 
-    private NewRecordActivity newRecordActivity;
+    private RecordingActivity recordingActivity;
     private DirectActivity directActivity;
     private HistoryJourneyActivity historyJourneyActivity;
-    private EpidemicZoneActivity epidemicZoneActivity;
+    private RedPlaceActivity epidemicZoneActivity;
     private PersonalActivity personalActivity;
     private Fragment currentFragment;
     private Area vietnam;
@@ -69,19 +62,19 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
-        myAccount = (MyAccount)intent.getSerializableExtra("AccountData");
+        user = (User)intent.getSerializableExtra("AccountData");
 
         prepareStatus();
         setContentView(R.layout.activity_main);
 
-        newRecordActivity = new NewRecordActivity();
+        recordingActivity = new RecordingActivity();
         directActivity = new DirectActivity();
         historyJourneyActivity = new HistoryJourneyActivity();
-        epidemicZoneActivity = new EpidemicZoneActivity();
+        epidemicZoneActivity = new RedPlaceActivity();
         personalActivity = new PersonalActivity();
 
-        newRecordActivity.getPhoneNumber(myAccount.getPhoneNumber());
-        currentFragment = newRecordActivity;
+        recordingActivity.getPhoneNumber(user.getPhoneNumber());
+        currentFragment = recordingActivity;
 
         bottomNav = findViewById(R.id.bottom_nav_view);
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -89,14 +82,14 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.nav_new_record:
-                        newRecordActivity.getPhoneNumber(myAccount.getPhoneNumber());
-                        currentFragment = newRecordActivity;
+                        recordingActivity.getPhoneNumber(user.getPhoneNumber());
+                        currentFragment = recordingActivity;
                         break;
                     case R.id.nav_direct_location:
                         currentFragment = directActivity;
                         break;
                     case R.id.nav_history_record:
-                        historyJourneyActivity.getPhoneNumber(myAccount.getPhoneNumber());
+                        historyJourneyActivity.getPhoneNumber(user.getPhoneNumber());
                         currentFragment = historyJourneyActivity;
                         break;
                     case R.id.nav_epidemic_zone:
@@ -104,7 +97,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         currentFragment = epidemicZoneActivity;
                         break;
                     case R.id.nav_peronal:
-                        personalActivity.setMyAccount(myAccount);
+                        personalActivity.setMyAccount(user);
                         personalActivity.setStatus(appStatus);
                         currentFragment = personalActivity;
                         break;
@@ -115,7 +108,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         });
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newRecordActivity).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recordingActivity).commit();
         }
         Log.d("STATUS:", "CREATE");
     }
@@ -139,6 +132,11 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         Thread thread = new Thread(loadBoundariesData);
         thread.start();
         Log.d("STATUS:", "RESUME");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -174,11 +172,11 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     }
 
     @Override
-    public void onChangeLoginStatus(boolean islogged) {
+    public void onChangeLoginStatus(boolean isLogged) {
         if(appStatus == null){
             return;
         }
-        appStatus.setLogged(islogged);
+        appStatus.setLogged(isLogged);
         String color = "#" + Config.GRAY_ZONE_COLOR;
         appStatus.setColor(color);
         SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
@@ -446,6 +444,26 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             }
             Log.d("MyLog", "--- DONE! ---");
             epidemicZoneActivity.getMapArea(vietnam);
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AreaLabel implements Serializable {
+        private String level;
+        private String name;
+        private String color;
+        private String numberF0;
+
+        public AreaLabel(Area area){
+            if(area != null){
+                this.level = area.getLevel();
+                this.color = area.getColor();
+                this.name = area.getName();
+                this.numberF0 = area.getNumberF0();
+            }
         }
     }
 }

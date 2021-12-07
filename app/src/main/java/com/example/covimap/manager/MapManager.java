@@ -1,6 +1,5 @@
 package com.example.covimap.manager;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,8 +11,7 @@ import com.example.covimap.config.MapConfig;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.utils.MapHelper;
-import com.example.covimap.view.EpidemicZoneActivity;
-import com.example.covimap.view.MainActivity;
+import com.example.covimap.view.RedPlaceActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,11 +44,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MapManager implements OnMapReadyCallback {
-    private EpidemicZoneActivity epidemicZoneActivity;
+    private RedPlaceActivity redPlaceActivity;
     private GoogleMap map;
 
-    public MapManager(EpidemicZoneActivity epidemicZoneActivity){
-        this.epidemicZoneActivity = epidemicZoneActivity;
+    public MapManager(RedPlaceActivity redPlaceActivity){
+        this.redPlaceActivity = redPlaceActivity;
     }
 
     public Marker addMarker(CLocation location, String title) {
@@ -66,9 +64,9 @@ public class MapManager implements OnMapReadyCallback {
     }
 
     public void zoomToHome(){
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(15.843777859194317, 106.75648784826494), 5.32f));
+        LatLng VN = new LatLng(15.843777859194317, 106.75648784826494);
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(VN, 5.32f));
     }
-
 
     public void moveCamera(CLocation location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()));
@@ -87,6 +85,7 @@ public class MapManager implements OnMapReadyCallback {
         lineOptions.add(start.toLatLng(), end.toLatLng());
         lineOptions.width(15);
         lineOptions.color(Color.RED);
+
         map.addPolyline(lineOptions);
     }
 
@@ -99,25 +98,25 @@ public class MapManager implements OnMapReadyCallback {
         for(CLocation c:bounds){
             polygonOptions.add(c.toLatLng());
         }
-        polygonOptions.strokeWidth(3);
+        polygonOptions.strokeWidth(6);
         polygonOptions.strokeColor(Color.parseColor("#" + area.getColor()));
         polygonOptions.fillColor(Color.parseColor(Config.ALPHA_COLOR + area.getColor()));
         Polygon polygon = map.addPolygon(polygonOptions);
         polygon.setClickable(true);
         polygon.setTag(area);
-        map.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
-            @Override
-            public void onPolygonClick(@NonNull Polygon polygon) {
-                Area area1 = (Area)polygon.getTag();
-                HashMap<String, Area> childAreas = area1.getChildAreas();
-                if(childAreas == null) return;// end recursive here
+        map.setOnPolygonClickListener(polygon1 -> {
+            Area area1 = (Area) polygon1.getTag();
+            HashMap<String, Area> childAreas = area1.getChildAreas();
 
-                reset();
-                epidemicZoneActivity.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
-                childAreas.forEach((s, area2) -> {
-                    drawArea(area2);
-                });
-            }
+            if(childAreas == null) {
+                return;
+            };
+
+            reset();
+            redPlaceActivity.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
+            childAreas.forEach((s, area2) -> {
+                drawArea(area2);
+            });
         });
     }
 
@@ -137,7 +136,6 @@ public class MapManager implements OnMapReadyCallback {
 
         //Define list to get all latlng for the route
         List<LatLng> path = new ArrayList();
-
 
         //Execute Directions API request
         GeoApiContext context = new GeoApiContext.Builder()
@@ -207,7 +205,7 @@ public class MapManager implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
-        if(this.epidemicZoneActivity != null){
+        if(this.redPlaceActivity != null){
             zoomToHome();
         }
     }

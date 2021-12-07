@@ -1,16 +1,10 @@
 package com.example.covimap.utils;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
-import androidx.fragment.app.Fragment;
-
-import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.model.CLocation;
-import com.example.covimap.view.NewRecordActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;

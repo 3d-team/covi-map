@@ -6,18 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -27,35 +23,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.loader.content.AsyncTaskLoader;
 
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
-import com.example.covimap.config.LanguageConfig;
 import com.example.covimap.model.AppStatus;
-import com.example.covimap.model.Area;
-import com.example.covimap.model.MyAccount;
+import com.example.covimap.model.Language;
+import com.example.covimap.model.User;
 import com.example.covimap.service.PersonalFragmentCallbacks;
-import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Locale;
 
 public class PersonalActivity extends Fragment implements PersonalFragmentCallbacks {
     private MainActivity main;
     private Context context;
     private static View view;
     private static AppStatus createStatus;
-    private MyAccount myAccount;
+    private User user;
 
     private RadioGroup languageOptionRG;
     private RadioButton vi_button;
     private RadioButton en_button;
     private TextView fullNameTextView;
-    private TextView birthdatTextView;
+    private TextView birthdayTextView;
     private TextView logoutButton;
     private TextView updateButton;
 
@@ -71,10 +60,10 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         vi_button = (RadioButton) view.findViewById(R.id.vietnamese_radiobutton);
         en_button = (RadioButton) view.findViewById(R.id.english_radiobutton);
         fullNameTextView = (TextView) view.findViewById(R.id.fullname_textview);
-        birthdatTextView = (TextView) view.findViewById(R.id.birthday_textview);
+        birthdayTextView = (TextView) view.findViewById(R.id.birthday_textview);
 
-        fullNameTextView.setText(myAccount.getFullname());
-        birthdatTextView.setText(myAccount.getBirthday());
+        fullNameTextView.setText(user.getFullName());
+        birthdayTextView.setText(user.getBirthday());
 
         logoutButton = (TextView)view.findViewById(R.id.logout_textview_button);
         logoutButton.setOnClickListener(logoutAction);
@@ -85,7 +74,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
         qrCode = (ImageView) view.findViewById(R.id.qr_code_imgview);
 
         languageOptionRG.clearCheck();
-        if(createStatus.getLanguage().equals(LanguageConfig.VI)){
+        if(createStatus.getLanguage().equals(Language.VI)){
             vi_button.setChecked(true);
         }
         else {
@@ -129,7 +118,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        main.onChangeLanguage(LanguageConfig.VI);
+                        main.onChangeLanguage(String.valueOf(Language.VI));
                     }
                 })
                 .show();
@@ -144,7 +133,7 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            main.onChangeLanguage(LanguageConfig.EN);
+                            main.onChangeLanguage(String.valueOf(Language.EN));
                         }
                     })
                     .show();
@@ -154,8 +143,8 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     private View.OnClickListener updateAction = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(context, CoviPassportAcivity.class);
-            intent.putExtra("MyAccount", myAccount);
+            Intent intent = new Intent(context, CovidPassportActivity.class);
+            intent.putExtra("MyAccount", user);
             startActivity(intent);
         }
     };
@@ -166,8 +155,8 @@ public class PersonalActivity extends Fragment implements PersonalFragmentCallba
     }
 
     @Override
-    public void setMyAccount(MyAccount myAccount) {
-        this.myAccount = myAccount;
+    public void setMyAccount(User user) {
+        this.user = user;
     }
 
     @Override

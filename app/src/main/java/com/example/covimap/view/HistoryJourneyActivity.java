@@ -4,13 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,11 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
-import com.example.covimap.model.CLocation;
-import com.example.covimap.model.DataRenderRoute;
-import com.example.covimap.model.Route;
-import com.example.covimap.model.RouteAdapter;
-import com.example.covimap.model.RouteLabel;
 import com.example.covimap.service.HistoryJourneyFragmentCallBacks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,9 +32,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFragmentCallBacks {
     private String phoneNumber;
@@ -207,5 +204,118 @@ public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFr
     @Override
     public void getPhoneNumber(String phone) {
         this.phoneNumber = phone;
+    }
+
+    public static class RouteAdapter extends BaseAdapter {
+        private class ViewHolder{
+            private TextView createdDayTextView;
+            private TextView startLocationTextView;
+            private TextView endLocationTextView;
+            private TextView distanceTextVew;
+            private TextView periodTextView;
+        }
+
+        private Context context;
+        private List<RouteLabel> routeLabels;
+        private int layout;
+
+        public RouteAdapter(Context context, int layout, List<RouteLabel> routeLabels){
+            this.context = context;
+            this.layout = layout;
+            this.routeLabels = routeLabels;
+        }
+
+        @Override
+        public int getCount() {
+            return this.routeLabels.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return this.routeLabels.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder holder;
+            if(view == null){
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(layout, null);
+                holder = new ViewHolder();
+
+                // mapping attributes
+                holder.createdDayTextView = (TextView) view.findViewById(R.id.created_day_text_view);
+                holder.startLocationTextView = (TextView) view.findViewById(R.id.strart_point_text_view);
+                holder.endLocationTextView = (TextView) view.findViewById(R.id.end_point_text_view);
+                holder.distanceTextVew = (TextView) view.findViewById(R.id.distance_text_view_item);
+                holder.periodTextView = (TextView) view.findViewById(R.id.period_text_view_item);
+                view.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder) view.getTag();
+            }
+            // assignment values
+            RouteLabel routeLabel = routeLabels.get(i);
+            holder.createdDayTextView.setText(routeLabel.getCreatedDay());
+            holder.startLocationTextView.setText(routeLabel.getStartAddress());
+            holder.endLocationTextView.setText(routeLabel.getEndAddress());
+            holder.distanceTextVew.setText(routeLabel.getDistance());
+            holder.periodTextView.setText(routeLabel.getPeriod());
+
+            return view;
+        }
+    }
+
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RouteLabel implements Serializable {
+        private String uuid;
+        private String period; // time amount
+        private String distance; // distance amount
+        private String createdDay;
+        private String startAddress;
+        private String endAddress;
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public String getPeriod() {
+            return period + "min";
+        }
+
+        public String getDistance() {
+            return distance + "km";
+        }
+
+        public String getCreatedDay() {
+            return createdDay;
+        }
+
+        public String getStartAddress() {
+            return startAddress;
+        }
+
+        public String getEndAddress() {
+            return endAddress;
+        }
+
+        @Override
+        public String toString() {
+            return "RouteLabel{" +
+                    "uuid='" + uuid + '\'' +
+                    ", period='" + period + '\'' +
+                    ", distance='" + distance + '\'' +
+                    ", createdDay='" + createdDay + '\'' +
+                    ", startAddress='" + startAddress + '\'' +
+                    ", endAddress='" + endAddress + '\'' +
+                    '}';
+        }
     }
 }

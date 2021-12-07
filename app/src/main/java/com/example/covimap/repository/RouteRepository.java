@@ -6,6 +6,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RouteRepository extends Repository<Route> {
     public RouteRepository() {
-        field = "routes";
+        collection = "routes";
+    }
+
+    public void addByPhoneNumber(String phoneNumber, Route route) {
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference()
+                .child("Users")
+                .child(phoneNumber)
+                .child("Routes");
+        route.setUuid(mDatabaseReference.push().getKey());
+        mDatabaseReference.child(route.getUuid()).setValue(route);
     }
 }

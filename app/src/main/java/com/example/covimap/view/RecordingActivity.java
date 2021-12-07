@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.InflateException;
@@ -18,9 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,36 +26,24 @@ import androidx.fragment.app.Fragment;
 
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
-import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.CLocation;
-import com.example.covimap.model.DataRenderRoute;
 import com.example.covimap.model.Route;
 import com.example.covimap.repository.RouteRepository;
 import com.example.covimap.service.LocationService;
-import com.example.covimap.service.NewRecordFragmentCallBacks;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.example.covimap.service.RecordingFragmentCallBacks;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
 
-import butterknife.BindView;
-
-
-public class NewRecordActivity extends Fragment implements NewRecordFragmentCallBacks {
+public class RecordingActivity extends Fragment implements RecordingFragmentCallBacks {
     private String phoneNumber;
     private MapManager mapManager;
     private MainActivity main;
@@ -94,6 +78,11 @@ public class NewRecordActivity extends Fragment implements NewRecordFragmentCall
             Log.e("NEW RECORD ERROR", "onCreateView", e);
         }
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -218,10 +207,18 @@ public class NewRecordActivity extends Fragment implements NewRecordFragmentCall
         @Override
         public void onClick(View v) {
             String period = timeTextView.getText().toString();
-            String startAdress = getAddress(path.get(0));
+            String startAddress = getAddress(path.get(0));
             String endAddress = getAddress(path.get(path.size() - 1));
-            Route route = new Route(path, period, String.format("%.2f",distance), createdTime, startAdress, endAddress);
-            Route.addToFireBase(phoneNumber, route);
+            Route route = Route.builder()
+                    .path(path)
+                    .period(period)
+                    .distance(String.format("%.2f",distance))
+                    .createdDay(createdTime)
+                    .startAddress(startAddress)
+                    .endAddress(endAddress)
+                    .build();
+            RouteRepository routeRepository = new RouteRepository();
+            routeRepository.addByPhoneNumber(phoneNumber, route);
 
             Toast.makeText(context, "Time :" + period + ", Distance: " + String.format("%.2f km",distance) + "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();
             path.removeAll(path);

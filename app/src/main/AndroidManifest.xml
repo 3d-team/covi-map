@@ -61,7 +61,7 @@
         <activity android:name=".view.RenderHistoryItemActivity"  android:theme="@style/RenderMapDialog" >
         </activity>
 
-        <activity android:name=".view.CoviPassportAcivity" android:exported="true"></activity>
+        <activity android:name=".view.CovidPassportActivity" android:exported="true"></activity>
 
 
     </application>

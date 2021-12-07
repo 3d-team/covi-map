@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 
 import com.example.covimap.config.Config;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,8 +39,8 @@ public class LocationService extends Service {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+
                 sendLocationBroadcast(locationResult);
-//                writeLog(locationResult);
             }
         }, Looper.getMainLooper());
     }
@@ -51,13 +50,6 @@ public class LocationService extends Service {
                 .putExtra("latitude", locationResult.getLastLocation().getLatitude())
                 .putExtra("longitude", locationResult.getLastLocation().getLongitude());
         sendBroadcast(intent);
-    }
-
-    private void writeLog(LocationResult locationResult) {
-        Log.d("covi-map",
-                locationResult.getLastLocation().getLatitude()
-                    + ", " +
-                    locationResult.getLastLocation().getLongitude());
     }
 
     @Override

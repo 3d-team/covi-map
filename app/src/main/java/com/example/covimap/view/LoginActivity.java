@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covimap.R;
 import com.example.covimap.model.AppStatus;
-import com.example.covimap.model.MyAccount;
+import com.example.covimap.model.User;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -73,47 +73,49 @@ public class LoginActivity extends AppCompatActivity {
     private void initEventButton() {
         buttonLogin.setOnClickListener(view -> {
             phoneNumber = editTextPhoneNumber.getText().toString();
+
             if (!Validator.isPhoneNumber(phoneNumber)) {
                 textInputLayoutPhoneNumber.setError("Please enter valid phone number");
                 return;
             }
-            else{
-                textInputLayoutPhoneNumber.setError(null);
-                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber);
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            MyAccount myAccount = snapshot.getValue(MyAccount.class);
-                            if(validate()){
-                                if(myAccount.getPassword().equals(password)) {
-                                    textInputLayoutPassword.setError(null);
-                                    appStatus.setLogged(true);
-                                    appStatus.setPhoneNumber(phoneNumber);
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.putExtra("AccountData", myAccount);
-                                    intent.putExtra("AppStatus", appStatus);
-                                    Log.d("MyLog", myAccount.toString());
-                                    Log.d("MyLog", appStatus.toString());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    textInputLayoutPassword.setError("Wrong password!");
-                                }
-                            }else {return;}
-                        }
-                        else {
-                            textInputLayoutPhoneNumber.setError("Your account is not exist!");
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
+            textInputLayoutPhoneNumber.setError(null);
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
+                    .child("Users")
+                    .child(phoneNumber);
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        User user = snapshot.getValue(User.class);
+                        if(validate()){
+                            if(user.getPassword().equals(password)) {
+                                textInputLayoutPassword.setError(null);
+                                appStatus.setLogged(true);
+                                appStatus.setPhoneNumber(phoneNumber);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("AccountData", user);
+                                intent.putExtra("AppStatus", appStatus);
+                                Log.d("MyLog", user.toString());
+                                Log.d("MyLog", appStatus.toString());
+                                startActivity(intent);
+                                finish();
+                            }
+                            else {
+                                textInputLayoutPassword.setError("Wrong password!");
+                            }
+                        }else {return;}
                     }
-                });
-            }
+                    else {
+                        textInputLayoutPhoneNumber.setError("Your account is not exist!");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         });
     }
 

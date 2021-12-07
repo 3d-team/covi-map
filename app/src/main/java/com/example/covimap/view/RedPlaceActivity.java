@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class EpidemicZoneActivity extends Fragment implements com.example.covimap.service.EpidemicZoneActivity {
+public class RedPlaceActivity extends Fragment implements com.example.covimap.service.RedPlaceActivity {
     private MapManager mapManager;
     private MainActivity main;
     private Context context;
@@ -59,7 +59,7 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
-            view = (View) inflater.inflate(R.layout.epidemic_zone, null);
+            view = inflater.inflate(R.layout.epidemic_zone, null);
             prepareWidget();
 
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.epidemic_ggmap_api);
@@ -308,7 +308,7 @@ public class EpidemicZoneActivity extends Fragment implements com.example.covima
                     state = MainActivity.getStringByIdName(context, "red_zone_danger");
                     backgound = R.drawable.red_zone_style;
                     break;
-                case Config.ORAGNE_ZONE_COLOR:
+                case Config.ORANGE_ZONE_COLOR:
                     state = MainActivity.getStringByIdName(context, "orange_zone_danger");
                     backgound = R.drawable.orange_zone_style;
                     break;

@@ -3,12 +3,8 @@ package com.example.covimap.model;
 import android.util.Log;
 
 import com.example.covimap.config.Config;
-import com.example.covimap.config.LanguageConfig;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
@@ -24,8 +20,8 @@ public class AppStatus implements Serializable {
     private String color;
     private String QRCode;
 
-    public AppStatus(){
-        this.language = LanguageConfig.VI;
+    public AppStatus() {
+        this.language = String.valueOf(Language.VI);
         this.isLogged = false;
         this.phoneNumber = "";
         this.color = "#"+ Config.GRAY_ZONE_COLOR;
