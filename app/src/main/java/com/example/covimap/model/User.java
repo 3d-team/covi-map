@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class User extends Identity implements Serializable {
     private String phoneNumber;
     private String password;
     private String fullName;
@@ -29,5 +29,9 @@ public class User implements Serializable {
                 ", birthday='" + birthday + '\'' +
                 ", gender='" + gender + '\'' +
                 '}';
+    }
+
+    public boolean matchPassword(@NonNull  String password) {
+        return this.password.equals(password);
     }
 }

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class DirectActivity extends Fragment {
+public class DirectFragment extends Fragment {
     private MapManager mapManager;
     private MainActivity main;
     private Context context;
@@ -138,7 +138,7 @@ public class DirectActivity extends Fragment {
                             resultSrcTextView.setText("");
                         }
                         else if (locationName != null) {
-                            Geocoder geocoder = new Geocoder(DirectActivity.view.getContext(), Locale.getDefault());
+                            Geocoder geocoder = new Geocoder(DirectFragment.view.getContext(), Locale.getDefault());
                             try {
                                 geoResults = geocoder.getFromLocationName(locationName, 1);
                                 if (geoResults.size() > 0) {
@@ -203,7 +203,7 @@ public class DirectActivity extends Fragment {
                             resultDestTextView.setText("");
                         }
                         else if (locationName != null) {
-                            Geocoder geocoder = new Geocoder(DirectActivity.view.getContext(), Locale.getDefault());
+                            Geocoder geocoder = new Geocoder(DirectFragment.view.getContext(), Locale.getDefault());
                             try {
                                 geoResults = geocoder.getFromLocationName(locationName, 1);
                                 if (geoResults.size() > 0) {

@@ -89,9 +89,10 @@ public class RegisterActivity extends AppCompatActivity {
                     if(snapshot.exists()){
                         textInputLayoutPhoneNumber.setError("Your account has already existed!");
                         return;
+                    } else {
+                        textInputLayoutPhoneNumber.setError(null);
                     }
 
-                    textInputLayoutPhoneNumber.setError(null);
                     if (!validate()) {
                         return;
                     }

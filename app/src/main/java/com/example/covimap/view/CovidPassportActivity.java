@@ -20,7 +20,7 @@ import com.example.covimap.config.Config;
 import com.example.covimap.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CovidPassportActivity extends Activity{
+public class CovidPassportActivity extends Activity {
     private FloatingActionButton closeBtn;
     private WebView webView;
     private Button submitButton;
@@ -105,13 +105,12 @@ public class CovidPassportActivity extends Activity{
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
             String mess = consoleMessage.message();
 
-            if(mess.contains("rgb")){
-                Log.d("MyTag", consoleMessage.message());
+            if (mess.contains("rgb")) {
                 saveColorVaccine(mess);
                 countMess++;
             }
 
-            if (countMess == 1){
+            if (countMess == 1) {
                 finish();
             }
 
@@ -140,6 +139,4 @@ public class CovidPassportActivity extends Activity{
             return String.format("#%02x%02x%02x", r, g, b);
         }
     }
-
-
 }

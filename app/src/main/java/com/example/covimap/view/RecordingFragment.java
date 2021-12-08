@@ -43,7 +43,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class RecordingActivity extends Fragment implements RecordingFragmentCallBacks {
+public class RecordingFragment extends Fragment implements RecordingFragmentCallBacks {
     private String phoneNumber;
     private MapManager mapManager;
     private MainActivity main;
@@ -67,113 +67,34 @@ public class RecordingActivity extends Fragment implements RecordingFragmentCall
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        try{
+        try {
             view = (View)inflater.inflate(R.layout.new_record_activity, null);
-            prepareWidget();
-            MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
-            mapManager = new MapManager();
-            mapFragment.getMapAsync(mapManager);
-        }
-        catch (InflateException e){
+
+            mappingUIComponent();
+            subscribeEventButton();
+            pluginGGMap();
+        } catch (InflateException e){
             Log.e("NEW RECORD ERROR", "onCreateView", e);
         }
         return view;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void mappingUIComponent(){
+        distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
+        timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
+        locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
+        recordBtn = (Button) view.findViewById(R.id.record_btn);
+        saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try{
-            context = getActivity();
-            main = (MainActivity) getActivity();
-        }
-        catch (IllegalStateException e){
-            throw new IllegalStateException("Error");
-        }
-    }
-
-    private void requestCurrentLocation() {
-        if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            registerLocationReceiver();
-            startLocationService();
-        }
-    }
-
-    private void registerLocationReceiver() {
-        BroadcastReceiver locationReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("CURRENT_LOCATION")) {
-                    CLocation currentLocation = new CLocation(
-                            intent.getDoubleExtra("latitude", 0f),
-                            intent.getDoubleExtra("longitude", 0f));
-
-                    if(statusRecord == StatusRecord.RUNNING){
-                        if (lastLocation != null) {
-                            currentMarker.remove();
-                            mapManager.drawRoute(lastLocation, currentLocation);
-                            distance += CLocation.getDistance(lastLocation, currentLocation);
-                            distanceTextView.setText(String.format("%.2f km", distance));
-                        }
-                        lastLocation = currentLocation;
-                        currentMarker = mapManager.addMarker(currentLocation, "Here");
-                        mapManager.animateCamera(currentLocation);
-                        path.add(lastLocation);
-                    }else{
-                        if (lastLocation != null) {
-                            currentMarker.remove();
-                        }
-                        lastLocation = currentLocation;
-                        currentMarker = mapManager.addMarker(currentLocation, "Here");
-                        mapManager.animateCamera(currentLocation);
-                    }
-                }
-            }
-        };
-        main.registerReceiver(locationReceiver, new IntentFilter("CURRENT_LOCATION"));
-    }
-
-    private void startLocationService() {
-        Intent intent = new Intent(main, LocationService.class);
-        main.startService(intent);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationService();
-            } else {
-                Toast.makeText(context, "Required GPS", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private View.OnClickListener locateCurrentBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
+    private void subscribeEventButton() {
+        locateCurrentBtn.setOnClickListener(v -> {
             if(main != null) {
                 requestCurrentLocation();
             }
-        }
-    };
+        });
 
-    private enum StatusRecord{
-        NOT_START, RUNNING, PAUSED
-    }
-    private static StatusRecord statusRecord = StatusRecord.NOT_START;
-    private View.OnClickListener recordBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
+        recordBtn.setOnClickListener(v -> {
             switch (statusRecord){
                 case NOT_START:
                     requestCurrentLocation();
@@ -200,12 +121,9 @@ public class RecordingActivity extends Fragment implements RecordingFragmentCall
                     recordBtn.setText(R.string.paused_button);
                     break;
             }
-        }
-    };
+        });
 
-    private View.OnClickListener saveRecordBtnListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
+        saveRecordBtn.setOnClickListener(v -> {
             String period = timeTextView.getText().toString();
             String startAddress = getAddress(path.get(0));
             String endAddress = getAddress(path.get(path.size() - 1));
@@ -230,8 +148,102 @@ public class RecordingActivity extends Fragment implements RecordingFragmentCall
             PauseOffSet = 0;
             timeTextView.stop();
             distance = 0;
+        });
+    }
+
+    private void pluginGGMap() {
+        MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.ggmap_api);
+        mapManager = new MapManager();
+        mapFragment.getMapAsync(mapManager);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            context = getActivity();
+            main = (MainActivity) getActivity();
+        } catch (IllegalStateException e){
+            throw new IllegalStateException("Error");
         }
-    };
+    }
+
+    private void requestCurrentLocation() {
+        if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            registerLocationReceiver();
+            startLocationService();
+        }
+    }
+
+    private void registerLocationReceiver() {
+        BroadcastReceiver locationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!intent.getAction().equals("CURRENT_LOCATION")) {
+                    return;
+                }
+
+                CLocation currentLocation = new CLocation(
+                        intent.getDoubleExtra("latitude", 0f),
+                        intent.getDoubleExtra("longitude", 0f));
+
+                if (statusRecord == StatusRecord.RUNNING){
+                    recordNewPosition(currentLocation);
+                };
+
+                if (lastLocation != null) {
+                    currentMarker.remove();
+                }
+
+                lastLocation = currentLocation;
+                drawCurrentPosition(currentLocation);
+            }
+        };
+
+        main.registerReceiver(locationReceiver, new IntentFilter("CURRENT_LOCATION"));
+    }
+
+    private void recordNewPosition(CLocation currentLocation) {
+        if (lastLocation != null) {
+            mapManager.drawRoute(lastLocation, currentLocation);
+            distance += CLocation.getDistance(lastLocation, currentLocation);
+            distanceTextView.setText(String.format("%.2f km", distance));
+        }
+
+        path.add(lastLocation);
+    }
+
+    private void drawCurrentPosition(CLocation currentLocation) {
+        currentMarker = mapManager.addMarker(currentLocation, "Here");
+        mapManager.animateCamera(currentLocation);
+    }
+
+    private void startLocationService() {
+        Intent intent = new Intent(main, LocationService.class);
+        main.startService(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationService();
+            } else {
+                Toast.makeText(context, "Required GPS", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private enum StatusRecord{
+        NOT_START, RUNNING, PAUSED
+    }
+
+    private static StatusRecord statusRecord = StatusRecord.NOT_START;
 
     public String getAddress(CLocation location) {
         double lat = location.getLatitude();
@@ -246,19 +258,6 @@ public class RecordingActivity extends Fragment implements RecordingFragmentCall
             e.printStackTrace();
         }
         return "";
-    }
-
-    public void prepareWidget(){
-        distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
-        timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
-
-        locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
-        recordBtn = (Button) view.findViewById(R.id.record_btn);
-        saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
-
-        locateCurrentBtn.setOnClickListener(locateCurrentBtnListener);
-        recordBtn.setOnClickListener(recordBtnListener);
-        saveRecordBtn.setOnClickListener(saveRecordBtnListener);
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.example.covimap.config.MapConfig;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.utils.MapHelper;
-import com.example.covimap.view.RedPlaceActivity;
+import com.example.covimap.view.RedPlaceFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,11 +44,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MapManager implements OnMapReadyCallback {
-    private RedPlaceActivity redPlaceActivity;
+    private RedPlaceFragment redPlaceFragment;
     private GoogleMap map;
 
-    public MapManager(RedPlaceActivity redPlaceActivity){
-        this.redPlaceActivity = redPlaceActivity;
+    public MapManager(RedPlaceFragment redPlaceFragment){
+        this.redPlaceFragment = redPlaceFragment;
     }
 
     public Marker addMarker(CLocation location, String title) {
@@ -98,8 +98,8 @@ public class MapManager implements OnMapReadyCallback {
         for(CLocation c:bounds){
             polygonOptions.add(c.toLatLng());
         }
-        polygonOptions.strokeWidth(6);
-        polygonOptions.strokeColor(Color.parseColor("#" + area.getColor()));
+        polygonOptions.strokeWidth(5);
+        polygonOptions.strokeColor(Color.parseColor("#000000"));
         polygonOptions.fillColor(Color.parseColor(Config.ALPHA_COLOR + area.getColor()));
         Polygon polygon = map.addPolygon(polygonOptions);
         polygon.setClickable(true);
@@ -113,7 +113,7 @@ public class MapManager implements OnMapReadyCallback {
             };
 
             reset();
-            redPlaceActivity.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
+            redPlaceFragment.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
             childAreas.forEach((s, area2) -> {
                 drawArea(area2);
             });
@@ -205,7 +205,7 @@ public class MapManager implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
-        if(this.redPlaceActivity != null){
+        if(this.redPlaceFragment != null){
             zoomToHome();
         }
     }
@@ -291,13 +291,14 @@ public class MapManager implements OnMapReadyCallback {
         }
     }
 
-    public class DataParser {
+    private class DataParser {
         public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
             List<List<HashMap<String, String>>> routes = new ArrayList<>();
             JSONArray jRoutes;
             JSONArray jLegs;
             JSONArray jSteps;
+
             try {
                 jRoutes = jObject.getJSONArray("routes");
                 /** Traversing all routes */

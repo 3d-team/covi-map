@@ -29,6 +29,7 @@ import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
 import com.example.covimap.service.LocationService;
+import com.example.covimap.service.RedPlaceFragmentCallBacks;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class RedPlaceActivity extends Fragment implements com.example.covimap.service.RedPlaceActivity {
+public class RedPlaceFragment extends Fragment implements RedPlaceFragmentCallBacks {
     private MapManager mapManager;
     private MainActivity main;
     private Context context;
@@ -60,7 +61,7 @@ public class RedPlaceActivity extends Fragment implements com.example.covimap.se
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
             view = inflater.inflate(R.layout.epidemic_zone, null);
-            prepareWidget();
+            mappingUIComponent();
 
             MapFragment mapFragment = (MapFragment) main.getFragmentManager().findFragmentById(R.id.epidemic_ggmap_api);
             mapManager = new MapManager(this);
@@ -71,54 +72,7 @@ public class RedPlaceActivity extends Fragment implements com.example.covimap.se
         return view;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try {
-            context = getActivity();
-            main = (MainActivity) getActivity();
-        } catch (IllegalStateException e) {
-            throw new IllegalStateException("Error");
-        }
-    }
-
-    private static boolean isNoteShowed = true;
-
-    public void startTextViewAnimation(TextView tv, Animation animation) {
-        tv.startAnimation(animation);
-    }
-
-    private class ShowAnimation implements Runnable {
-        @Override
-        public void run()
-        {
-            if (isNoteShowed) {
-                for (TextView tv : noteTVList) {
-                    Animation hide_animation = AnimationUtils.loadAnimation(context, R.anim.hide_down);
-                    startTextViewAnimation(tv, hide_animation);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Log.d("My Log", e.getMessage());
-                    }
-                }
-                isNoteShowed = false;
-            } else {
-                for (TextView tv : noteTVList) {
-                    Animation show_animation = AnimationUtils.loadAnimation(context, R.anim.show_up);
-                    startTextViewAnimation(tv, show_animation);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Log.d("My Log", e.getMessage());
-                    }
-                }
-                isNoteShowed = true;
-            }
-        }
-    }
-
-    public void prepareWidget() {
+    public void mappingUIComponent() {
         noteButton = (ImageButton) view.findViewById(R.id.note_img_button);
         note_1 = (TextView) view.findViewById(R.id.note_1);
         note_2 = (TextView) view.findViewById(R.id.note_2);
@@ -131,14 +85,10 @@ public class RedPlaceActivity extends Fragment implements com.example.covimap.se
         noteTVList.add(note_3);
         noteTVList.add(note_4);
         noteTVList.add(note_5);
-        noteButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                ShowAnimation showAnimation = new ShowAnimation();
-                Thread t = new Thread(showAnimation);
-                t.start();
-            }
+        noteButton.setOnClickListener(view -> {
+            ShowAnimation showAnimation = new ShowAnimation();
+            Thread t = new Thread(showAnimation);
+            t.start();
         });
 
         currentLocationButton = (FloatingActionButton) view.findViewById(R.id.get_current_location_btn);
@@ -166,6 +116,60 @@ public class RedPlaceActivity extends Fragment implements com.example.covimap.se
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         currentDayTextView.setText(sdf.format(calendar.getTime()));
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            context = getActivity();
+            main = (MainActivity) getActivity();
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Error");
+        }
+    }
+
+    private static boolean isNoteShowed = true;
+
+    private class ShowAnimation implements Runnable {
+        @Override
+        public void run()
+        {
+            for (TextView tv: noteTVList) {
+                handleNoteAnimation(tv);
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Log.d("My Log", e.getMessage());
+                }
+            }
+
+            isNoteShowed = !isNoteShowed;
+        }
+
+        private void handleNoteAnimation(TextView textView) {
+            if (isNoteShowed) {
+                hideAnimation(textView);
+            } else {
+                showAnimation(textView);
+            }
+        }
+
+        private void hideAnimation(TextView textView) {
+            Animation hide_animation = AnimationUtils.loadAnimation(context, R.anim.hide_down);
+            startTextViewAnimation(textView, hide_animation);
+        }
+
+        private void startTextViewAnimation(TextView tv, Animation animation) {
+            tv.startAnimation(animation);
+        }
+
+        private void showAnimation(TextView textView) {
+            Animation show_animation = AnimationUtils.loadAnimation(context, R.anim.show_up);
+            startTextViewAnimation(textView, show_animation);
+        }
     }
 
     Intent intentcurrentlocation;

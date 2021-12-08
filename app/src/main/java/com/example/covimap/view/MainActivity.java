@@ -8,9 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -41,148 +39,148 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class MainActivity extends FragmentActivity implements MainCallbacks {
-    private BottomNavigationView bottomNav;
+    private RecordingFragment recordingFragment;
+    private DirectFragment directFragment;
+    private HistoryJourneyFragment historyJourneyFragment;
+    private RedPlaceFragment redPlaceFragment;
+    private PersonalFragment personalFragment;
+    private Fragment currentFragment;
+
+    private Area vietnam;
     private AppStatus appStatus;
     private User user;
-
-    private RecordingActivity recordingActivity;
-    private DirectActivity directActivity;
-    private HistoryJourneyActivity historyJourneyActivity;
-    private RedPlaceActivity epidemicZoneActivity;
-    private PersonalActivity personalActivity;
-    private Fragment currentFragment;
-    private Area vietnam;
-
-    public MainActivity() {
-        super();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        receiveAppStatus();
+        prepareAppStatus();
+        prepareSubActivity();
+        mappingBottomNavBar();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
+        }
+    }
+
+    private void receiveAppStatus() {
         Intent intent = getIntent();
         appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
         user = (User)intent.getSerializableExtra("AccountData");
+    }
 
-        prepareStatus();
-        setContentView(R.layout.activity_main);
-
-        recordingActivity = new RecordingActivity();
-        directActivity = new DirectActivity();
-        historyJourneyActivity = new HistoryJourneyActivity();
-        epidemicZoneActivity = new RedPlaceActivity();
-        personalActivity = new PersonalActivity();
-
-        recordingActivity.getPhoneNumber(user.getPhoneNumber());
-        currentFragment = recordingActivity;
-
-        bottomNav = findViewById(R.id.bottom_nav_view);
-        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.nav_new_record:
-                        recordingActivity.getPhoneNumber(user.getPhoneNumber());
-                        currentFragment = recordingActivity;
-                        break;
-                    case R.id.nav_direct_location:
-                        currentFragment = directActivity;
-                        break;
-                    case R.id.nav_history_record:
-                        historyJourneyActivity.getPhoneNumber(user.getPhoneNumber());
-                        currentFragment = historyJourneyActivity;
-                        break;
-                    case R.id.nav_epidemic_zone:
-                        if(vietnam != null){epidemicZoneActivity.getMapArea(vietnam);}
-                        currentFragment = epidemicZoneActivity;
-                        break;
-                    case R.id.nav_peronal:
-                        personalActivity.setMyAccount(user);
-                        personalActivity.setStatus(appStatus);
-                        currentFragment = personalActivity;
-                        break;
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
-                return true;
-            }
-        });
-
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recordingActivity).commit();
+    public void prepareAppStatus() {
+        if (appStatus == null) {
+            return;
         }
-        Log.d("STATUS:", "CREATE");
+
+        Locale locale = new Locale(appStatus.getLanguage());
+        Locale.setDefault(locale);
+
+        Configuration config = new Configuration();
+        config.locale = locale;
+
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("STATUS:", "START");
+    private void prepareSubActivity() {
+        recordingFragment = new RecordingFragment();
+        directFragment = new DirectFragment();
+        historyJourneyFragment = new HistoryJourneyFragment();
+        redPlaceFragment = new RedPlaceFragment();
+        personalFragment = new PersonalFragment();
+
+        recordingFragment.getPhoneNumber(user.getPhoneNumber());
+        currentFragment = recordingFragment;
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("STATUS:", "RESTART");
+    private void mappingBottomNavBar() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_view);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.nav_new_record:
+                    recordingFragment.getPhoneNumber(user.getPhoneNumber());
+                    currentFragment = recordingFragment;
+                    break;
+                case R.id.nav_direct_location:
+                    currentFragment = directFragment;
+                    break;
+                case R.id.nav_history_record:
+                    historyJourneyFragment.getPhoneNumber(user.getPhoneNumber());
+                    currentFragment = historyJourneyFragment;
+                    break;
+                case R.id.nav_epidemic_zone:
+                    if(vietnam != null) {
+                        redPlaceFragment.getMapArea(vietnam);
+                    }
+                    currentFragment = redPlaceFragment;
+                    break;
+                case R.id.nav_peronal:
+                    personalFragment.setMyAccount(user);
+                    personalFragment.setStatus(appStatus);
+                    currentFragment = personalFragment;
+                    break;
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
+            return true;
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         LoadBoundariesData loadBoundariesData = new LoadBoundariesData();
         Thread thread = new Thread(loadBoundariesData);
         thread.start();
-        Log.d("STATUS:", "RESUME");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
         try {
             appStatus.writeStatusToFile(this.openFileOutput(Config.STATUS_FILE_DIR, MODE_PRIVATE));
-        }
-        catch (Exception e){
+        } catch (Exception e){
             Log.d("IOException:", e.getMessage());
-        }
-        Log.d("STATUS:", "PAUSE");
-    }
-
-    public void prepareStatus(){
-        if(appStatus != null){
-            Log.d("MyLog", appStatus.toString());
-            Locale locale = new Locale(appStatus.getLanguage());
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
         }
     }
 
     @Override
     public void onChangeLanguage(String lang){
-        if(appStatus == null){
+        if (appStatus == null){
             return;
+        } else {
+            appStatus.setLanguage(lang);
         }
-        appStatus.setLanguage(lang);
+
+        restartApp();
+    }
+
+    private void restartApp() {
+        Intent intent = new Intent(MainActivity.this, PrepareActivity.class);
+        startActivity(intent);
         finish();
     }
 
     @Override
     public void onChangeLoginStatus(boolean isLogged) {
-        if(appStatus == null){
+        if (appStatus == null){
             return;
         }
+
         appStatus.setLogged(isLogged);
         String color = "#" + Config.GRAY_ZONE_COLOR;
         appStatus.setColor(color);
+
         SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("ColorVaccine", color);
         editor.commit();
+
         finish();
     }
 
@@ -201,27 +199,13 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         return res.getString(res.getIdentifier(idName, "string", context.getPackageName()));
     }
 
-    private class LoadBoundariesData implements Runnable{
+    private class LoadBoundariesData implements Runnable {
         @Override
         public void run() {
-//            vietnam = new Area("0", "VietNam", Config.GRAY_ZONE_COLOR, null,null, null);
-//            DatabaseReference data = FirebaseDatabase.getInstance().getReference().child("VietNam");
-//            data.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    vietnam = snapshot.getValue(Area.class);
-////                    Log.d("MyLog", vietnam.toString());
-//                    getProvince(vietnam.getChildAreas());
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
             SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
             String key = "VietNamJSON";
-            if(preferences != null && preferences.contains(key)){
+
+            if (preferences != null && preferences.contains(key)){
                 String vietnamJSON = preferences.getString(key, "");
                 if(!vietnamJSON.isEmpty()){
                     Gson gson = new Gson();
@@ -232,7 +216,9 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         }
 
         private void getProvince(HashMap<String, Area> provinces){
-            if(provinces == null) {provinces = new HashMap<>(); Log.d("MyTag", "NULL POINTER");}
+            if (provinces == null) {
+                provinces = new HashMap<>();
+            }
 
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_1);
 
@@ -240,33 +226,23 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             String provinceName = "";
             List<CLocation> boundaries = new ArrayList<>();
 
-            try{
+            try {
                 int eventType = -1;
-                while(eventType != XmlPullParser.END_DOCUMENT)
-                {
+                while(eventType != XmlPullParser.END_DOCUMENT) {
                     eventType = parser.next();
-                    switch(eventType)
-                    {
+                    switch(eventType) {
                         case XmlPullParser.START_DOCUMENT:
                             break;
                         case XmlPullParser.END_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
-                            if(nodeName.equals("Placemark")){
-//                                province.setLevel("1");
-                            }
-                            else if(nodeName.equals("color")){
-//                                province.setColor(Config.GRAY_ZONE_COLOR);
-//                                province.setNumberF0("0");
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
+                            if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
                                 provinceName = parser.nextText();
-                            }
-                            else if(nodeName.equals("coordinates")){
+                            } else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
-                                for(String coord : coordinatePairs){
+                                for (String coord : coordinatePairs) {
                                     boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
@@ -274,15 +250,13 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             break;
                         case XmlPullParser.END_TAG:
                             nodeName = parser.getName();
-                            if(nodeName.equals("Placemark")){
+                            if(nodeName.equals("Placemark")) {
                                 List<CLocation> temp = new ArrayList<>(boundaries);
 
-                                if(provinces.get(provinceName) != null){
+                                if (provinces.get(provinceName) != null){
                                     provinces.get(provinceName).setBoundaries(temp);
                                 }
-//                                AreaLabel areaLabel = new AreaLabel(province);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(province.getName()).setValue(areaLabel);
-//                                province = new Area();
+
                                 boundaries.clear();
                             }
                             break;
@@ -294,47 +268,34 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
             }
+
             getDistrict(provinces);
-//            return provinces;
         }
 
         private void getDistrict(HashMap<String, Area> provinces){
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_2);
 
             String nodeName, nodeText;
-//            Area district = new Area();
             List<CLocation> boundaries = new ArrayList<>();
             String provinceName = "";
             String districtName = "";
 
             try{
                 int eventType = -1;
-                while(eventType != XmlPullParser.END_DOCUMENT)
-                {
+                while(eventType != XmlPullParser.END_DOCUMENT) {
                     eventType=parser.next();
-                    switch(eventType)
-                    {
+                    switch(eventType) {
                         case XmlPullParser.START_DOCUMENT:
                             break;
                         case XmlPullParser.END_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
-                            if(nodeName.equals("Placemark")){
-//                                district.setLevel("2");
-                            }
-                            else if(nodeName.equals("color")){
-//                                district.setColor(Config.GRAY_ZONE_COLOR);
-//                                district.setNumberF0("0");
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
+                            if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
                                 provinceName = parser.nextText();
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
-//                                district.setName(parser.nextText());
+                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
                                 districtName = parser.nextText();
-                            }
-                            else if(nodeName.equals("coordinates")){
+                            } else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
                                 for(String coord : coordinatePairs){
@@ -345,16 +306,12 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             break;
                         case XmlPullParser.END_TAG:
                             nodeName=parser.getName();
-                            if(nodeName.equals("Placemark")){
+                            if(nodeName.equals("Placemark")) {
                                 List<CLocation> temp = new ArrayList<>(boundaries);
                                 Area district = provinces.get(provinceName).getChildAreas().get(districtName);
                                 if(district != null){
                                     district.setBoundaries(temp);
                                 }
-
-//                                AreaLabel areaLabel = new AreaLabel(district);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam").child("childAreas").child(provinceName).child("childAreas").child(district.getName()).setValue(areaLabel);
-//                                district = new Area();
                                 boundaries.clear();
                             }
                             break;
@@ -365,6 +322,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
             }
+
             getCommnune(provinces);
         }
 
@@ -372,7 +330,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_3);
 
             String nodeName, nodeText;
-//            Area commune = new Area();
             List<CLocation> boundaries = new ArrayList<>();
             String provinceName = "";
             String districtName = "";
@@ -380,8 +337,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
 
             try{
                 int eventType = -1;
-                while(eventType != XmlPullParser.END_DOCUMENT)
-                {
+                while(eventType != XmlPullParser.END_DOCUMENT) {
                     eventType=parser.next();
                     switch(eventType)
                     {
@@ -391,24 +347,14 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             break;
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
-                            if(nodeName.equals("Placemark")){
-//                                commune.setLevel("3");
-                            }
-                            else if(nodeName.equals("color")){
-//                                commune.setColor(Config.GRAY_ZONE_COLOR);
-//                                commune.setNumberF0("0");
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
+                            if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
                                 provinceName = parser.nextText();
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
+                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
                                 districtName = parser.nextText();
-                            }
-                            else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_3")){
+                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_3")){
 //                                commune.setName(parser.nextText());
                                 communeName = parser.nextText();
-                            }
-                            else if(nodeName.equals("coordinates")){
+                            } else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
                                 for(String coord : coordinatePairs){
@@ -421,17 +367,16 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             nodeName=parser.getName();
                             if(nodeName.equals("Placemark")){
                                 List<CLocation> temp = new ArrayList<>(boundaries);
-                                Area commune = provinces.get(provinceName).getChildAreas().get(districtName).getChildAreas().get(communeName);
+                                Area commune = provinces
+                                        .get(provinceName)
+                                        .getChildAreas()
+                                        .get(districtName)
+                                        .getChildAreas()
+                                        .get(communeName);
                                 if(commune != null){
                                     commune.setBoundaries(temp);
                                 }
-//                                AreaLabel areaLabel = new AreaLabel(commune);
-//                                FirebaseDatabase.getInstance().getReference().child("VietNam")
-//                                        .child("childAreas").child(provinceName)
-//                                        .child("childAreas").child(districtName)
-//                                        .child("childAreas").child(commune.getName()).setValue(areaLabel);
 
-//                                commune = new Area();
                                 boundaries.clear();
                             }
                             break;
@@ -442,8 +387,8 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
             }
-            Log.d("MyLog", "--- DONE! ---");
-            epidemicZoneActivity.getMapArea(vietnam);
+
+            redPlaceFragment.getMapArea(vietnam);
         }
     }
 
@@ -451,19 +396,10 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class AreaLabel implements Serializable {
+    public class AreaLabel implements Serializable {
         private String level;
         private String name;
         private String color;
         private String numberF0;
-
-        public AreaLabel(Area area){
-            if(area != null){
-                this.level = area.getLevel();
-                this.color = area.getColor();
-                this.name = area.getName();
-                this.numberF0 = area.getNumberF0();
-            }
-        }
     }
 }

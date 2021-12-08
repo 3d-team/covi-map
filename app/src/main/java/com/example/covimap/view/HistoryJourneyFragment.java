@@ -39,7 +39,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class HistoryJourneyActivity extends Fragment implements HistoryJourneyFragmentCallBacks {
+public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFragmentCallBacks {
     private String phoneNumber;
     private static View view;
     private ArrayList<RouteLabel> originRouteLbList;

@@ -59,12 +59,7 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
         closeBtn = (FloatingActionButton) findViewById(R.id.close_render_history_item);
         createdDateTV = (TextView) findViewById(R.id.created_day_text_view);
 
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        closeBtn.setOnClickListener(view -> finish());
     }
 
     @Override
