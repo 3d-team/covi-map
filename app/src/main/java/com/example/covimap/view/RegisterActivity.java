@@ -16,12 +16,14 @@ import com.example.covimap.model.User;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.common.hash.Hashing;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -107,7 +109,10 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-                    User user = new User(phoneNumber, password, fullName, birthday, gender);
+                    String hashedPassword = Hashing.sha256()
+                            .hashString(password, StandardCharsets.UTF_8)
+                            .toString();
+                    User user = new User(phoneNumber, hashedPassword, fullName, birthday, gender);
                     mDatabase.setValue(user);
 
                     finish();

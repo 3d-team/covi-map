@@ -17,11 +17,14 @@ import com.example.covimap.model.AppStatus;
 import com.example.covimap.model.User;
 import com.example.covimap.utils.Validator;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.common.hash.Hashing;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.nio.charset.StandardCharsets;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -128,7 +131,11 @@ public class LoginActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 String password = editTextPassword.getText().toString();
 
-                if (!user.matchPassword(password)) {
+                String hashedPassword = Hashing.sha256()
+                        .hashString(password, StandardCharsets.UTF_8)
+                        .toString();
+
+                if (!user.matchPassword(hashedPassword)) {
                     textInputLayoutPassword.setError("Wrong password!");
                     return;
                 } else {

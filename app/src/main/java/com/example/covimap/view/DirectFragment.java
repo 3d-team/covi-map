@@ -124,12 +124,13 @@ public class DirectFragment extends Fragment {
                 }
                 countDownTimer = new CountDownTimer(500, 1000) {
                     @Override
-                    public void onTick(long l) {
+                    public void onTick(long l) {}
 
-                    }
                     @Override
                     public void onFinish() {
-                        if(isSwap) return;
+                        if(isSwap) {
+                            return;
+                        }
                         String locationName = searchSrcLocationEdt.getQuery().toString();
                         List<Address> geoResults;
 
