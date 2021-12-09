@@ -1,15 +1,10 @@
 package com.example.covimap.model;
 
-import android.location.Location;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
