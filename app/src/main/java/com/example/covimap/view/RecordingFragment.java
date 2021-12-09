@@ -124,31 +124,48 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
         });
 
         saveRecordBtn.setOnClickListener(v -> {
-            String period = timeTextView.getText().toString();
-            String startAddress = getAddress(path.get(0));
-            String endAddress = getAddress(path.get(path.size() - 1));
             Route route = Route.builder()
                     .path(path)
-                    .period(period)
-                    .distance(String.format("%.2f",distance))
+                    .period(timeTextView.getText().toString())
+                    .distance(String.format("%.2f", distance))
                     .createdDay(createdTime)
-                    .startAddress(startAddress)
-                    .endAddress(endAddress)
+                    .startAddress(getAddress(path.get(0)))
+                    .endAddress(getAddress(path.get(path.size() - 1)))
                     .build();
             RouteRepository routeRepository = new RouteRepository();
             routeRepository.addByPhoneNumber(phoneNumber, route);
 
-            Toast.makeText(context, "Time :" + period + ", Distance: " + String.format("%.2f km",distance) + "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();
-            path.removeAll(path);
-            mapManager.reset();
-            statusRecord = StatusRecord.NOT_START;
-            recordBtn.setText("Record");
-            timeTextView.setBase(SystemClock.elapsedRealtime());
-            distanceTextView.setText("0.00 km");
-            PauseOffSet = 0;
-            timeTextView.stop();
-            distance = 0;
+            resetStateApp();
+            notifyEndRecording(timeTextView.getText().toString());
         });
+    }
+
+    private void resetStateApp() {
+        statusRecord = StatusRecord.NOT_START;
+        path.removeAll(path);
+        recordBtn.setText("Record");
+        
+        mapManager.reset();
+
+        resetTime();
+        resetDistance();
+    }
+
+    private void resetDistance() {
+        distance = 0;
+        distanceTextView.setText("0.00 km");
+        PauseOffSet = 0;
+    }
+
+    private void resetTime() {
+        timeTextView.setBase(SystemClock.elapsedRealtime());
+        timeTextView.stop();
+    }
+
+    private void notifyEndRecording( String period) {
+        Toast.makeText(context, "Time :" + period + ", " +
+                "Distance: " + String.format("%.2f km",distance) +
+                "Created Time: " + createdTime, Toast.LENGTH_SHORT).show();
     }
 
     private void pluginGGMap() {

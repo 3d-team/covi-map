@@ -54,129 +54,25 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.history_journey_activity, null);
-        prepareUI();
+
+        mappingUIComponent();
+        subscribeEventButton();
+
         return view;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try{
-            context = getActivity();
-            main = (MainActivity) getActivity();
-        }
-        catch (IllegalStateException e){
-            throw new IllegalStateException("Error");
-        }
-    }
-
-    private void initOriginRouteList(){
-        originRouteLbList = new ArrayList<>();
-        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber).child("Routes");
-        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    RouteLabel routeLabel = dataSnapshot.getValue(RouteLabel.class);
-                    Log.d("MyLog-Fragment History", routeLabel.toString());
-                    originRouteLbList.add(routeLabel);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
-        });
-    }
-
-    private EditText beginDayTextView;
-    private EditText endDayTextView;
-    private Calendar beginDayCalendar = Calendar.getInstance();
-    private Calendar endDayCalendar = Calendar.getInstance();
-
-    private void updateDateEditText(EditText editText, Calendar calendar) {
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editText.setText(sdf.format(calendar.getTime()));
-    }
-
-    public void filterListView() {
-        routeLbs = new ArrayList<RouteLabel>();
-        int n = originRouteLbList.size();
-        for(int i = 0; i < n; ++i){
-            RouteLabel route = originRouteLbList.get(i);
-            String datetimeStr = route.getCreatedDay();
-
-            try {
-                Date dateItem = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy").parse(datetimeStr);
-                if(dateItem.after(beginDayCalendar.getTime()) && dateItem.before(endDayCalendar.getTime())){
-                    routeLbs.add(route);
-                    Log.d("DATE-IN-RANGE", dateItem.toString());
-                }
-            }
-            catch (Exception e){
-                Log.d("DATE-FORMAT-ERROR", e.getMessage());
-            }
-        }
-        RouteAdapter adapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routeLbs);
-        routeListView.setAdapter(adapter);
-    }
-
-    View.OnClickListener getBeginDate = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(context);
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    beginDayCalendar.set(year, month, day, 0, 0);
-                    updateDateEditText(beginDayTextView, beginDayCalendar);
-                    Log.d("DAY-BEGIN", beginDayCalendar.getTime().toString());
-                    if(endDayTextView.getText().toString().isEmpty() == false){
-                        filterListView();
-                    }
-                }
-            };
-            datePickerDialog.setOnDateSetListener(dateSetListener);
-            datePickerDialog.show();
-        }
-    };
-
-    View.OnClickListener getEndDate = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(context);
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    endDayCalendar.set(year, month, day, 23, 59);
-                    updateDateEditText(endDayTextView, endDayCalendar);
-                    Log.d("DAY-END", endDayCalendar.getTime().toString());
-                    if(endDayTextView.getText().toString().isEmpty() == false){
-                        filterListView();
-                    }
-                }
-            };
-            datePickerDialog.setOnDateSetListener(dateSetListener);
-            datePickerDialog.show();
-        }
-    };
-
-    private AdapterView.OnItemClickListener routeListViewAction = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Intent intent = new Intent(context, RenderHistoryItemActivity.class);
-            intent.putExtra("PHONE-NUMBER", phoneNumber);
-            intent.putExtra("UUID", routeLbs.get(i).getUuid());
-            main.startActivity(intent);
-        }
-    };
-
-    // Prepare UI before start fragment
-    public void prepareUI(){
+    public void mappingUIComponent(){
         routeListView = (ListView) view.findViewById(R.id.history_list_view);
+        beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
+        endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
+    }
 
+    private void subscribeEventButton() {
         originRouteLbList = new ArrayList<>();
-        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(phoneNumber).child("Routes");
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference()
+                .child("Users")
+                .child(phoneNumber)
+                .child("Routes");
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -186,19 +82,93 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                 }
 
                 routeLbs = new ArrayList<>(originRouteLbList);
-                routeListView.setOnItemClickListener(routeListViewAction);
+                routeListView.setOnItemClickListener((adapterView, view, i, l) -> {
+                    Intent intent = new Intent(context, RenderHistoryItemActivity.class);
+                    intent.putExtra("PHONE-NUMBER", phoneNumber);
+                    intent.putExtra("UUID", routeLbs.get(i).getUuid());
+                    main.startActivity(intent);
+                });
+
                 routeLbAdapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routeLbs);
                 routeListView.setAdapter(routeLbAdapter);
 
-                beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
-                endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
-                beginDayTextView.setOnClickListener(getBeginDate);
-                endDayTextView.setOnClickListener(getEndDate);
+                beginDayTextView.setOnClickListener(view -> {
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(context);
+                    DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+                        beginDayCalendar.set(year, month, day, 0, 0);
+                        updateDateEditText(beginDayTextView, beginDayCalendar);
+                        Log.d("DAY-BEGIN", beginDayCalendar.getTime().toString());
+                        if(endDayTextView.getText().toString().isEmpty() == false){
+                            filterListView();
+                        }
+                    };
+                    datePickerDialog.setOnDateSetListener(dateSetListener);
+                    datePickerDialog.show();
+                });
+
+                endDayTextView.setOnClickListener(view -> {
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(context);
+                    DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+                        endDayCalendar.set(year, month, day, 23, 59);
+                        updateDateEditText(endDayTextView, endDayCalendar);
+                        Log.d("DAY-END", endDayCalendar.getTime().toString());
+                        if(endDayTextView.getText().toString().isEmpty() == false){
+                            filterListView();
+                        }
+                    };
+                    datePickerDialog.setOnDateSetListener(dateSetListener);
+                    datePickerDialog.show();
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
         });
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try{
+            context = getActivity();
+            main = (MainActivity) getActivity();
+        } catch (IllegalStateException e){
+            throw new IllegalStateException("Error");
+        }
+    }
+
+    private EditText beginDayTextView;
+    private EditText endDayTextView;
+    private Calendar beginDayCalendar = Calendar.getInstance();
+    private Calendar endDayCalendar = Calendar.getInstance();
+
+    private void updateDateEditText(EditText editText, Calendar calendar) {
+        String myFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editText.setText(sdf.format(calendar.getTime()));
+    }
+
+    public void filterListView() {
+        routeLbs = new ArrayList<>();
+        int n = originRouteLbList.size();
+
+        for (int i = 0; i < n; ++i){
+            RouteLabel route = originRouteLbList.get(i);
+            String datetimeStr = route.getCreatedDay();
+
+            try {
+                Date dateItem = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy").parse(datetimeStr);
+                if(dateItem.after(beginDayCalendar.getTime()) && dateItem.before(endDayCalendar.getTime())){
+                    routeLbs.add(route);
+                    Log.d("DATE-IN-RANGE", dateItem.toString());
+                }
+            } catch (Exception e){
+                Log.d("DATE-FORMAT-ERROR", e.getMessage());
+            }
+        }
+
+        RouteAdapter adapter = new RouteAdapter(context, R.layout.item_list_history_journey_layout, routeLbs);
+        routeListView.setAdapter(adapter);
     }
 
     @Override
@@ -248,18 +218,16 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                 view = inflater.inflate(layout, null);
                 holder = new ViewHolder();
 
-                // mapping attributes
                 holder.createdDayTextView = (TextView) view.findViewById(R.id.created_day_text_view);
                 holder.startLocationTextView = (TextView) view.findViewById(R.id.strart_point_text_view);
                 holder.endLocationTextView = (TextView) view.findViewById(R.id.end_point_text_view);
                 holder.distanceTextVew = (TextView) view.findViewById(R.id.distance_text_view_item);
                 holder.periodTextView = (TextView) view.findViewById(R.id.period_text_view_item);
                 view.setTag(holder);
-            }
-            else {
+            } else {
                 holder = (ViewHolder) view.getTag();
             }
-            // assignment values
+
             RouteLabel routeLabel = routeLabels.get(i);
             holder.createdDayTextView.setText(routeLabel.getCreatedDay());
             holder.startLocationTextView.setText(routeLabel.getStartAddress());

@@ -61,7 +61,7 @@ public class PrepareActivity extends Activity {
             return;
         }
 
-        Locale locale = new Locale(appStatus.getLanguage());
+        Locale locale = new Locale(appStatus.getLanguage().name());
         Locale.setDefault(locale);
         Configuration config = new Configuration();
         config.locale = locale;

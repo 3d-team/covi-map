@@ -131,13 +131,13 @@ public class DirectFragment extends Fragment {
                     public void onFinish() {
                         if(isSwap) return;
                         String locationName = searchSrcLocationEdt.getQuery().toString();
-                        List<Address> geoResults = null;
+                        List<Address> geoResults;
 
                         if(locationName.equals("")){
                             resultSrcTextView.setVisibility(View.GONE);
                             resultSrcTextView.setText("");
                         }
-                        else if (locationName != null) {
+                        else {
                             Geocoder geocoder = new Geocoder(DirectFragment.view.getContext(), Locale.getDefault());
                             try {
                                 geoResults = geocoder.getFromLocationName(locationName, 1);
@@ -155,10 +155,6 @@ public class DirectFragment extends Fragment {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }
-                        else{
-                            resultSrcTextView.setVisibility(View.GONE);
-                            resultSrcTextView.setText("");
                         }
                     }
                 };
@@ -196,13 +192,13 @@ public class DirectFragment extends Fragment {
                     public void onFinish() {
                         if(isSwap) return;
                         String locationName = searchDestLocationEdt.getQuery().toString();
-                        List<Address> geoResults = null;
+                        List<Address> geoResults;
 
                         if(locationName.equals("")){
                             resultDestTextView.setVisibility(View.GONE);
                             resultDestTextView.setText("");
                         }
-                        else if (locationName != null) {
+                        else {
                             Geocoder geocoder = new Geocoder(DirectFragment.view.getContext(), Locale.getDefault());
                             try {
                                 geoResults = geocoder.getFromLocationName(locationName, 1);
@@ -220,10 +216,6 @@ public class DirectFragment extends Fragment {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }
-                        else{
-                            resultDestTextView.setVisibility(View.GONE);
-                            resultDestTextView.setText("");
                         }
                     }
                 };
@@ -276,8 +268,9 @@ public class DirectFragment extends Fragment {
                 try {
                     Thread.sleep(2000);
                     isSwap = false;
+                } catch (Exception e){
+                  Log.d("MyTag", e.getMessage());
                 }
-                catch (Exception e){}
             });
             thread.start();
         });
@@ -299,7 +292,7 @@ public class DirectFragment extends Fragment {
             main = (MainActivity) getActivity();
         } catch (IllegalStateException e){
             throw new IllegalStateException("Error");
-        };
+        }
     }
 
     private CLocation currentLocation;

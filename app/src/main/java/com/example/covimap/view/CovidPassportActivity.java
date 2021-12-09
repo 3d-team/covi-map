@@ -3,9 +3,7 @@ package com.example.covimap.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
@@ -15,6 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
+
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.model.User;
@@ -24,8 +23,6 @@ public class CovidPassportActivity extends Activity {
     private FloatingActionButton closeBtn;
     private WebView webView;
     private Button submitButton;
-    private String color;
-    private Bitmap qrCode;
     private User user;
 
     int countMess = 0;
@@ -118,19 +115,19 @@ public class CovidPassportActivity extends Activity {
         }
 
         private void saveColorVaccine(String mess) {
-            color = convertRGBtoHex(mess);
+            String color = convertRGBtoHex(mess);
 
             SharedPreferences preferences = getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("ColorVaccine", color);
-            editor.commit();
+            editor.apply();
         }
 
         public String convertRGBtoHex(String src){
             src = src.replace("rgb", "")
                     .replace("(", "")
                     .replace(")", "");
-            String rgb[] = src.split(", ");
+            String[] rgb = src.split(", ");
 
             int r = Integer.parseInt(rgb[0]);
             int g = Integer.parseInt(rgb[1]);

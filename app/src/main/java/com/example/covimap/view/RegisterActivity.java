@@ -1,16 +1,15 @@
 package com.example.covimap.view;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covimap.R;
 import com.example.covimap.model.User;
@@ -69,7 +68,18 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void subscribeEventButton() {
-        editTextBirthday.setOnClickListener(getBirthday);
+        editTextBirthday.setOnClickListener(view -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterActivity.this,
+                    android.R.style.Theme_Holo_Light_Dialog_NoActionBar);
+            DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+                calendar = Calendar.getInstance();
+                calendar.set(year, month, day, 7, 0);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                editTextBirthday.setText(simpleDateFormat.format(calendar.getTime()));
+            };
+            datePickerDialog.setOnDateSetListener(dateSetListener);
+            datePickerDialog.show();
+        });
 
         buttonRegister.setOnClickListener(view -> {
             phoneNumber = editTextPhoneNumber.getText().toString();
@@ -89,9 +99,9 @@ public class RegisterActivity extends AppCompatActivity {
                     if(snapshot.exists()){
                         textInputLayoutPhoneNumber.setError("Your account has already existed!");
                         return;
-                    } else {
-                        textInputLayoutPhoneNumber.setError(null);
                     }
+
+                    textInputLayoutPhoneNumber.setError(null);
 
                     if (!validate()) {
                         return;
@@ -110,21 +120,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private Calendar calendar;
-    View.OnClickListener getBirthday = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterActivity.this,
-                    android.R.style.Theme_Holo_Light_Dialog_NoActionBar);
-            DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
-               calendar = Calendar.getInstance();
-               calendar.set(year, month, day, 7, 0);
-               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-               editTextBirthday.setText(simpleDateFormat.format(calendar.getTime()));
-            };
-            datePickerDialog.setOnDateSetListener(dateSetListener);
-            datePickerDialog.show();
-        }
-    };
 
     public boolean validate() {
         password = editTextPassword.getText().toString();
@@ -153,8 +148,8 @@ public class RegisterActivity extends AppCompatActivity {
             textInputLayoutBirthday.setError(null);
         }
 
-        if(radioButton == null){
-            Snackbar.make(buttonRegister, "Please choose your gender!", Snackbar.LENGTH_LONG);
+        if (radioButton == null) {
+            Snackbar.make(buttonRegister, "Please choose your gender!", Snackbar.LENGTH_LONG).show();
             return false;
         }
 

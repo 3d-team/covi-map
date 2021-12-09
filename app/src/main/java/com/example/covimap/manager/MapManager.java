@@ -21,14 +21,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
-import com.google.maps.model.EncodedPolyline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,11 +48,11 @@ public class MapManager implements OnMapReadyCallback {
     }
 
     public void zoomIn(){
-        map.moveCamera(CameraUpdateFactory.zoomBy(0.1f));
+        map.moveCamera(CameraUpdateFactory.zoomBy(MapConfig.ZOOM_IN_OUT_RATIO));
     }
 
     public void zoomOut(){
-        map.moveCamera(CameraUpdateFactory.zoomBy(-0.1f));
+        map.moveCamera(CameraUpdateFactory.zoomBy((-1) * MapConfig.ZOOM_IN_OUT_RATIO));
     }
 
     public void zoomToHome(){
@@ -90,12 +82,17 @@ public class MapManager implements OnMapReadyCallback {
     }
 
     public void drawArea(Area area){
-        if(area == null) return;
+        if(area == null) {
+            return;
+        }
+
         List<CLocation> bounds = area.getBoundaries();
-        if(bounds == null) return;
+        if (bounds == null) {
+            return;
+        }
 
         PolygonOptions polygonOptions = new PolygonOptions();
-        for(CLocation c:bounds){
+        for (CLocation c : bounds){
             polygonOptions.add(c.toLatLng());
         }
         polygonOptions.strokeWidth(5);
@@ -104,98 +101,25 @@ public class MapManager implements OnMapReadyCallback {
         Polygon polygon = map.addPolygon(polygonOptions);
         polygon.setClickable(true);
         polygon.setTag(area);
-        map.setOnPolygonClickListener(polygon1 -> {
-            Area area1 = (Area) polygon1.getTag();
-            HashMap<String, Area> childAreas = area1.getChildAreas();
 
+        map.setOnPolygonClickListener(clickedPolygon -> {
+            Area clickedArea = (Area) clickedPolygon.getTag();
+            HashMap<String, Area> childAreas = clickedArea.getChildAreas();
             if(childAreas == null) {
                 return;
-            };
+            }
 
             reset();
-            redPlaceFragment.setStatusText(area1.getName(), area1.getNumberF0(), area1.getColor());
-            childAreas.forEach((s, area2) -> {
-                drawArea(area2);
-            });
+
+            redPlaceFragment.setStatusText(clickedArea.getName(), clickedArea.getNumberF0(), clickedArea.getColor());
+
+            childAreas.forEach((s, childArea) -> drawArea(childArea));
         });
     }
 
     public void findRouteBetweenTwoLocations(CLocation start, CLocation end, DirectionMode mode) {
         String url = MapHelper.generateDirectionUrl(start, end, mode);
         new FetchURL().execute(url);
-    }
-
-    public void findRouteBetweenTwoLocations(CLocation start, CLocation end){
-        LatLng barcelona = new LatLng(41.385064,2.173403);
-        map.addMarker(new MarkerOptions().position(barcelona).title("Marker in Barcelona"));
-
-        LatLng madrid = new LatLng(40.416775,-3.70379);
-        map.addMarker(new MarkerOptions().position(madrid).title("Marker in Madrid"));
-
-        LatLng zaragoza = new LatLng(41.648823,-0.889085);
-
-        //Define list to get all latlng for the route
-        List<LatLng> path = new ArrayList();
-
-        //Execute Directions API request
-        GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey("AIzaSyDE1hSjk381yOSSqnR9khTVsNdg9A83tYE")
-                .build();
-        DirectionsApiRequest req = DirectionsApi.getDirections(context, "41.385064,2.173403", "40.416775,-3.70379");
-        try {
-            DirectionsResult res = req.await();
-            if(res.routes == null || res.routes.length == 0){
-            }
-            //Loop through legs and steps to get encoded polylines of each step
-            if (res.routes != null && res.routes.length > 0) {
-                DirectionsRoute route = res.routes[0];
-
-                if (route.legs !=null) {
-                    for(int i=0; i<route.legs.length; i++) {
-                        DirectionsLeg leg = route.legs[i];
-                        if (leg.steps != null) {
-                            for (int j=0; j<leg.steps.length;j++){
-                                DirectionsStep step = leg.steps[j];
-                                if (step.steps != null && step.steps.length >0) {
-                                    for (int k=0; k<step.steps.length;k++){
-                                        DirectionsStep step1 = step.steps[k];
-                                        EncodedPolyline points1 = step1.polyline;
-                                        if (points1 != null) {
-                                            //Decode polyline and add points to list of route coordinates
-                                            List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
-                                            for (com.google.maps.model.LatLng coord1 : coords1) {
-                                                path.add(new LatLng(coord1.lat, coord1.lng));
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    EncodedPolyline points = step.polyline;
-                                    if (points != null) {
-                                        //Decode polyline and add points to list of route coordinates
-                                        List<com.google.maps.model.LatLng> coords = points.decodePath();
-                                        for (com.google.maps.model.LatLng coord : coords) {
-                                            path.add(new LatLng(coord.lat, coord.lng));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch(Exception ex) {
-            Log.e("MyLog", ex.getLocalizedMessage());
-        }
-
-        //Draw the polyline
-        if (path.size() > 0) {
-            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
-            map.addPolyline(opts);
-        }
-
-        map.getUiSettings().setZoomControlsEnabled(true);
-
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(zaragoza, 6));
     }
 
     public void reset() {
@@ -205,7 +129,8 @@ public class MapManager implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
-        if(this.redPlaceFragment != null){
+
+        if (this.redPlaceFragment != null){
             zoomToHome();
         }
     }
@@ -217,7 +142,7 @@ public class MapManager implements OnMapReadyCallback {
 
             try {
                 data = MapHelper.downloadUrl(strings[0]);
-                Log.d("mylog", "Background task data " + data.toString());
+                Log.d("mylog", "Background task data " + data);
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
             }
@@ -291,7 +216,7 @@ public class MapManager implements OnMapReadyCallback {
         }
     }
 
-    private class DataParser {
+    private static class DataParser {
         public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
             List<List<HashMap<String, String>>> routes = new ArrayList<>();
@@ -311,7 +236,7 @@ public class MapManager implements OnMapReadyCallback {
 
                         /** Traversing all steps */
                         for (int k = 0; k < jSteps.length(); k++) {
-                            String polyline = "";
+                            String polyline;
                             polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                             List<LatLng> list = decodePoly(polyline);
 
@@ -327,9 +252,8 @@ public class MapManager implements OnMapReadyCallback {
                     }
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
             } catch (Exception e) {
+                e.printStackTrace();
             }
             return routes;
         }

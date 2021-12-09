@@ -9,19 +9,20 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class AppStatus implements Serializable {
-    private String language;
+    private Language language;
     private boolean isLogged;
     private String phoneNumber;
     private String color;
     private String QRCode;
 
     public AppStatus() {
-        this.language = String.valueOf(Language.VI);
+        this.language = Language.VI;
         this.isLogged = false;
         this.phoneNumber = "";
         this.color = "#"+ Config.GRAY_ZONE_COLOR;
@@ -29,12 +30,11 @@ public class AppStatus implements Serializable {
     }
 
     public void writeStatusToFile(FileOutputStream fileOutputStream){
-        try{
+        try {
             ObjectOutputStream os = new ObjectOutputStream(fileOutputStream);
             os.writeObject(this);
             os.close();
-        }
-        catch (Exception e){
+        } catch (Exception e){
             Log.d("Exception", e.getMessage());
         }
     }
@@ -43,6 +43,7 @@ public class AppStatus implements Serializable {
         return isLogged;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "AppStatus{" +

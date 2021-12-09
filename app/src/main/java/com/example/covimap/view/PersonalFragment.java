@@ -91,13 +91,13 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
         VILanguageButton.setOnClickListener(view -> new AlertDialog.Builder(context)
                 .setMessage(R.string.mess_change_language)
                 .setCancelable(false)
-                .setPositiveButton("OK", (dialogInterface, i) -> main.onChangeLanguage(String.valueOf(Language.VI)))
+                .setPositiveButton("OK", (dialogInterface, i) -> main.onChangeLanguage(Language.VI))
                 .show());
 
         ENLanguageButton.setOnClickListener(view -> new AlertDialog.Builder(context)
                 .setMessage(R.string.mess_change_language)
                 .setCancelable(false)
-                .setPositiveButton("OK", (dialogInterface, i) -> main.onChangeLanguage(String.valueOf(Language.EN)))
+                .setPositiveButton("OK", (dialogInterface, i) -> main.onChangeLanguage(Language.EN))
                 .show());
     }
 

@@ -18,6 +18,7 @@ import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
 import com.example.covimap.model.Area;
 import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Language;
 import com.example.covimap.model.User;
 import com.example.covimap.service.MainCallbacks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -76,7 +77,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             return;
         }
 
-        Locale locale = new Locale(appStatus.getLanguage());
+        Locale locale = new Locale(appStatus.getLanguage().name());
         Locale.setDefault(locale);
 
         Configuration config = new Configuration();
@@ -150,13 +151,11 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     }
 
     @Override
-    public void onChangeLanguage(String lang){
+    public void onChangeLanguage(Language lang){
         if (appStatus == null){
             return;
-        } else {
-            appStatus.setLanguage(lang);
         }
-
+        appStatus.setLanguage(lang);
         restartApp();
     }
 
@@ -232,7 +231,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     eventType = parser.next();
                     switch(eventType) {
                         case XmlPullParser.START_DOCUMENT:
-                            break;
                         case XmlPullParser.END_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
@@ -286,7 +284,6 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     eventType=parser.next();
                     switch(eventType) {
                         case XmlPullParser.START_DOCUMENT:
-                            break;
                         case XmlPullParser.END_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
@@ -342,17 +339,18 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     switch(eventType)
                     {
                         case XmlPullParser.START_DOCUMENT:
-                            break;
                         case XmlPullParser.END_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
                             nodeName = parser.getName();
-                            if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_1")){
+                            if(nodeName.equals("SimpleData") && parser.getAttributeValue(0)
+                                    .equals("NAME_1")){
                                 provinceName = parser.nextText();
-                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_2")){
+                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0)
+                                    .equals("NAME_2")){
                                 districtName = parser.nextText();
-                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0).equals("NAME_3")){
-//                                commune.setName(parser.nextText());
+                            } else if(nodeName.equals("SimpleData") && parser.getAttributeValue(0)
+                                    .equals("NAME_3")){
                                 communeName = parser.nextText();
                             } else if(nodeName.equals("coordinates")){
                                 nodeText = parser.nextText();
@@ -382,9 +380,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             break;
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
+            } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             }
 
@@ -396,7 +392,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public class AreaLabel implements Serializable {
+    public static class AreaLabel implements Serializable {
         private String level;
         private String name;
         private String color;
