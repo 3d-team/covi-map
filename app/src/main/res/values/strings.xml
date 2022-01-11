@@ -27,8 +27,8 @@
     <string name="save_button">Save</string>
     <string name="start_point_hint">Starting location</string>
     <string name="end_point_hint">Ending location</string>
-    <string name="start_date_title">Start date</string>
-    <string name="end_date_title">End date</string>
+    <string name="start_date_title">Start</string>
+    <string name="end_date_title">End</string>
     <string name="start_title">" Start:  "</string>
     <string name="end_title">" End:  "</string>
     <string name="find_location_hint">Search location</string>
@@ -71,4 +71,18 @@
     <string name="phone_number_error">Please enter valid phone number!</string>
     <string name="your_location">Your current location</string>
     <string name="covid_passport">Covid Passport</string>
+    <string name="title_activity_recovery_password">RecoveryPasswordActivity</string>
+    <string name="title_activity_reset_password">ResetPasswordActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="update">update</string>
+    <string name="logout">logout</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="language">Language</string>
 </resources>

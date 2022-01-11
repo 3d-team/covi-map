@@ -18,7 +18,7 @@
             <TextView
                 android:text="@string/start_date_title"
                 android:textSize="22dp"
-                android:textColor="@color/black"
+                android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <EditText
@@ -26,10 +26,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:focusable="false"
                 android:textColor="@color/main_theme_color"
-                android:hint="dd/MM/yy"
+                android:hint="  dd/MM/yy  "
                 android:drawableStart="@drawable/calendar_icon"
                 android:background="@drawable/day_chooser_edit_custom"/>
         </LinearLayout>
@@ -42,7 +42,7 @@
             <TextView
                 android:text="@string/end_date_title"
                 android:textSize="22dp"
-                android:textColor="@color/black"
+                android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <EditText
@@ -50,10 +50,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:focusable="false"
                 android:textColor="@color/main_theme_color"
-                android:hint="dd/MM/yy"
+                android:hint="  dd/MM/yy  "
                 android:drawableStart="@drawable/calendar_icon"
                 android:background="@drawable/day_chooser_edit_custom"/>
         </LinearLayout>

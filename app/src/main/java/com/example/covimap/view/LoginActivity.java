@@ -54,15 +54,28 @@ public class LoginActivity extends AppCompatActivity {
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         mappingRegisterTextView();
+        mappingForgetPasswordTextView();
     }
 
     private void mappingRegisterTextView() {
         TextView textViewRegister = findViewById(R.id.textViewCreateAccount);
-        textViewRegister.setText(Html.fromHtml("<font color='#000000'>New to app yet. </font>" +
+        textViewRegister.setText(Html.fromHtml("<font color='#000000'>New to app yet? </font>" +
                 "<font color='#0c0099'>Create one</font>", Html.FROM_HTML_MODE_LEGACY));
 
         textViewRegister.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void mappingForgetPasswordTextView() {
+        TextView textViewForgetPassword = findViewById(R.id.textViewForgetPassword);
+        textViewForgetPassword.setText(Html.fromHtml("<font color='#000000'>Forget password? </font>" +
+                "<font color='#0c0099'>Click here! </font>", Html.FROM_HTML_MODE_LEGACY));
+
+        textViewForgetPassword.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, RecoveryPasswordActivity.class);
+            intent.putExtra("AppStatus", appStatus);
             startActivity(intent);
         });
     }
@@ -72,18 +85,26 @@ public class LoginActivity extends AppCompatActivity {
         String phone = intent.getStringExtra("phone-number");
         appStatus = (AppStatus) intent.getSerializableExtra("AppStatus");
 
-        if (phone != null && !phone.isEmpty()){
-            editTextPhoneNumber.setText(phone);
+        if (phone == null || phone.isEmpty()) {
+            return;
         }
+        editTextPhoneNumber.setText(phone);
     }
 
     private void subscribeEventButtons() {
         buttonLogin.setOnClickListener(this::onClick);
     }
 
+    private void onClick(View view) {
+        if (!validate()) {
+            return;
+        }
+
+        handleLoginAction();
+    }
+
     private boolean validate() {
         String password = editTextPassword.getText().toString();
-
         if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
             return false;
@@ -91,23 +112,19 @@ public class LoginActivity extends AppCompatActivity {
             textInputLayoutPassword.setError(null);
         }
 
-        return true;
-    }
-
-    private void onClick(View view) {
         String phoneNumber = editTextPhoneNumber.getText().toString();
-
         if (!Validator.isPhoneNumber(phoneNumber)) {
-            textInputLayoutPhoneNumber.setError("Please enter valid phone number");
-            return;
+            textInputLayoutPhoneNumber.setError("Please enter valid phone number!");
+            return false;
         } else {
             textInputLayoutPhoneNumber.setError(null);
         }
 
-        handleLoginAction(phoneNumber);
+        return true;
     }
 
-    private void handleLoginAction(String phoneNumber) {
+    private void handleLoginAction() {
+        String phoneNumber = editTextPhoneNumber.getText().toString();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Users")
                 .child(phoneNumber);
@@ -124,29 +141,34 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             private void login(@NonNull DataSnapshot snapshot) {
-                if (!validate()) {
+                User user = snapshot.getValue(User.class);
+                if (user == null) {
+                    textInputLayoutPassword.setError("Account doesn't exists!");
                     return;
                 }
 
-                User user = snapshot.getValue(User.class);
                 String password = editTextPassword.getText().toString();
+                if(!validatePassword(user, password)) {
+                    return;
+                };
+                setLoggedStatus();
+                triggerMainActivity(user, appStatus);
+                logStatus(user, appStatus);
 
+                finish();
+            }
+
+            private boolean validatePassword(User user, String password) {
                 String hashedPassword = Hashing.sha256()
                         .hashString(password, StandardCharsets.UTF_8)
                         .toString();
 
                 if (!user.matchPassword(hashedPassword)) {
                     textInputLayoutPassword.setError("Wrong password!");
-                    return;
-                } else {
-                    textInputLayoutPassword.setError(null);
+                    return false;
                 }
-
-                setLoggedStatus();
-                sendingLoggedStatusToMain(user, appStatus);
-                logStatus(user, appStatus);
-
-                finish();
+                textInputLayoutPassword.setError(null);
+                return true;
             }
 
             private void setLoggedStatus() {
@@ -154,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                 appStatus.setPhoneNumber(phoneNumber);
             }
 
-            private void sendingLoggedStatusToMain(User user, AppStatus appStatus) {
+            private void triggerMainActivity(User user, AppStatus appStatus) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("AccountData", user);
                 intent.putExtra("AppStatus", appStatus);

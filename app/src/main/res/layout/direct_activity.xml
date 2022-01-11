@@ -38,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/connect_icon"
-            android:src="@drawable/target_location_icon"
-            android:layout_marginLeft="2dp"/>
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/target_location_icon" />
 
         <SearchView
             android:id="@+id/search_src_location_edt"
@@ -57,18 +57,18 @@
 
         <SearchView
             android:id="@+id/search_dest_location_edt"
-            android:layout_gravity="top|center"
-            android:background="@drawable/edittext_custom"
             android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:layout_below="@+id/search_src_location_edt"
+            android:layout_gravity="top|center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/edittext_custom"
             android:iconifiedByDefault="false"
             android:queryHint="@string/end_point_hint"
-            android:searchIcon="@null"
             android:searchHintIcon="@null"
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="4dp"/>
+            android:searchIcon="@null" />
 
         <ImageView
             android:id="@+id/swap_src_dest"

@@ -68,7 +68,7 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
-            view = (View)inflater.inflate(R.layout.new_record_activity, null);
+            view = inflater.inflate(R.layout.new_record_activity, null);
 
             mappingUIComponent();
             subscribeEventButton();

@@ -62,7 +62,9 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         mappingBottomNavBar();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, currentFragment)
+                    .commit();
         }
     }
 
@@ -125,7 +127,9 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     currentFragment = personalFragment;
                     break;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, currentFragment)
+                    .commit();
             return true;
         });
     }
@@ -261,9 +265,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                     }
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
+            } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             }
 
@@ -314,9 +316,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                             break;
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
+            } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
             }
 

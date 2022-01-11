@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -103,7 +104,7 @@ public class MapManager implements OnMapReadyCallback {
 
         map.setOnPolygonClickListener(clickedPolygon -> {
             Area clickedArea = (Area) clickedPolygon.getTag();
-            HashMap<String, Area> childAreas = clickedArea.getChildAreas();
+            HashMap<String, Area> childAreas = Objects.requireNonNull(clickedArea).getChildAreas();
             if(childAreas == null) {
                 return;
             }
@@ -118,7 +119,7 @@ public class MapManager implements OnMapReadyCallback {
 
     public void findRouteBetweenTwoLocations(CLocation start, CLocation end, DirectionMode mode) {
         String url = MapHelper.generateDirectionUrl(start, end, mode);
-        new FetchURL().execute(url);
+        new FetchAPI().execute(url);
     }
 
     public void reset() {
@@ -134,7 +135,7 @@ public class MapManager implements OnMapReadyCallback {
         }
     }
 
-    public class FetchURL extends AsyncTask<String, Void, String> {
+    public class FetchAPI extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             String data = "";

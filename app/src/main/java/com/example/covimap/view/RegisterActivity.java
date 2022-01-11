@@ -2,10 +2,12 @@ package com.example.covimap.view;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,20 +28,29 @@ import com.google.firebase.database.ValueEventListener;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText editTextPhoneNumber;
-    EditText editTextPassword;
-    EditText editTextFullName;
-    EditText editTextBirthday;
-    RadioGroup genderRadioGroup;
+    private EditText editTextPhoneNumber;
+    private EditText editTextPassword;
+    private EditText editTextFullName;
+    private EditText editTextBirthday;
+    private RadioGroup genderRadioGroup;
 
-    TextInputLayout textInputLayoutPhoneNumber;
-    TextInputLayout textInputLayoutFullName;
-    TextInputLayout textInputLayoutPassword;
-    TextInputLayout textInputLayoutBirthday;
+    private TextInputLayout textInputLayoutPhoneNumber;
+    private TextInputLayout textInputLayoutFullName;
+    private TextInputLayout textInputLayoutPassword;
+    private TextInputLayout textInputLayoutBirthday;
 
-    Button buttonRegister;
+    private Calendar calendar;
+
+    private Button buttonRegister;
+
+    private String phoneNumber;
+    private String password;
+    private String fullName;
+    private String birthday;
+    private String gender;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,12 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
         mappingUIComponent();
         subscribeEventButton();
     }
-
-    private String phoneNumber;
-    private String password;
-    private String fullName;
-    private String birthday;
-    private String gender;
 
     private void mappingUIComponent() {
         editTextPhoneNumber = findViewById(R.id.editTextPhoneNumber);
@@ -68,7 +73,6 @@ public class RegisterActivity extends AppCompatActivity {
         buttonRegister = findViewById(R.id.buttonRegister);
     }
 
-
     private void subscribeEventButton() {
         editTextBirthday.setOnClickListener(view -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterActivity.this,
@@ -76,62 +80,26 @@ public class RegisterActivity extends AppCompatActivity {
             DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
                 calendar = Calendar.getInstance();
                 calendar.set(year, month, day, 7, 0);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.TAIWAN);
                 editTextBirthday.setText(simpleDateFormat.format(calendar.getTime()));
             };
             datePickerDialog.setOnDateSetListener(dateSetListener);
             datePickerDialog.show();
         });
 
-        buttonRegister.setOnClickListener(view -> {
-            phoneNumber = editTextPhoneNumber.getText().toString();
-
-            if (!Validator.isPhoneNumber(phoneNumber)) {
-                textInputLayoutPhoneNumber.setError("Please enter valid phone number");
-                return;
-            }
-
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
-                    .child("Users")
-                    .child(phoneNumber);
-
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        textInputLayoutPhoneNumber.setError("Your account has already existed!");
-                        return;
-                    }
-
-                    textInputLayoutPhoneNumber.setError(null);
-
-                    if (!validate()) {
-                        return;
-                    }
-
-                    String hashedPassword = Hashing.sha256()
-                            .hashString(password, StandardCharsets.UTF_8)
-                            .toString();
-                    User user = new User(phoneNumber, hashedPassword, fullName, birthday, gender);
-                    mDatabase.setValue(user);
-
-                    finish();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
-            });
-        });
+        buttonRegister.setOnClickListener(this::onClick);
     }
 
-    private Calendar calendar;
+    private void onClick(View view) {
+        if (!validate()) {
+            return;
+        }
+
+        registerNewAccount();
+    }
 
     public boolean validate() {
         password = editTextPassword.getText().toString();
-        fullName = editTextFullName.getText().toString();
-        birthday = editTextBirthday.getText().toString();
-        RadioButton radioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
-
         if (!Validator.isPassword(password)) {
             textInputLayoutPassword.setError("Please enter valid password!");
             return false;
@@ -139,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
             textInputLayoutPassword.setError(null);
         }
 
+        fullName = editTextFullName.getText().toString();
         if(fullName.isEmpty()){
             textInputLayoutFullName.setError("Please enter your fullname!");
             return false;
@@ -146,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
             textInputLayoutFullName.setError(null);
         }
 
+        birthday = editTextBirthday.getText().toString();
         if(birthday.isEmpty()){
             textInputLayoutBirthday.setError("Please enter your birthday!");
             return false;
@@ -153,11 +123,53 @@ public class RegisterActivity extends AppCompatActivity {
             textInputLayoutBirthday.setError(null);
         }
 
+        RadioButton radioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
         if (radioButton == null) {
             Snackbar.make(buttonRegister, "Please choose your gender!", Snackbar.LENGTH_LONG).show();
             return false;
         }
 
         return true;
+    }
+
+    private void registerNewAccount() {
+        phoneNumber = editTextPhoneNumber.getText().toString();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
+                .child("Users")
+                .child(phoneNumber);
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    textInputLayoutPhoneNumber.setError("Your account has already existed!");
+                    return;
+                }
+                textInputLayoutPhoneNumber.setError(null);
+
+                createNewUserOnFirebase();
+                notifyLoginAgain();
+                finish();
+            }
+
+            private void createNewUserOnFirebase() {
+                String hashedPassword = hashingPassword();
+                User user = new User(phoneNumber, hashedPassword, fullName, birthday, gender);
+                mDatabase.setValue(user);
+            }
+
+            private String hashingPassword() {
+                return Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
+            }
+
+            private void notifyLoginAgain() {
+                Toast.makeText(RegisterActivity.this,
+                        "Register successfully. Please login again!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }

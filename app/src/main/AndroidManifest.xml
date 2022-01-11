@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.covimap">
+    package="com.example.covimap" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/Theme.CoviMap">
+        android:theme="@style/Theme.CoviMap" >
+        <activity
+            android:name=".view.RecoveryPasswordActivity"
+            android:exported="true"
+            android:label="@string/title_activity_recovery_password"
+            android:theme="@style/Theme.CoviMap.NoActionBar" />
 
+        <activity
+            android:name=".view.ResetPasswordActivity"
+            android:exported="true"
+            android:label="@string/title_activity_reset_password"
+            android:theme="@style/Theme.CoviMap.NoActionBar" />
 
         <service
             android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -28,42 +39,34 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_api_key" />
 
-        <activity android:name=".view.PrepareActivity" android:exported="true">
+        <activity
+            android:name=".view.PrepareActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.RegisterActivity"
-            android:exported="true">
+            android:exported="true" >
         </activity>
-
         <activity
             android:name=".view.LoginActivity"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:exported="true" >
         </activity>
-
         <activity
             android:name=".view.MainActivity"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:exported="true" >
         </activity>
-
-        <activity android:name=".view.RenderHistoryItemActivity"  android:theme="@style/RenderMapDialog" >
+        <activity
+            android:name=".view.RenderHistoryItemActivity"
+            android:theme="@style/RenderMapDialog" >
         </activity>
-
-        <activity android:name=".view.CovidPassportActivity" android:exported="true"></activity>
-
-
+        <activity
+            android:name=".view.CovidPassportActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

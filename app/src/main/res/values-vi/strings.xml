@@ -27,8 +27,8 @@
     <string name="save_button">Lưu</string>
     <string name="start_point_hint">Điểm đi</string>
     <string name="end_point_hint">Điểm đến</string>
-    <string name="start_date_title">Ngày bắt đầu</string>
-    <string name="end_date_title">Ngày kết thúc</string>
+    <string name="start_date_title">Bắt đầu</string>
+    <string name="end_date_title">Kết thúc</string>
     <string name="start_title">" Bắt đầu:  "</string>
     <string name="end_title">" Kết thúc:  "</string>
     <string name="find_location_hint">Tìm kiếm địa điểm</string>
@@ -71,4 +71,17 @@
     <string name="phone_number_error">Số điện thoại bạn nhập không hợp lệ!</string>
     <string name="your_location">Vị trí hiện tại của bạn</string>
     <string name="covid_passport">Thẻ thông hành</string>
+
+    <string name="update">Thẻ COVID</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_recovery_password">RecoveryPasswordActivity</string>
+    <string name="reset_password">Đổi mật khẩu</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="title_activity_reset_password">ResetPasswordActivity</string>
 </resources>

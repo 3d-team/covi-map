@@ -31,11 +31,12 @@ import com.example.covimap.model.User;
 import com.example.covimap.service.PersonalFragmentCallbacks;
 
 import java.io.InputStream;
+import java.net.URL;
 
 public class PersonalFragment extends Fragment implements PersonalFragmentCallbacks {
     private MainActivity main;
     private Context context;
-    private static View view;
+    private View view;
     private static AppStatus createStatus;
     private User user;
 
@@ -46,7 +47,7 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
     private TextView birthdayTextView;
     private TextView logoutButton;
     private TextView updateButton;
-
+    private TextView resetPasswordButton;
     private LinearLayout passportLayout;
     private ImageView qrCode;
 
@@ -72,6 +73,7 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
         logoutButton = view.findViewById(R.id.logout_textview_button);
         updateButton = view.findViewById(R.id.update_passport_text_view);
         passportLayout = view.findViewById(R.id.covid_passport);
+        resetPasswordButton = view.findViewById(R.id.reset_password_text_view);
         qrCode = view.findViewById(R.id.qr_code_imgview);
     }
 
@@ -99,6 +101,13 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
                 .setCancelable(false)
                 .setPositiveButton("OK", (dialogInterface, i) -> main.onChangeLanguage(Language.EN))
                 .show());
+
+        resetPasswordButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ResetPasswordActivity.class);
+            intent.putExtra("AppStatus", createStatus);
+            intent.putExtra("AccountData", user);
+            startActivity(intent);
+        });
     }
 
     private void initializeComponent() {
@@ -107,7 +116,7 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
 
         languageOptionRG.clearCheck();
 
-        if(createStatus.getLanguage().equals(Language.VI)) {
+        if (createStatus.getLanguage().equals(Language.VI)) {
             ENLanguageButton.setChecked(false);
             VILanguageButton.setChecked(true);
         } else {
@@ -129,17 +138,14 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
     }
 
     @Override
-    public void setStatus(AppStatus appStatus){
-        this.createStatus = appStatus;
+    public void setStatus(AppStatus appStatus) {
+        createStatus = appStatus;
     }
 
     @Override
     public void setMyAccount(User user) {
         this.user = user;
     }
-
-    @Override
-    public void setUpCovidPassPort(String color, Bitmap qrCode) {}
 
     @Override
     public void onResume() {
@@ -160,19 +166,21 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
     }
 
     private void changeBgColorFollowVaccineColor() {
-        String color;
         String key = "ColorVaccine";
         SharedPreferences preferences = main.getSharedPreferences(Config.SHARE_PREF_NAME, Activity.MODE_PRIVATE);
-        if(preferences != null && preferences.contains(key)){
-            color = preferences.getString(key, "");
-            passportLayout.setBackgroundColor(Color.parseColor(color));
-            main.onColorChange(color);
+        if (preferences == null || !preferences.contains(key)) {
+            return;
         }
+
+        String color = preferences.getString(key, "");
+        passportLayout.setBackgroundColor(Color.parseColor(color));
+        main.onColorChange(color);
     }
 
     private void downloadQRCode() {
         String url = "https://chart.googleapis.com/chart?cht=qr&chl=CoviMap_Project_of_477_484_495&chs=180x180&choe=UTF-8&chld=L|2";
-        new DownloadImage().execute(url);
+        DownloadImage downloadImageTask = new DownloadImage();
+        downloadImageTask.execute(url);
     }
 
     private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
@@ -183,11 +191,11 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
         }
 
         @Override
-        protected Bitmap doInBackground(String... URL) {
-            String imageURL = URL[0];
+        protected Bitmap doInBackground(String... url) {
+            String imageURL = url[0];
             Bitmap bitmap = null;
 
-            try (InputStream input = new java.net.URL(imageURL).openStream()) {
+            try (InputStream input = new URL(imageURL).openStream()) {
                 bitmap = BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 e.printStackTrace();
