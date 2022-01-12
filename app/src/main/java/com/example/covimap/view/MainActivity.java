@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         setContentView(R.layout.activity_main);
 
         receiveAppStatus();
-        prepareAppStatus();
+//        prepareAppStatus();
         prepareSubActivity();
         mappingBottomNavBar();
 
@@ -74,19 +74,19 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         user = (User)intent.getSerializableExtra("AccountData");
     }
 
-    public void prepareAppStatus() {
-        if (appStatus == null) {
-            return;
-        }
-
-        Locale locale = new Locale(appStatus.getLanguage().name());
-        Locale.setDefault(locale);
-
-        Configuration config = new Configuration();
-        config.locale = locale;
-
-        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-    }
+//    public void prepareAppStatus() {
+//        if (appStatus == null) {
+//            return;
+//        }
+//
+//        Locale locale = new Locale(appStatus.getLanguage().name());
+//        Locale.setDefault(locale);
+//
+//        Configuration config = new Configuration();
+//        config.locale = locale;
+//
+//        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+//    }
 
     private void prepareSubActivity() {
         recordingFragment = new RecordingFragment();
