@@ -44,6 +44,7 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
     private ArrayList<RouteLabel> routeLbs;
     private ListView routeListView;
     private RouteAdapter routeLbAdapter;
+    private TextView noDataText;
 
     private Context context;
     private MainActivity main;
@@ -60,9 +61,10 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
     }
 
     public void mappingUIComponent(){
-        routeListView = (ListView) view.findViewById(R.id.history_list_view);
-        beginDayTextView = (EditText) view.findViewById(R.id.begin_day_edt);
-        endDayTextView = (EditText) view.findViewById(R.id.end_day_edt);
+        routeListView = view.findViewById(R.id.history_list_view);
+        beginDayTextView = view.findViewById(R.id.begin_day_edt);
+        endDayTextView = view.findViewById(R.id.end_day_edt);
+        noDataText = view.findViewById(R.id.noDataText);
     }
 
     private void subscribeEventButton() {
@@ -80,6 +82,10 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                 }
 
                 routeLbs = new ArrayList<>(originRouteLbList);
+                if (routeLbs.isEmpty()) {
+                    noDataText.setText("Không có dữ liệu.");
+                    return;
+                }
                 routeListView.setOnItemClickListener((adapterView, view, i, l) -> {
                     Intent intent = new Intent(context, RenderHistoryItemActivity.class);
                     intent.putExtra("PHONE-NUMBER", phoneNumber);
@@ -96,7 +102,7 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                         beginDayCalendar.set(year, month, day, 0, 0);
                         updateDateEditText(beginDayTextView, beginDayCalendar);
                         Log.d("DAY-BEGIN", beginDayCalendar.getTime().toString());
-                        if(endDayTextView.getText().toString().isEmpty() == false){
+                        if(!endDayTextView.getText().toString().isEmpty()){
                             filterListView();
                         }
                     };
@@ -110,7 +116,7 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                         endDayCalendar.set(year, month, day, 23, 59);
                         updateDateEditText(endDayTextView, endDayCalendar);
                         Log.d("DAY-END", endDayCalendar.getTime().toString());
-                        if(endDayTextView.getText().toString().isEmpty() == false){
+                        if(!endDayTextView.getText().toString().isEmpty()){
                             filterListView();
                         }
                     };
@@ -137,8 +143,8 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
 
     private EditText beginDayTextView;
     private EditText endDayTextView;
-    private Calendar beginDayCalendar = Calendar.getInstance();
-    private Calendar endDayCalendar = Calendar.getInstance();
+    private final Calendar beginDayCalendar = Calendar.getInstance();
+    private final Calendar endDayCalendar = Calendar.getInstance();
 
     private void updateDateEditText(EditText editText, Calendar calendar) {
         String myFormat = "dd/MM/yyyy";
@@ -183,9 +189,9 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
             private TextView periodTextView;
         }
 
-        private Context context;
-        private List<RouteLabel> routeLabels;
-        private int layout;
+        private final Context context;
+        private final List<RouteLabel> routeLabels;
+        private final int layout;
 
         public RouteAdapter(Context context, int layout, List<RouteLabel> routeLabels){
             this.context = context;
@@ -216,11 +222,11 @@ public class HistoryJourneyFragment extends Fragment implements HistoryJourneyFr
                 view = inflater.inflate(layout, null);
                 holder = new ViewHolder();
 
-                holder.createdDayTextView = (TextView) view.findViewById(R.id.created_day_text_view);
-                holder.startLocationTextView = (TextView) view.findViewById(R.id.strart_point_text_view);
-                holder.endLocationTextView = (TextView) view.findViewById(R.id.end_point_text_view);
-                holder.distanceTextVew = (TextView) view.findViewById(R.id.distance_text_view_item);
-                holder.periodTextView = (TextView) view.findViewById(R.id.period_text_view_item);
+                holder.createdDayTextView = view.findViewById(R.id.created_day_text_view);
+                holder.startLocationTextView = view.findViewById(R.id.strart_point_text_view);
+                holder.endLocationTextView = view.findViewById(R.id.end_point_text_view);
+                holder.distanceTextVew = view.findViewById(R.id.distance_text_view_item);
+                holder.periodTextView = view.findViewById(R.id.period_text_view_item);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();

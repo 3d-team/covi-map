@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Facility extends Identity {
-    private CLocation location;
+    private Location location;
     private String title;
     private String summary;
     private String type;

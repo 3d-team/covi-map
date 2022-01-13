@@ -2,8 +2,6 @@ package com.example.covimap.model;
 
 import android.util.Log;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +20,7 @@ public class Area implements Serializable {
     private String name;
     private String color;
     private String numberF0;
-    private List<CLocation> boundaries;
+    private List<Location> boundaries;
     private HashMap<String, Area> childAreas;
 
     @Override

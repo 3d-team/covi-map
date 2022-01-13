@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.example.covimap.R;
 import com.example.covimap.config.MapConfig;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.model.Route;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -88,20 +88,20 @@ public class RenderHistoryItemActivity extends Activity implements OnMapReadyCal
             }
 
             private void renderRoute() {
-                List<CLocation> path = route.getPath();
+                List<Location> path = route.getPath();
 
                 renderPolylineOfRoute(path);
                 drawRouteOnGGMap(path);
             }
 
-            private void renderPolylineOfRoute(List<CLocation> path) {
+            private void renderPolylineOfRoute(List<Location> path) {
                 polylineOptions = new PolylineOptions();
-                for (CLocation c : path) {
+                for (Location c : path) {
                     polylineOptions.add(c.toLatLng());
                 }
             }
 
-            private void drawRouteOnGGMap(List<CLocation> path) {
+            private void drawRouteOnGGMap(List<Location> path) {
                 googleMap.addPolyline(polylineOptions.width(15).color(Color.parseColor("#FF0000")));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(path.get(0).toLatLng(), MapConfig.ZOOM_STREET));
             }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Route extends Identity {
-    private List<CLocation> path;
+    private List<Location> path;
     private String period;
     private String distance;
     private String createdDay;

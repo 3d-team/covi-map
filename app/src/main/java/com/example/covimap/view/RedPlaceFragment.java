@@ -27,7 +27,7 @@ import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.manager.MapManager;
 import com.example.covimap.model.Area;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.service.LocationService;
 import com.example.covimap.service.RedPlaceFragmentCallBacks;
 import com.google.android.gms.maps.MapFragment;
@@ -119,7 +119,7 @@ public class RedPlaceFragment extends Fragment implements RedPlaceFragmentCallBa
                         @Override
                         public void onReceive(Context context, Intent intent) {
                             if(intent.getAction().equals("CURRENT_LOCATION")){
-                                CLocation location = new CLocation(intent.getDoubleExtra("latitude", 0f),
+                                Location location = new Location(intent.getDoubleExtra("latitude", 0f),
                                         intent.getDoubleExtra("longitude", 0f));
 
                                 if (currentMarker != null){
@@ -140,7 +140,7 @@ public class RedPlaceFragment extends Fragment implements RedPlaceFragmentCallBa
                 }
             }
 
-            private void movingCameraTo(CLocation location) {
+            private void movingCameraTo(Location location) {
                 mapManager.animateCamera(location);
                 currentMarker = mapManager.addMarker(location, "Your Location");
             }

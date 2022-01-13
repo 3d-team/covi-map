@@ -27,7 +27,7 @@ import androidx.fragment.app.Fragment;
 import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.manager.MapManager;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.model.Route;
 import com.example.covimap.repository.RouteRepository;
 import com.example.covimap.service.LocationService;
@@ -57,12 +57,12 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
     private Button saveRecordBtn;
 
     private Marker currentMarker = null;
-    private List<CLocation> path = new ArrayList<>();
-    private CLocation lastLocation;
+    private final List<Location> path = new ArrayList<>();
+    private Location lastLocation;
     private double distance = 0;
     private String createdTime = "";
     private long PauseOffSet = 0;
-    private SimpleDateFormat sdf = new SimpleDateFormat(Config.DATETIME_FORMAT, Locale.getDefault());
+    private final SimpleDateFormat sdf = new SimpleDateFormat(Config.DATETIME_FORMAT, Locale.getDefault());
 
     @Nullable
     @Override
@@ -80,11 +80,11 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
     }
 
     public void mappingUIComponent(){
-        distanceTextView = (TextView) view.findViewById(R.id.distance_text_view);
-        timeTextView = (Chronometer) view.findViewById(R.id.time_text_view);
-        locateCurrentBtn = (FloatingActionButton) view.findViewById(R.id.locate_position_btn);
-        recordBtn = (Button) view.findViewById(R.id.record_btn);
-        saveRecordBtn = (Button) view.findViewById(R.id.save_record_btn);
+        distanceTextView = view.findViewById(R.id.distance_text_view);
+        timeTextView = view.findViewById(R.id.time_text_view);
+        locateCurrentBtn = view.findViewById(R.id.locate_position_btn);
+        recordBtn = view.findViewById(R.id.record_btn);
+        saveRecordBtn = view.findViewById(R.id.save_record_btn);
     }
 
     private void subscribeEventButton() {
@@ -204,13 +204,13 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
                     return;
                 }
 
-                CLocation currentLocation = new CLocation(
+                Location currentLocation = new Location(
                         intent.getDoubleExtra("latitude", 0f),
                         intent.getDoubleExtra("longitude", 0f));
 
                 if (statusRecord == StatusRecord.RUNNING){
                     recordNewPosition(currentLocation);
-                };
+                }
 
                 if (lastLocation != null) {
                     currentMarker.remove();
@@ -224,17 +224,17 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
         main.registerReceiver(locationReceiver, new IntentFilter("CURRENT_LOCATION"));
     }
 
-    private void recordNewPosition(CLocation currentLocation) {
-        if (lastLocation != null) {
-            mapManager.drawRoute(lastLocation, currentLocation);
-            distance += CLocation.getDistance(lastLocation, currentLocation);
-            distanceTextView.setText(String.format("%.2f km", distance));
+    private void recordNewPosition(Location currentLocation) {
+        if (lastLocation == null) {
+            return;
         }
-
+        mapManager.drawRoute(lastLocation, currentLocation);
+        distance += Location.getDistance(lastLocation, currentLocation);
+        distanceTextView.setText(String.format("%.2f km", distance));
         path.add(lastLocation);
     }
 
-    private void drawCurrentPosition(CLocation currentLocation) {
+    private void drawCurrentPosition(Location currentLocation) {
         currentMarker = mapManager.addMarker(currentLocation, "Here");
         mapManager.animateCamera(currentLocation);
     }
@@ -262,7 +262,7 @@ public class RecordingFragment extends Fragment implements RecordingFragmentCall
 
     private static StatusRecord statusRecord = StatusRecord.NOT_START;
 
-    public String getAddress(CLocation location) {
+    public String getAddress(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());

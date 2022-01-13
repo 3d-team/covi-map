@@ -17,7 +17,7 @@ import com.example.covimap.R;
 import com.example.covimap.config.Config;
 import com.example.covimap.model.AppStatus;
 import com.example.covimap.model.Area;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.model.Language;
 import com.example.covimap.model.User;
 import com.example.covimap.service.MainCallbacks;
@@ -227,7 +227,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
 
             String nodeName, nodeText;
             String provinceName = "";
-            List<CLocation> boundaries = new ArrayList<>();
+            List<Location> boundaries = new ArrayList<>();
 
             try {
                 int eventType = -1;
@@ -245,7 +245,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
                                 for (String coord : coordinatePairs) {
-                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
+                                    boundaries.add(new Location(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
                             }
@@ -253,7 +253,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         case XmlPullParser.END_TAG:
                             nodeName = parser.getName();
                             if(nodeName.equals("Placemark")) {
-                                List<CLocation> temp = new ArrayList<>(boundaries);
+                                List<Location> temp = new ArrayList<>(boundaries);
 
                                 if (provinces.get(provinceName) != null){
                                     provinces.get(provinceName).setBoundaries(temp);
@@ -276,7 +276,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_2);
 
             String nodeName, nodeText;
-            List<CLocation> boundaries = new ArrayList<>();
+            List<Location> boundaries = new ArrayList<>();
             String provinceName = "";
             String districtName = "";
 
@@ -298,7 +298,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
                                 for(String coord : coordinatePairs){
-                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
+                                    boundaries.add(new Location(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
                             }
@@ -306,7 +306,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         case XmlPullParser.END_TAG:
                             nodeName=parser.getName();
                             if(nodeName.equals("Placemark")) {
-                                List<CLocation> temp = new ArrayList<>(boundaries);
+                                List<Location> temp = new ArrayList<>(boundaries);
                                 Area district = provinces.get(provinceName).getChildAreas().get(districtName);
                                 if(district != null){
                                     district.setBoundaries(temp);
@@ -327,7 +327,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
             XmlPullParser parser = getResources().getXml(R.xml.gadm36_3);
 
             String nodeName, nodeText;
-            List<CLocation> boundaries = new ArrayList<>();
+            List<Location> boundaries = new ArrayList<>();
             String provinceName = "";
             String districtName = "";
             String communeName = "";
@@ -356,7 +356,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                                 nodeText = parser.nextText();
                                 String[] coordinatePairs = nodeText.split(" ");
                                 for(String coord : coordinatePairs){
-                                    boundaries.add(new CLocation(Double.parseDouble(coord.split(",")[1]),
+                                    boundaries.add(new Location(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
                             }
@@ -364,7 +364,7 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
                         case XmlPullParser.END_TAG:
                             nodeName=parser.getName();
                             if(nodeName.equals("Placemark")){
-                                List<CLocation> temp = new ArrayList<>(boundaries);
+                                List<Location> temp = new ArrayList<>(boundaries);
                                 Area commune = provinces
                                         .get(provinceName)
                                         .getChildAreas()

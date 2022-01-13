@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CLocation extends Identity implements Serializable {
+public class Location extends Identity implements Serializable {
     private double latitude;
     private double longitude;
 
@@ -23,7 +23,7 @@ public class CLocation extends Identity implements Serializable {
         return new LatLng(getLatitude(), getLongitude());
     }
 
-    public static double getDistance(CLocation start, CLocation end){
+    public static double getDistance(Location start, Location end){
         int Radius = 6371;// radius of earth in Km
         double lat1 = start.latitude;
         double lat2 = end.latitude;

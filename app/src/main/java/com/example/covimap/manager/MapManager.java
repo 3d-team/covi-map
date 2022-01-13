@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.covimap.config.Config;
 import com.example.covimap.config.MapConfig;
 import com.example.covimap.model.Area;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.utils.MapHelper;
 import com.example.covimap.view.RedPlaceFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,7 +43,7 @@ public class MapManager implements OnMapReadyCallback {
         this.redPlaceFragment = redPlaceFragment;
     }
 
-    public Marker addMarker(CLocation location, String title) {
+    public Marker addMarker(Location location, String title) {
         return map.addMarker(new MarkerOptions().position(location.toLatLng()).title(title));
     }
 
@@ -60,19 +60,19 @@ public class MapManager implements OnMapReadyCallback {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(VN, 5.32f));
     }
 
-    public void moveCamera(CLocation location) {
+    public void moveCamera(Location location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()));
     }
 
-    public void animateCamera(CLocation location) {
+    public void animateCamera(Location location) {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), MapConfig.ZOOM));
     }
 
-    public void animateCamera(CLocation location, int zoom) {
+    public void animateCamera(Location location, int zoom) {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), zoom));
     }
 
-    public void drawRoute(CLocation start, CLocation end) {
+    public void drawRoute(Location start, Location end) {
         PolylineOptions lineOptions = new PolylineOptions();
         lineOptions.add(start.toLatLng(), end.toLatLng());
         lineOptions.width(15);
@@ -86,13 +86,13 @@ public class MapManager implements OnMapReadyCallback {
             return;
         }
 
-        List<CLocation> bounds = area.getBoundaries();
+        List<Location> bounds = area.getBoundaries();
         if (bounds == null) {
             return;
         }
 
         PolygonOptions polygonOptions = new PolygonOptions();
-        for (CLocation c : bounds){
+        for (Location c : bounds){
             polygonOptions.add(c.toLatLng());
         }
         polygonOptions.strokeWidth(5);
@@ -117,7 +117,7 @@ public class MapManager implements OnMapReadyCallback {
         });
     }
 
-    public void findRouteBetweenTwoLocations(CLocation start, CLocation end, DirectionMode mode) {
+    public void findRouteBetweenTwoLocations(Location start, Location end, DirectionMode mode) {
         String url = MapHelper.generateDirectionUrl(start, end, mode);
         new FetchAPI().execute(url);
     }

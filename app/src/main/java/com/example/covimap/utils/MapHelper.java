@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.example.covimap.config.Config;
 import com.example.covimap.manager.DirectionMode;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MapHelper {
-    public static String generateDirectionUrl(CLocation start, CLocation end, DirectionMode mode) {
+    public static String generateDirectionUrl(Location start, Location end, DirectionMode mode) {
         String startLocationClause = "origin=" + start.getLatitude() + ","
                 + start.getLatitude();
         String endLocationClause = "destination=" + end.getLatitude() + ","

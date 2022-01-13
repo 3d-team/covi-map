@@ -1,8 +1,8 @@
 package com.example.covimap.repository;
 
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 
-public class RedPlaceRepository extends Repository<CLocation> {
+public class RedPlaceRepository extends Repository<Location> {
     public RedPlaceRepository() {
         collection = "redzones";
     }

@@ -28,7 +28,7 @@ import androidx.fragment.app.Fragment;
 import com.example.covimap.R;
 import com.example.covimap.manager.DirectionMode;
 import com.example.covimap.manager.MapManager;
-import com.example.covimap.model.CLocation;
+import com.example.covimap.model.Location;
 import com.example.covimap.service.LocationService;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -166,9 +166,11 @@ public class DirectFragment extends Fragment {
 
         resultSrcTextView.setOnClickListener(view -> {
             view.setVisibility(View.GONE);
-            srcLocation = new CLocation(srcAddress.getLatitude(), srcAddress.getLongitude());
+            srcLocation = new Location(srcAddress.getLatitude(), srcAddress.getLongitude());
             mapManager.addMarker(srcLocation, "Search");
             mapManager.animateCamera(srcLocation);
+            searchSrcLocationEdt.setQuery(resultSrcTextView.getText().toString(), false);
+            view.setVisibility(View.GONE);
             searchSrcLocationEdt.clearFocus();
         });
 
@@ -227,9 +229,11 @@ public class DirectFragment extends Fragment {
 
         resultDestTextView.setOnClickListener(view -> {
             view.setVisibility(View.GONE);
-            destLocation = new CLocation(destAddress.getLatitude(), destAddress.getLongitude());
+            destLocation = new Location(destAddress.getLatitude(), destAddress.getLongitude());
             mapManager.addMarker(destLocation, "Search");
             mapManager.animateCamera(destLocation);
+            searchDestLocationEdt.setQuery(resultDestTextView.getText().toString(), false);
+            view.setVisibility(View.GONE);
             searchDestLocationEdt.clearFocus();
         });
 
@@ -256,7 +260,7 @@ public class DirectFragment extends Fragment {
         destImgView.setOnClickListener(view -> yourLocationDestTextView.setVisibility(View.VISIBLE));
 
         swapSrcDest.setOnClickListener(view -> {
-            CLocation location = srcLocation;
+            Location location = srcLocation;
             srcLocation = destLocation;
             destLocation = location;
 
@@ -296,7 +300,7 @@ public class DirectFragment extends Fragment {
         }
     }
 
-    private CLocation currentLocation;
+    private Location currentLocation;
     Intent intentCurrentLocation;
     public void requestCurrentLocation(){
         if (main.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -314,7 +318,7 @@ public class DirectFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals("CURRENT_LOCATION")){
-                    currentLocation = new CLocation(intent.getDoubleExtra("latitude", 0f),
+                    currentLocation = new Location(intent.getDoubleExtra("latitude", 0f),
                             intent.getDoubleExtra("longitude", 0f));
 
                     mapManager.reset();
@@ -336,9 +340,9 @@ public class DirectFragment extends Fragment {
 
     private String srcAddressStr;
     private Address srcAddress;
-    private CLocation srcLocation;
+    private Location srcLocation;
 
     private String destAddressStr;
     private Address destAddress;
-    private CLocation destLocation;
+    private Location destLocation;
 }
