@@ -45,7 +45,7 @@ public class PrepareActivity extends Activity {
     public void prepareAppStatus() {
         try (FileInputStream inputStream = this.openFileInput(Config.STATUS_FILE_DIR);
              ObjectInputStream os = new ObjectInputStream(inputStream)) {
-            appStatus = (AppStatus) os.readObject();
+             appStatus = (AppStatus) os.readObject();
         } catch (Exception e){
             try (FileOutputStream outputStream = this.openFileOutput(Config.STATUS_FILE_DIR, MODE_PRIVATE)) {
                 appStatus = new AppStatus();
@@ -78,7 +78,7 @@ public class PrepareActivity extends Activity {
 
     private void queryFirebaseData() {
         DatabaseReference data = FirebaseDatabase.getInstance().getReference();
-        data.child("VietNam").child("numberF0").setValue("1,27Tr");
+//        data.child("VietNam").child("numberF0").setValue("1,27Tr");
         data.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

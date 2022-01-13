@@ -184,7 +184,6 @@ public class PersonalFragment extends Fragment implements PersonalFragmentCallba
     }
 
     private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
