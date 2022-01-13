@@ -1,8 +1,6 @@
 package com.example.covimap.service;
 
 
-import android.os.AsyncTask;
-
 import com.example.covimap.config.MailConfig;
 
 import java.util.Properties;

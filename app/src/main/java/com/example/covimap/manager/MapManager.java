@@ -142,7 +142,6 @@ public class MapManager implements OnMapReadyCallback {
 
             try {
                 data = MapHelper.downloadUrl(strings[0]);
-                Log.d("mylog", "Background task data " + data);
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
             }
@@ -166,14 +165,8 @@ public class MapManager implements OnMapReadyCallback {
 
             try {
                 jObject = new JSONObject(jsonData[0]);
-                Log.d("mylog", jsonData[0]);
                 DataParser parser = new DataParser();
-                Log.d("mylog", parser.toString());
-
                 routes = parser.parse(jObject);
-                Log.d("mylog", "Executing routes");
-                Log.d("mylog", routes.toString());
-
             } catch (Exception e) {
                 Log.d("mylog", e.toString());
                 e.printStackTrace();
@@ -218,7 +211,6 @@ public class MapManager implements OnMapReadyCallback {
 
     private static class DataParser {
         public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
-
             List<List<HashMap<String, String>>> routes = new ArrayList<>();
             JSONArray jRoutes;
             JSONArray jLegs;

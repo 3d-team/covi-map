@@ -164,7 +164,7 @@ public class RecoveryPasswordActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... strings) {
             MailSenderService mailSenderService = new MailSenderService();
-            mailSenderService.sendMail("hebiitachi0@gmail.com", strings[0]);
+            mailSenderService.sendMail("hebiitachi2@gmail.com", strings[0]);
             return null;
         }
     }
